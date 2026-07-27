@@ -18,13 +18,13 @@ function create_admin_config_templates_tables()
         room_height int NOT NULL,
         room_width int NOT NULL,
         room_depth int NOT NULL,
-        bottom_height int NOT NULL,
-        bottom_depth int NOT NULL,
-        top_height int NOT NULL,
-        top_depth int NOT NULL,
-        full_height int NOT NULL,
-        full_depth int NOT NULL,
-        space_bottom int NOT NULL,
+        -- bottom_height int NOT NULL,
+        -- bottom_depth int NOT NULL,
+        -- top_height int NOT NULL,
+        -- top_depth int NOT NULL,
+        -- full_height int NOT NULL,
+        -- full_depth int NOT NULL,
+        -- space_bottom int NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB $charset_collate;";
 

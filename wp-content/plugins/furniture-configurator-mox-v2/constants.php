@@ -35,7 +35,7 @@ $DEPTH_SLUG = 'depth';
 $WIDTH_SLUG = 'width';
 $SPACE_SLUG = 'space_bottom';
 
-$space_bottom_SLUG = 'space_bottom';
+$VERTICAL_SPACE_SLUG = 'space_bottom';
 
 $WALL_SINGLE = 'single-wall'; 
 $WALL_SINGLE_TITLE = 'Single Wall';

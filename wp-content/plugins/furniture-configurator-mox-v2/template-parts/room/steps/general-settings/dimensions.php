@@ -7,7 +7,7 @@ global
     $FURNITURE_TYPE_FULL, 
     $FURNITURE_TYPE_WALL, 
     $FURNITURE_TYPE_BASE,
-    $space_bottom_SLUG;
+    $VERTICAL_SPACE_SLUG;
 ?>
 
 <div class="dimensions-block">
@@ -82,7 +82,7 @@ global
         <?php 
             $heading = __("Space between Bottom and Top furniture", 'furniture-config');
             $type = '';
-            $dimension_type = $space_bottom_SLUG;
+            $dimension_type = $VERTICAL_SPACE_SLUG;
             $standard = $furnitureDimensions['space_bottom'];
             $min = $furnitureDimensions['space_bottom_min'];
             $max = $furnitureDimensions['space_bottom_max'];

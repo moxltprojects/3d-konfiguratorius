@@ -1975,7 +1975,7 @@ export function updateRoomSize(modelObj, dimensions) {
     const room3DGroup = modelObj.room3DGroup;
     const containerWidth = model3dContainer.clientWidth;
     const containerHeight = model3dContainer.clientHeight;
-    const { scene, renderer, box } = modelObj;
+    const { scene, renderer, dirLight, box } = modelObj;
 
     const {
         heightPx,
@@ -1994,7 +1994,7 @@ export function updateRoomSize(modelObj, dimensions) {
 
     
     if(modelSettings.lightsOn) {
-        renderLighting(scene, renderer, modelObj.dirLight, widthPx, heightPx, depthPx);
+        renderLighting(scene, renderer, dirLight, modelObj.dirLight, widthPx, heightPx, depthPx);
     }
 
     const wallHeight = heightPx + FLOOR_THICKNESS
@@ -2949,12 +2949,21 @@ function placeFurnitureInRoom(
         // }
 
         // Y (origin is now bottom)
-        if (furnitureType.includes(DIMENSION_TYPE_TOP)) {
-            y = pos.bottom * roomScaleY;
-        } else {
-            y = 0;
-        }
+        // if (furnitureType.includes(DIMENSION_TYPE_TOP)) {
+        //     y = pos.bottom * roomScaleY;
+        // } else {
+        //     y = 0;
+        // }
 
+        if (spaceBottomPx) {
+			
+            y = spaceBottomPx;
+
+        } else {
+
+            y = 0;
+
+        }
     } else {
         const footprintSize = getFootprintSize(scaledSize, rotation);
 
@@ -4296,7 +4305,10 @@ export function clearModelScene2(modelObj, onPageLoad) {
     modelObj.room3DGroup = null;
     modelObj.dragControls = null;
 
-    if(onPageLoad) return;
+    if (onPageLoad) {
+        modelObj._destroyed = false;
+        return;
+    };
 
     modelObj.dbChildren.length = 0;
     modelObj.bgPlanes.length = 0;
