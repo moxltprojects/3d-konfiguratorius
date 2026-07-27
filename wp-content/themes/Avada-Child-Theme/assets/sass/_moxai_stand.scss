@@ -1,0 +1,760 @@
+@mixin mq($opt,$size) {
+    @media (#{$opt}-width: #{$size}) {
+        @content;
+    }
+}
+@mixin mq_xl {
+    @media (min-width: 1200px) {
+        @content;
+    }
+}
+@mixin mq_lg {
+    @media (min-width: 992px) {
+        @content;
+    }
+}
+@mixin mq_md {
+    @media (min-width: 768px) {
+        @content;
+    }
+}
+
+.loader-icon-style {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    .loader {
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        animation:
+        l20-1 0.8s infinite linear alternate,
+        l20-2 1.6s infinite linear;
+    }
+    @keyframes l20-1{
+        0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+        12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+        25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+        50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+        62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+        75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+        100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+    }
+    @keyframes l20-2{ 
+        0%    {transform:scaleY(1)  rotate(0deg)}
+        49.99%{transform:scaleY(1)  rotate(135deg)}
+        50%   {transform:scaleY(-1) rotate(0deg)}
+        100%  {transform:scaleY(-1) rotate(-135deg)}
+    }
+}
+
+.mox-ai-auto-setup {
+    .mox-ai-auto-setup-wrapper {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .mox-ai-auto-setup-item {
+            &.mox-ai-auto-setup-input {
+                flex: 0 0 100%;
+                max-width: 100%;
+                &:not(:last-child) {
+                    margin-bottom: 24px;
+                }
+                @include mq_md {
+                    margin-bottom: 0;
+                    flex: 0 0 calc(50% - 82px - 24px);
+                    max-width: calc(50% - 82px - 24px);
+                    &:not(:last-child) {
+                        margin-bottom: 0;
+                    }
+                }
+                label {
+                    font-family: var(--awb-custom_typography_12-font-family);
+                    font-size: var(--awb-custom_typography_12-font-size);
+                    font-weight: var(--awb-custom_typography_12-font-weight);
+                    font-style: var(--awb-custom_typography_12-font-style);
+                    line-height: var(--awb-custom_typography_12-line-height);
+                    letter-spacing: var(--awb-custom_typography_12-letter-spacing);
+                    text-transform: var(--awb-custom_typography_12-text-transform);
+                    margin-bottom: 8px;
+                    display: block;
+                }
+                input {
+                    width: 100%;
+                    height: auto;
+                    border-radius: 0px;
+                    border: 0;
+                    border-bottom: 1px solid var(--awb-custom_color_5);
+                    padding: 0 0 16px 0;
+                    background-color: transparent;
+                    color: var(--awb-color2);
+                    font-family: var(--awb-custom_typography_8-font-family);
+                    font-size: var(--awb-custom_typography_8-font-size);
+                    font-weight: var(--awb-custom_typography_8-font-weight);
+                    font-style: var(--awb-custom_typography_8-font-style);
+                    line-height: var(--awb-custom_typography_8-line-height);
+                    letter-spacing: var(--awb-custom_typography_8-letter-spacing);
+                    text-transform: var(--awb-custom_typography_8-text-transform);
+                    &::placeholder {
+                        color: var(--awb-color2);
+                        opacity: 1;
+                    }
+                    &:focus::placeholder {
+                        opacity: 0;
+                    }
+                }
+            }
+            &.mox-ai-auto-setup-submit {
+                flex: 0 0 100%;
+                max-width: 100%;
+                @include mq_md {
+                    flex: 0 0 164px;
+                    max-width: 164px;
+                }
+                button {
+                    position: relative;
+                    text-align: center;
+                    @include mq_md {
+                        width: 100%;
+                    }
+                    /* Tooltip matomumo animacija */
+                    @keyframes tooltipBlink {
+                        0%   { opacity: 0; }
+                        10%  { opacity: 1; }  /* atsiranda */
+                        40%  { opacity: 1; }  /* matosi ~1s */
+                        50%  { opacity: 0; }  /* dingsta */
+                        100% { opacity: 0; }
+                    }
+
+                    @keyframes tooltipBlinkArrow {
+                        0%   { opacity: 0; }
+                        10%  { opacity: 1; }
+                        40%  { opacity: 1; }
+                        50%  { opacity: 0; }
+                        100% { opacity: 0; }
+                    }
+                    &[data-message-type="processing"],
+                    &[data-message-type="queued"],
+                    &[data-message-type="error"] {
+                        &::after {
+                            content: attr(data-message-text);
+                            position: absolute;
+                            bottom: calc(100% + 6px);
+                            left: 50%;
+                            transform: translateX(-50%);
+                            // background: var(--awb-custom_color_1);
+                            background-color: #fff;
+                            color: var(--awb-color2);
+ 
+                            padding: 4px 10px;
+                            border-radius: 16px;
+                            color: var(--awb-color2);
+                            font-family: var(--awb-custom_typography_10-font-family);
+                            font-size: 10px;
+                            font-weight: var(--awb-custom_typography_10-font-weight);
+                            font-style: var(--awb-custom_typography_10-font-style);
+                            line-height: 14px;
+                            letter-spacing: var(--awb-custom_typography_10-letter-spacing);
+                            text-transform: var(--awb-custom_typography_10-text-transform);
+
+                            white-space: nowrap;
+                            opacity: 0;
+                            pointer-events: none;
+
+                            animation: tooltipBlink 7s infinite ease-in-out;
+                        }
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            bottom: 100%;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            border-width: 5px;
+                            border-style: solid;
+                            border-color: transparent transparent var(--awb-custom_color_1) transparent;
+                            opacity: 0;
+
+                            animation: tooltipBlinkArrow 7s infinite ease-in-out;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.mox-ai-stand-start {
+    .tabs {
+        .tab-buttons {
+            display: flex;
+            align-items: stretch;
+            justify-content: flex-start;
+            gap: 12px;
+            z-index: 2;
+            position: relative;
+            padding: 0 24px;
+            @include mq_md {
+                gap: 24px;
+            }
+            .tab-button-wrapper {
+                position: relative;
+                flex: 0 0 calc(50% - 24px);
+                max-width: calc(50% - 24px);
+                background-color: var(--awb-color4);
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                opacity: 0.75;       
+                
+                @include mq_md {
+                    border-top-left-radius: 16px;
+                    border-top-right-radius: 16px;
+                    flex: 0 0 calc(50% - 48px);
+                    max-width: calc(50% - 48px);
+                }
+                &::before,
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    width: 24px;
+                    height: 24px;
+                    background-color: var(--awb-color4);
+                    mask-image: linear-gradient(to top, red, red), 
+                        radial-gradient(circle 15px at center, green 80%, transparent 81%);
+                    mask-size:
+                        12px 12px,
+                        100%;
+                    mask-repeat: no-repeat, repeat;
+                    mask-composite: subtract;
+                }
+                &::after {
+                    right: 100%;
+                    mask-position:
+                        bottom right,
+                        center;
+                }
+                &::before {
+                    left: 100%;
+                    mask-position:
+                        bottom left,
+                        center;
+                }
+                .tab-button {
+                    background: transparent;
+                    width: 100%;
+                    text-align: center;
+                    border: 0;
+                    padding: 12px 20px;
+                    cursor: pointer;
+                    height: 100%;
+                    color: var(--awb-color2) !important;
+                    font-family: var(--awb-custom_typography_14-font-family) !important;
+                    font-size: var(--awb-custom_typography_14-font-size) !important;
+                    font-weight: var(--awb-custom_typography_14-font-weight) !important;
+                    font-style: var(--awb-custom_typography_14-font-style) !important;
+                    line-height: var(--awb-custom_typography_14-line-height) !important;
+                    letter-spacing: var(--awb-custom_typography_14-letter-spacing) !important;
+                    text-transform: var(--awb-custom_typography_14-text-transform) !important;
+                    @include mq_md {
+                        padding: 16px 24px;
+                    }
+                    &.active {
+                        padding: 12px 20px 13px 20px;
+                        @include mq_md {
+                            padding: 16px 24px 17px 24px;
+                        }
+                    }
+                }
+                .tab-button-bg {
+                    position: absolute;
+                    top: -1px;
+                    left: -1px;
+                    width: calc(100% + 2px);
+                    height: calc(100% + 1px);
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                    background-color: rgba(255,255,255,0.2);
+                    z-index: -1;
+                    opacity: 0;
+                    pointer-events: none;
+                    @include mq_md {
+                        border-top-left-radius: 16px;
+                        border-top-right-radius: 16px;
+                    }
+                    &::before,
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        bottom: 0;
+                        width: 24px;
+                        height: 24px;
+                        background-color: rgba(255,255,255,0.2);
+                        mask-image: linear-gradient(to top, red, red), 
+                            radial-gradient(circle 15px at center, green 80%, transparent 81%);
+                        mask-size:
+                            12px 12px,
+                            100%;
+                        mask-repeat: no-repeat, repeat;
+                        mask-composite: subtract;
+                    }
+                    &::after {
+                        right: 100%;
+                        mask-position:
+                            bottom right,
+                            center;
+                    }
+                    &::before {
+                        left: 100%;
+                        mask-position:
+                            bottom left,
+                            center;
+                    }
+                }
+                &.active-btn {
+                    opacity: 1;
+                    margin-bottom: -1px;
+                    .tab-button-bg {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+        .tab-content {
+            position: relative;
+            z-index: 1;
+            display: none;
+            border-radius: 8px;
+            color: var(--awb-color2);
+            background-color: var(--awb-color4);
+            padding: 32px 20px 48px;
+            border: 1px solid rgba(255,255,255,0.2);
+            @include mq_md {
+                padding: 32px;
+                border-radius: 16px;
+            }
+        }
+        .tab-content.active {
+            display: block;
+        }
+    } 
+}
+
+.mox-ai-stand-summary {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    @include mq_md {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+    .mox-results-box {
+
+    }
+    .mox-results-box-wrapper {
+
+    }
+    .mox-results-box-summary {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--awb-custom_color_5);
+        @include mq_md {
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+        .mox-results-box-summary-header {
+            margin-bottom: 32px;
+            @include mq_md {
+                margin-bottom: 40px;
+            }
+            h2 {
+                margin-bottom: 0;
+                font-family: var(--awb-typography4-font-family);
+                font-size: var(--awb-typography4-font-size);
+                font-weight: var(--awb-typography4-font-weight);
+                font-style: var(--awb-typography4-font-style);
+                line-height: var(--awb-typography4-line-height);
+                letter-spacing: var(--awb-typography4-letter-spacing);
+                text-transform: var(--awb-typography4-text-transform);
+                @include mq_md {
+                    font-family: var(--awb-typography3-font-family);
+                    font-size: var(--awb-typography3-font-size);
+                    font-weight: var(--awb-typography3-font-weight);
+                    font-style: var(--awb-typography3-font-style);
+                    line-height: var(--awb-typography3-line-height);
+                    letter-spacing: var(--awb-typography3-letter-spacing);
+                    text-transform: var(--awb-typography3-text-transform);
+                }
+            }
+        }
+        .mox-results-box-summary-content {
+
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            .tab-buttons {
+                flex: 0 0 100%;
+                max-width: 100%;
+                gap: 12px;
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 32px;
+                overflow-x: auto;
+                @include mq_md {
+                    flex-direction: column;
+                    margin-bottom: 0;
+                }
+                @include mq_xl {
+                    flex: 0 0 240px;
+                    max-width: 240px;
+                }
+                .tab-button-wrapper {
+                    .tab-button {
+                        padding: 14px 20px;
+                        border-radius: 6px;
+                        background-color: var(--awb-custom_color_5);
+                        color: var(--awb-custom_color_2);
+                        border: 0;
+                        white-space: nowrap;
+                        cursor: pointer;
+                        font-family: var(--awb-custom_typography_4-font-family);
+                        font-size: var(--awb-custom_typography_4-font-size);
+                        font-weight: var(--awb-custom_typography_4-font-weight);
+                        font-style: var(--awb-custom_typography_4-font-style);
+                        line-height: var(--awb-custom_typography_4-line-height);
+                        letter-spacing: var(--awb-custom_typography_4-letter-spacing);
+                        text-transform: var(--awb-custom_typography_4-text-transform);
+                        
+                        transition: color 0.3s ease, background-color 0.3s ease;
+                        &.active {
+                            background-color: var(--awb-custom_color_2);
+                            color: var(--awb-color1);
+                        }
+                        @include mq_md {
+                            width: 100%;
+                        }
+                    }
+                    &.active-btn {
+
+                    }
+                }
+            }
+            .tab-contents {
+                flex: 0 0 100%;
+                max-width: 100%;
+                background-color: var(--awb-color1);
+                color: var(--awb-color2);
+                border-radius: 16px;
+                padding: 12px 20px;
+                @include mq_md {
+                    padding: 0px 30px 20px 30px;
+                }
+                @include mq_xl {
+                    flex: 0 0 calc(100% - 240px);
+                    max-width: calc(100% - 240px);
+                }
+                .tab-content {
+                    display: none;
+                    &.active {
+                        display: block;
+                    }
+                    .tab-content-box {
+                        position: relative;
+                        max-height: 450px;
+                        overflow: hidden;
+                        .show-more-button {
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            width: 100%;
+                            padding: 88px 32px 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            mask-image: linear-gradient(to top, black 0%, black 35%, rgba(0,0,0,0.5) 55%, transparent 100%);
+                            -webkit-mask-image: linear-gradient(to top, black 0%, black 35%, rgba(0,0,0,0.5) 55%, transparent 100%);
+                            background: white;    
+                            .show-more-button-button {
+                                z-index: 1;
+                            }
+                        }
+                        &.show-content {
+                            max-height: none;
+                            overflow: visible;
+                            .show-more-button {
+                                position: relative;
+                                padding-top: 24px;
+                            }   
+                        }
+                    }
+                    @include headings {
+                        margin: 20px 0;
+                        font-family: var(--awb-custom_typography_4-font-family);
+                        font-size: var(--awb-custom_typography_4-font-size);
+                        font-weight: var(--awb-custom_typography_4-font-weight);
+                        font-style: var(--awb-custom_typography_4-font-style);
+                        line-height: var(--awb-custom_typography_4-line-height);
+                        letter-spacing: var(--awb-custom_typography_4-letter-spacing);
+                        text-transform: var(--awb-custom_typography_4-text-transform);
+                    }   
+                    p {
+                        margin: 20px 0;
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                    }
+                    ul,
+                    ol {
+                        padding: 0 0 0 20px;
+                        margin: 20px 0;
+                    }
+                }
+            }
+        }
+    }
+    .mox-results-box-color-scheme {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--awb-custom_color_5);
+        @include mq_md {
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+        .mox-results-box-color-scheme-header {
+            margin-bottom: 32px;
+            @include mq_md {
+                margin-bottom: 40px;
+            }
+            h2 {
+                margin-bottom: 0;
+                font-family: var(--awb-typography4-font-family);
+                font-size: var(--awb-typography4-font-size);
+                font-weight: var(--awb-typography4-font-weight);
+                font-style: var(--awb-typography4-font-style);
+                line-height: var(--awb-typography4-line-height);
+                letter-spacing: var(--awb-typography4-letter-spacing);
+                text-transform: var(--awb-typography4-text-transform);
+                @include mq_md {
+                    font-family: var(--awb-custom_typography_2-font-family);
+                    font-size: var(--awb-custom_typography_2-font-size);
+                    font-weight: var(--awb-custom_typography_2-font-weight);
+                    font-style: var(--awb-custom_typography_2-font-style);
+                    line-height: var(--awb-custom_typography_2-line-height);
+                    letter-spacing: var(--awb-custom_typography_2-letter-spacing);
+                    text-transform: var(--awb-custom_typography_2-text-transform);
+                }
+            }
+        }
+        .mox-results-box-color-scheme-content {
+
+        }
+        .mox-results-box-color-scheme-colors {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: -12px -6px 0;
+            @include mq_md {
+                margin: -20px -10px 0;
+            }
+            .mox-results-box-color-scheme-colors-item {
+                flex: 0 0 25%;
+                max-width: 25%;
+                padding: 0 6px;
+                @include mq_md {
+                    padding: 0 10px;
+                    flex: 0 0 121px;
+                    max-width: 121px;
+                }
+            }
+            .mox-results-box-color-scheme-colors-item-wrapper {
+
+            }
+            .mox-results-box-color-scheme-colors-item-color {
+                width: 100%;
+                aspect-ratio: 1/1;
+                border-radius: 8px;
+                margin-bottom: 12px;
+                border: 1px solid var(--awb-color4);
+            }
+            .mox-results-box-color-scheme-colors-item-name {
+                margin-bottom: 0px;
+                @include mq_md {
+                    margin-bottom: 4px;
+                }
+                span {
+                    color: var(--awb-color2);
+                    font-family: var(--awb-custom_typography_14-font-family);
+                    font-size: var(--awb-custom_typography_14-font-size);
+                    font-weight: var(--awb-custom_typography_14-font-weight);
+                    font-style: var(--awb-custom_typography_14-font-style);
+                    line-height: var(--awb-custom_typography_14-line-height);
+                    letter-spacing: var(--awb-custom_typography_14-letter-spacing);
+                    text-transform: uppercase;
+                }
+            }
+            .mox-results-box-color-scheme-colors-item-percentage {
+                span {
+                    color: var(--awb-color2);
+                    font-family: var(--awb-custom_typography_12-font-family);
+                    font-size: var(--awb-custom_typography_12-font-size);
+                    font-weight: var(--awb-custom_typography_12-font-weight);
+                    font-style: var(--awb-custom_typography_12-font-style);
+                    line-height: var(--awb-custom_typography_12-line-height);
+                    letter-spacing: var(--awb-custom_typography_12-letter-spacing);
+                    text-transform: var(--awb-custom_typography_12-text-transform);
+                }
+            }
+        }
+    }
+
+    .mox-results-box-font-families {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--awb-custom_color_5);
+        @include mq_md {
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+        .mox-results-box-font-families-header {
+            margin-bottom: 32px;
+            @include mq_md {
+                margin-bottom: 40px;
+            }
+            h2 {
+                margin-bottom: 0;
+                font-family: var(--awb-typography4-font-family);
+                font-size: var(--awb-typography4-font-size);
+                font-weight: var(--awb-typography4-font-weight);
+                font-style: var(--awb-typography4-font-style);
+                line-height: var(--awb-typography4-line-height);
+                letter-spacing: var(--awb-typography4-letter-spacing);
+                text-transform: var(--awb-typography4-text-transform);
+                @include mq_md {
+                    font-family: var(--awb-custom_typography_2-font-family);
+                    font-size: var(--awb-custom_typography_2-font-size);
+                    font-weight: var(--awb-custom_typography_2-font-weight);
+                    font-style: var(--awb-custom_typography_2-font-style);
+                    line-height: var(--awb-custom_typography_2-line-height);
+                    letter-spacing: var(--awb-custom_typography_2-letter-spacing);
+                    text-transform: var(--awb-custom_typography_2-text-transform);
+                }
+            }
+        }
+        .mox-results-box-font-families-content {
+
+        }
+        .mox-results-box-font-families-list {
+            .mox-font-list {
+                list-style: none; 
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+            .mox-font-item {
+                padding: 10px 0;
+                &:not(:last-child) {
+                    border-bottom: 1px solid var(--awb-color4);
+                }
+                .mox-font-name {
+                    color: var(--awb-color2);
+                    font-family: var(--awb-custom_typography_6-font-family);
+                    font-size: var(--awb-custom_typography_6-font-size);
+                    font-weight: var(--awb-custom_typography_6-font-weight);
+                    font-style: var(--awb-custom_typography_6-font-style);
+                    line-height: var(--awb-custom_typography_6-line-height);
+                    letter-spacing: var(--awb-custom_typography_6-letter-spacing);
+                    text-transform: var(--awb-custom_typography_6-text-transform);
+                }
+            }
+        }
+    }
+
+    .mox-results-box-generate-stand {
+        .mox-results-box-generate-stand-header {
+            text-align: center;
+            margin-bottom: 32px;
+            @include mq_md {
+                margin-bottom: 48px;
+            }
+            h2 {
+                margin-bottom: 20px;
+                font-family: var(--awb-typography4-font-family);
+                font-size: var(--awb-typography4-font-size);
+                font-weight: var(--awb-typography4-font-weight);
+                font-style: var(--awb-typography4-font-style);
+                line-height: var(--awb-typography4-line-height);
+                letter-spacing: var(--awb-typography4-letter-spacing);
+                text-transform: var(--awb-typography4-text-transform);
+                @include mq_md {
+                    font-family: var(--awb-custom_typography_2-font-family);
+                    font-size: var(--awb-custom_typography_2-font-size);
+                    font-weight: var(--awb-custom_typography_2-font-weight);
+                    font-style: var(--awb-custom_typography_2-font-style);
+                    line-height: var(--awb-custom_typography_2-line-height);
+                    letter-spacing: var(--awb-custom_typography_2-letter-spacing);
+                    text-transform: var(--awb-custom_typography_2-text-transform);
+                }
+            }
+            &.hidden {
+                display: none;
+            }
+        }
+        .mox-results-box-generate-stand-result {
+            img {
+                margin-top: 32px;
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+            }
+        }
+
+    }
+
+
+    
+
+    .mox-stand-configurator-element {
+        .mox-stand-configurator-element-header {
+            max-width: 592px;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 80px;
+            h2 {
+                font-family: var(--h3_typography-font-family);
+                font-size: var(--h3_typography-font-size);
+                font-weight: var(--h3_typography-font-weight);
+                line-height: var(--h3_typography-line-height);
+                letter-spacing: var(--h3_typography-letter-spacing);
+                text-transform: var(--h3_typography-text-transform);
+                font-style: var(--h3_typography-font-style, normal);
+            }
+        }
+        .mox-stand-configurator-element-content {
+
+        }
+    }
+
+    .mox-ai-loading-message {
+        text-align: center;
+        color: var(--awb-color2);
+        font-family: var(--awb-custom_typography_6-font-family);
+        font-size: var(--awb-custom_typography_6-font-size);
+        font-weight: var(--awb-custom_typography_6-font-weight);
+        font-style: var(--awb-custom_typography_6-font-style);
+        line-height: var(--awb-custom_typography_6-line-height);
+        letter-spacing: var(--awb-custom_typography_6-letter-spacing);
+        text-transform: var(--awb-custom_typography_6-text-transform);
+    }    
+    
+    
+    .mox-ai-loading-message + .mox-ai-stand-introduction {
+        margin-top: 45px;
+    }
+    
+    
+}

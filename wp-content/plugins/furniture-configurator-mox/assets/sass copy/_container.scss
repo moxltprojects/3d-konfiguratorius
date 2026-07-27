@@ -1,0 +1,127 @@
+
+.config-furniture-main-content {
+    position: relative;
+
+    .progress-container {
+        .progress-container-inner {
+            height: 100%;
+            @include displayFlex;
+            @include flexDirectionColumn;
+        }
+        .progress-content {
+            padding: 30px 25px 0;
+            flex-grow: 1;
+            @include displayFlex;
+            @include flexDirectionColumn;
+
+            .progress-content-inner {
+                & > div {
+                    display: none;
+                }
+            }
+        }
+    }
+    &[data-progress="1"] {
+        .progress-container {
+            .progress-content {
+                .progress-content-inner {
+                    & > div:nth-child(1) {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .prev-step {
+                display: none;
+            }
+        }
+    }
+    &[data-progress="2"] {
+        .progress-container {
+            .progress-content {
+                .progress-content-inner {
+                    & > div:nth-child(2) {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .canvas-html-image {
+            position: relative;
+            .cta-el {
+                z-index: 2;
+                cursor: pointer;
+                pointer-events: all;
+
+                &:hover {
+                    background-color: rgba(0,0,0,0.15); 
+                }
+            }
+        }
+    }
+    &[data-progress="3"] {
+        .progress-container {
+            .progress-content {
+                padding-bottom: 0;
+                .progress-content-inner {
+                    & > div:nth-child(3) {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .next-step {
+                display: none;
+            }
+        }
+
+        .display-container {
+            .display-container-inner {
+                .top-bar {
+                    margin: 30px 0 0;
+                }
+            }
+        }
+
+        .info-container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+}
+
+@media #{$desktopSm} {
+    .config-furniture-main-content {
+        &:not([data-progress="3"]) {
+            @include displayFlex;
+            @include alignItems(stretch);
+
+            .progress-container,
+            .display-container {
+                width: 50%;
+            }
+
+            .progress-content {
+                padding: 30px 50px 50px;
+            }
+        }
+    }
+}
+
+/******** actions container *********/
+
+.actions-container {
+    margin: auto 0 0;
+    padding: 70px 0 0;
+    @include displayFlex;
+
+    .next-step {
+        margin-left: auto;
+    }
+}

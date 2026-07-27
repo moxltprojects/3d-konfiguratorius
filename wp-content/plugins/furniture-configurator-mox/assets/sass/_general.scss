@@ -1,0 +1,34 @@
+* {
+    color: $black;
+}
+
+@include headings {
+    color: $black;
+}
+
+h1 {
+    @include fontH1;
+}
+
+h2 {
+    @include fontH2;
+}
+
+h3 {
+    @include fontH3;
+    margin: 0 0 12px;
+}
+
+h4 {
+    @include fontH4;
+    margin: 0;
+}
+
+h5 {
+    @include fontH5;
+}
+
+p {
+    @include bodyFont18px;
+    color: $black;
+}

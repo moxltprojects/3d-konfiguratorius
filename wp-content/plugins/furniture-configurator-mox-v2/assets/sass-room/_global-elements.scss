@@ -1,0 +1,367 @@
+
+/********** popup **********/
+
+.fusion-tb-header,
+.fusion-tb-footer {
+    &.overflow {
+        .fusion-fullwidth {
+            z-index: 0 !important;
+        }
+    }
+}
+
+#inject-popup-container {
+    .room-config-summary-item-popup-container {
+        position: fixed;
+        z-index: 99999999999;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.2);
+        visibility: hidden;
+        opacity: 0;
+        @include transition;
+
+        .room-config-summary-item-popup-container-inner {
+            @include displayFlex;
+            @include justifyContent(center);
+            height: 100%;
+
+            .room-config-summary-item-popup {
+                width: 100%;
+                max-width: calc(1312px - 32.703px * 2);
+                height: 100%;
+                position: relative;
+
+                .close-btn-container {
+                    position: absolute;
+                    right: 10px;
+                    top: 10px;
+
+                    .close-btn {
+                        padding: 14px !important;
+                        background-color: $white;
+                        border: none !important;
+                        background-color: transparent !important;
+                        cursor: pointer;
+
+                        svg {
+                            width: 24px;
+                            height: 24px;
+                        }
+                    }
+                }
+
+                .close-btn-bottom-container {
+                    text-align: center;
+                    margin: 30px 0 0;
+                }
+
+                .room-config-summary-item-popup-inner {
+                    overflow: hidden;
+                    background-color: $white;
+                    border: 1px solid hsla(0,0%,100%,.2);
+                    border-radius: 8px;
+                    height: 100%;
+                    max-height: 100%;
+                    padding: 32px 10px 92px 20px;
+                    margin-top: 5vh;
+                    @include transition;
+
+                    .room-config-summary-item-popup-inner-content-wrapper {
+                        max-height: calc(100% - 15px);
+                        max-height: -webkit-calc(100% - 15px);
+                        margin: 15px 0 0;
+                        padding: 32px 10px 0 0;
+                        overflow: auto;
+
+                        .room-config-summary-item-popup-inner-content-wrapper-inner {
+                            @include displayFlex;
+                            @include flexDirectionColumn; 
+                            overflow: hidden;
+                        }
+
+                        .desc {
+                            text-align: center;
+                            max-width: 432px;
+                            margin: 0 auto 50px;
+
+                            &::before {
+                                content: '';
+                                background-image: url(../images/popup-edit-icon.svg);
+                                background-position: center;
+                                background-size: contain;
+                                background-repeat: no-repeat;
+                                display: block;
+                                width: 50px;
+                                height: 50px;
+                                margin: 0 auto 20px;
+                            }
+                        }
+
+                        fieldset {
+                            .option-item {
+
+                                &:not(:last-child) {
+                                    margin: 0 0 30px;
+                                }
+
+                                label {
+                                    .text-block {
+                                        @include displayFlex;
+                                        position: relative;
+
+                                        .pseudo {
+                                            border-radius: 50%;
+                                        }
+
+                                        .pseudo-box {
+                                            flex-shrink: 0;
+                                            margin: 6px 17px 0 0;
+                                            width: 15px;
+                                            height: 15px;
+                                            border: 1px solid $lightgrey5;
+                                        }
+
+                                        .pseudo-checked {
+                                            position: absolute;
+                                            left: 2.8px;
+                                            top: 9px;
+                                            width: 9px;
+                                            height: 9px;
+                                            background-color: $black3;
+                                            visibility: hidden;
+                                        }
+
+                                        input {
+                                            position: absolute;
+                                            opacity: 0;
+
+                                            &:checked + .pseudo-checked {
+                                                visibility: visible;
+                                                
+                                            }
+                                        }
+                                    }
+
+                                    .image-block {
+                                        margin: 32px 0 0; 
+                                        img{
+                                            width: auto;
+                                            height: auto;
+                                        }
+                                    }
+                                }
+
+                                &:nth-child(even) {
+
+                                    label {
+                                        .text-block {
+
+                                            .pseudo-checked {
+                                                left: 3px;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            .subsubitems-container {
+
+                                &:not(:first-child) {
+                                    margin: 30px 0 0;
+                                }
+
+                                h3 {
+                                    @include bodyFont19px;  
+                                    margin: 0 0 25px; 
+                                }
+
+                                .option-item {
+                                    img {
+                                        max-width: 390px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &.loaded {
+            visibility: visible;
+            opacity: 1;
+
+            .room-config-summary-item-popup-container-inner {
+
+                .room-config-summary-item-popup {
+                    .room-config-summary-item-popup-inner {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$mobile} {
+    #inject-popup-container {
+        .room-config-summary-item-popup-container {
+
+            .room-config-summary-item-popup-container-inner {
+                .room-config-summary-item-popup {
+                    margin: 84px 0;
+                    height: calc(100% - 84px * 2);
+                    height: -webkit-calc(100% - 84px * 2);
+
+                    .room-config-summary-item-popup-inner {
+                        border-radius: 16px;
+                        padding: 32px 22px 92px 32px;
+
+                        .room-config-summary-item-popup-inner-content-wrapper {
+                            padding: 0 10px 0 0;
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+@media #{$tablet} {
+    #inject-popup-container {
+        .room-config-summary-item-popup-container {
+
+            .room-config-summary-item-popup-container-inner {
+                .room-config-summary-item-popup {
+
+                    .close-btn-bottom-container {
+                        margin: 50px 0 0;
+                    }
+
+                    .room-config-summary-item-popup-inner {
+                        padding: 32px 10px 162px 20px;
+                        .room-config-summary-item-popup-inner-content-wrapper {
+                            .desc {
+                                margin: 0 auto 90px;
+
+                                &::before {
+                                    width: 80px;
+                                    height: 80px;
+                                    margin: 0 auto 30px;
+                                }
+                            }
+
+                            fieldset {
+                                @include displayFlex;
+                                @include flexWrap;
+                                width: calc(100% + 40px);
+                                width: -webkit-calc(100% + 40px);
+                                margin: -20px 0 0 -20px;
+
+                                .option-item {
+                                    width: 50%;
+                                    padding: 20px;
+                                    &:not(:last-child) {
+                                        margin: 0;
+                                    }
+                                }
+
+                                .subsubitems-container {
+                                    padding: 20px 20px;
+
+                                    &:not(:first-child) {
+                                        margin: 50px 0 0;
+                                    }
+                                }
+                            }
+                            // .room-config-summary-item-popup-inner-content-wrapper-inner {
+                            //     & > fieldset {
+                            //         @include displayFlex;
+                            //         @include flexWrap;
+                            //         width: calc(100% + 40px);
+                            //         width: -webkit-calc(100% + 40px);
+                            //         margin: -30px 0 0 -20px;
+
+                            //         .option-item {
+                            //             padding: 30px 20px;
+                            //             &:not(:last-child) {
+                            //                 margin: 0;
+                            //             }
+                            //         }
+
+                            //         .subsubitems-container {
+                            //             padding: 30px 20px;
+                            //         }
+                            //     }
+                            // }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media #{$desktop} {
+    #inject-popup-container {
+        .room-config-summary-item-popup-container {
+
+            .room-config-summary-item-popup-container-inner {
+                .room-config-summary-item-popup {
+
+                    .close-btn-bottom-container {
+                        margin: 80px 0 0;
+                    }
+
+                    .room-config-summary-item-popup-inner {
+                        padding: 32px 10px 192px 30px;
+                        .room-config-summary-item-popup-inner-content-wrapper {
+
+                            fieldset {
+                                @include displayFlex;
+                                width: calc(100% + 76px);
+                                width: -webkit-calc(100% + 76px);
+                                margin: -32px 0 0 -38px;
+
+                                .option-item {
+                                    padding: 32px 38px;
+                                }
+                                .subsubitems-container {
+                                    padding: 32px 38px;
+
+                                    &:not(:first-child) {
+                                        margin: 110px 0 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+@media #{$wide} {
+    #inject-popup-container {
+        .room-config-summary-item-popup-container {
+
+            .room-config-summary-item-popup-container-inner {
+                .room-config-summary-item-popup {
+                    .room-config-summary-item-popup-inner {
+                        padding: 32px 10px 192px 55px;
+                    }
+                }
+            }
+        }
+    }
+}

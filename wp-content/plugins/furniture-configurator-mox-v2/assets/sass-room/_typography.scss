@@ -1,0 +1,291 @@
+@font-face {
+    font-family: Rajdhani;
+    src:url('../fonts/Rajdhani/Rajdhani-Bold.woff') format("woff");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Rajdhani;
+    src:url('../fonts/Rajdhani/Rajdhani-SemiBold.woff') format("woff");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Rajdhani;
+    src:url('../fonts/Rajdhani/Rajdhani-Medium.woff') format("woff");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Rajdhani;
+    src:url('../fonts/Rajdhani/Rajdhani-Regular.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Rajdhani;
+    src:url('../fonts/Rajdhani/Rajdhani-Light.woff') format("woff");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Actor;
+    src:url('../fonts/Actor-Regular.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@mixin actorFontFamily {
+    font-family: Actor;
+}
+
+@mixin bodyMRegular {
+    font-family: Actor;
+}
+
+@mixin bodyFont18px {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;;
+}
+
+@mixin bodyFont19px {
+    font-size: 19px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;;
+}
+
+@mixin bodyFont16px {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont16px24line {
+    font-size: 16px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont14px {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont12px {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont10px {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+
+@mixin fontH1 {
+    font-size: 27px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+@mixin fontH2 {
+    font-size: 27px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH22px {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH22pxLibreFranklin {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+@mixin fontH3 {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH4 {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 500!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+@mixin fontH5 {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin h2 {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: 700;
+}
+
+@mixin h28px {
+    font-size: 28px;
+    line-height: 37px;
+    font-weight: 400 !important;
+}
+
+
+@mixin body11px700 {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+@mixin body11px400 {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+@mixin body13px400 {
+    font-size: 13.3333px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+
+@mixin body13px700 {
+    font-size: 13.3333px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+@mixin body14px700 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+@mixin body14px700Uppercase {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+@mixin body14px400 {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+@mixin body14pxline20px400 {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+@mixin body20px400 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 400;
+}
+
+@mixin body24px400 {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: 400;
+}
+
+@mixin body16px400 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+@mixin body16px700Upper {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+
+@mixin body16px600 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+@mixin body17px700 {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+@mixin body18px400 {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 21px;
+}
+
+
+@mixin body18px500 {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 21px;
+}
+
+@mixin body18px700 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 21px;
+}
+
+
+@mixin body18px700Upper {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 21px;
+    text-transform: uppercase;
+}
+
+.dimension-container {
+    h3 {
+        // @include Inter40015px;
+        color: $blackTheme6 !important;
+        margin: 0 0 10px;
+    }
+
+    .unit {
+        // @include Inter40013px;
+    }
+}

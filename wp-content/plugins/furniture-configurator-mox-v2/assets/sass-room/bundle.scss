@@ -1,0 +1,19 @@
+@import 'var';
+@import 'colors';
+@import 'mixins';
+@import 'typography';
+@import 'cart';
+@import 'global-elements';
+
+.room-config-shortcode,
+.room-config-preview-shortcode,
+.config-term-settings-furniture-shortcode .display-type-container {
+    @import 'buttons';
+    @import 'container';
+    @import 'elements';
+    @import 'preview';
+    @import 'summary';
+    @import 'admin';
+}
+
+

@@ -1,0 +1,110 @@
+$black: #000; 
+$white: #fff;
+$blackTheme1:  var(--awb-color3);
+$lightgrey1:  var(--awb-color4);
+$blackTheme2:  var(--awb-color5);
+$blackTheme3:  var(--awb-color6);
+$lightgrey2:  var(--awb-color7);
+$blackTheme4:  var(--awb-color8);
+$blackTheme5:  var(--awb-custom_color_1);
+$blackTheme6:  var(--awb-custom_color_2);
+$lightgrey3:  var(--awb-custom_color_3);
+$greyTransparent: #959595;
+
+$main_container_width: 1520px;
+$main_container_width_padding: 1580px;
+
+$mobileSmall: "(min-width: 431px)";
+$mobileSmallMax: "(max-width: 430px)";
+$mobileSmMin: "(min-width: 531px)";
+$mobileSmMax: "(max-width: 530px)";
+$mobile: "(min-width: 768px)";
+$mobileMax: "(max-width: 767px)";
+$tablet: "(min-width: 991px)";
+$tabletMax: "(max-width: 992px)";
+$desktopSm: "(min-width: 1024px)";
+$desktopSmMax: "(max-width: 1023px)";
+$desktop: "(min-width: 1201px)";
+$desktopMax: "(max-width: 1200px)";
+$wideMax: "(max-width: 1214px)";
+$wide: "(min-width: 1215px)";
+$large: "(min-width: 1408px)";
+$largeMax: "(max-width: 1407px)";
+$maxWrapWidth: "(min-width: 1520px)";
+$maxWrapWidth_max: "(max-width: 1519px)";
+
+
+$H1__font_family: var(--awb-typography1-font-family);
+$H1__font_size: var(--awb-typography1-font-size);
+$H1__font_line: var(--awb-typography1-line-height);
+$H1__font_weight: var(--awb-typography1-font-weight);
+
+$H2__font_family: var(--awb-typography2-font-family);
+$H2__font_size: var(--awb-typography2-font-size);
+$H2__font_line: var(--awb-typography2-line-height);
+$H2__font_weight: var(--awb-typography2-font-weight);
+
+$H3__font_family: var(--awb-typography3-font-family);
+$H3__font_size: var(--awb-typography3-font-size);
+$H3__font_line: var(--awb-typography3-line-height);
+$H3__font_weight: var(--awb-typography3-font-weight);
+
+$SUBTITLE__font_family: var(--awb-typography4-font-family);
+$SUBTITLE__font_size: var(--awb-typography4-font-size);
+$SUBTITLE__font_line: var(--awb-typography4-line-height);
+$SUBTITLE__font_weight: var(--awb-typography4-font-weight);
+
+$BUTTON__font_family: var(--awb-typography5-font-family);
+$BUTTON__font_size: var(--awb-typography5-font-size);
+$BUTTON__font_line: var(--awb-typography5-line-height);
+$BUTTON__font_weight: var(--awb-typography5-font-weight);
+
+$BUTTON__font_family: var(--awb-typography5-font-family);
+$BUTTON__font_size: var(--awb-typography5-font-size);
+$BUTTON__font_line: var(--awb-typography5-line-height);
+$BUTTON__font_weight: var(--awb-typography5-font-weight);
+
+$FOOTER_H__font_family: var(--awb-custom_typography_1-font-family);
+$FOOTER_H__font_size: var(--awb-custom_typography_1-font-size);
+$FOOTER_H__font_line: var(--awb-custom_typography_1-line-height);
+$FOOTER_H__font_weight: var(--awb-custom_typography_1-font-weight);
+
+$EVENTS_CARD_H__font_family: var(--awb-custom_typography_2-font-family);
+$EVENTS_CARD_H__font_size: var(--awb-custom_typography_2-font-size);
+$EVENTS_CARD_H__font_line: var(--awb-custom_typography_2-line-height);
+$EVENTS_CARD_H__font_weight: var(--awb-custom_typography_2-font-weight);
+
+$EVENTS_DATE__font_family: var(--awb-custom_typography_3-font-family);
+$EVENTS_DATE__font_size: var(--awb-custom_typography_3-font-size);
+$EVENTS_DATE__font_line: var(--awb-custom_typography_3-line-height);
+$EVENTS_DATE__font_weight: var(--awb-custom_typography_3-font-weight);
+
+$DIRECTORY_H__font_family: var(--awb-custom_typography_4-font-family);
+$DIRECTORY_H__font_size: var(--awb-custom_typography_4-font-size);
+$DIRECTORY_H__font_line: var(--awb-custom_typography_4-line-height);
+$DIRECTORY_H__font_weight: var(--awb-custom_typography_4-font-weight);
+
+$BODY__font_family: var(--awb-custom_typography_7-font-family);
+$BODY__font_size: var(--awb-custom_typography_7-font-size);
+$BODY__font_line: var(--awb-custom_typography_7-line-height);
+$BODY__font_weight: var(--awb-custom_typography_7-font-weight);
+
+$BODY_TESTIMONIAL__font_family: var(--awb-custom_typography_9-font-family);
+$BODY_TESTIMONIAL__font_size: var(--awb-custom_typography_9-font-size);
+$BODY_TESTIMONIAL__font_line: var(--awb-custom_typography_9-line-height);
+$BODY_TESTIMONIAL__font_weight: var(--awb-custom_typography_9-font-weight);
+
+$BODY_FOOTER__font_family: var(--awb-custom_typography_10-font-family);
+$BODY_FOOTER__font_size: var(--awb-custom_typography_10-font-size);
+$BODY_FOOTER__font_line: var(--awb-custom_typography_10-line-height);
+$BODY_FOOTER__font_weight: var(--awb-custom_typography_10-font-weight);
+
+$BODY_FOOTER_SM__font_family: var(--awb-custom_typography_11-font-family);
+$BODY_FOOTER_SM__font_size: var(--awb-custom_typography_11-font-size);
+$BODY_FOOTER_SM__font_line: var(--awb-custom_typography_11-line-height);
+$BODY_FOOTER_SM__font_weight: var(--awb-custom_typography_11-font-weight);
+
+$BODY_DIRECTORY_CARD__font_family: var(--awb-custom_typography_12-font-family);
+$BODY_DIRECTORY_CARD__font_size: var(--awb-custom_typography_12-font-size);
+$BODY_DIRECTORY_CARD__font_line: var(--awb-custom_typography_12-line-height);
+$BODY_DIRECTORY_CARD__font_weight: var(--awb-custom_typography_12-font-weight);

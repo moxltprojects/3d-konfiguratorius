@@ -1,0 +1,23 @@
+
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/var';
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/mixins';
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/typography';
+
+.config-furniture-shortcode {
+    @import 'config_vars';
+    @import '_config_typography';
+    @import 'general';
+    @import 'container';
+    @import 'elements';
+    @import 'buttons';
+
+    background-color: $white;
+
+    &.disabled {
+        button, a, input {
+            pointer-events: none !important;
+        }
+    } 
+
+}
+

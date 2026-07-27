@@ -1,0 +1,1721 @@
+/*** Horizontal wrap **/
+@font-face {
+  font-family: Graphie Bold;
+  src: url("../fonts/Graphie-Bold.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Graphie SemiBold;
+  src: url("../fonts/Graphie-SemiBold.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Graphie Regular;
+  src: url("../fonts/Graphie-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Graphie Book;
+  src: url("../fonts/Graphie-Book.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@media (max-width: 767px) {
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography1-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography1-"] {
+    font-family: var(--awb-typography2-font-family) !important;
+    font-size: var(--awb-typography2-font-size) !important;
+    line-height: var(--awb-typography2-line-height) !important;
+    font-weight: var(--awb-typography2-font-weight) !important;
+    text-transform: var(--awb-typography2-text-transform) !important;
+    letter-spacing: var(--awb-typography2-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography3-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography3-"] {
+    font-family: var(--awb-typography4-font-family) !important;
+    font-size: var(--awb-typography4-font-size) !important;
+    line-height: var(--awb-typography4-line-height) !important;
+    font-weight: var(--awb-typography4-font-weight) !important;
+    text-transform: var(--awb-typography4-text-transform) !important;
+    letter-spacing: var(--awb-typography4-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography5-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography5-"] {
+    font-family: var(--awb-custom_typography_1-font-family) !important;
+    font-size: var(--awb-custom_typography_1-font-size) !important;
+    line-height: var(--awb-custom_typography_1-line-height) !important;
+    font-weight: var(--awb-custom_typography_1-font-weight) !important;
+    text-transform: var(--awb-custom_typography_1-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_1-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_16-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_16-"] {
+    font-family: var(--awb-custom_typography_17-font-family) !important;
+    font-size: var(--awb-custom_typography_17-font-size) !important;
+    line-height: var(--awb-custom_typography_17-line-height) !important;
+    font-weight: var(--awb-custom_typography_17-font-weight) !important;
+    text-transform: var(--awb-custom_typography_17-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_18-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_18-"] {
+    font-family: var(--awb-custom_typography_19-font-family) !important;
+    font-size: var(--awb-custom_typography_19-font-size) !important;
+    line-height: var(--awb-custom_typography_19-line-height) !important;
+    font-weight: var(--awb-custom_typography_19-font-weight) !important;
+    text-transform: var(--awb-custom_typography_19-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_19-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_2-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_2-"] {
+    font-family: var(--awb-custom_typography_3-font-family) !important;
+    font-size: var(--awb-custom_typography_3-font-size) !important;
+    line-height: var(--awb-custom_typography_3-line-height) !important;
+    font-weight: var(--awb-custom_typography_3-font-weight) !important;
+    text-transform: var(--awb-custom_typography_3-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_3-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_4-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_4-"] {
+    font-family: var(--awb-custom_typography_5-font-family) !important;
+    font-size: var(--awb-custom_typography_5-font-size) !important;
+    line-height: var(--awb-custom_typography_5-line-height) !important;
+    font-weight: var(--awb-custom_typography_5-font-weight) !important;
+    text-transform: var(--awb-custom_typography_5-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_5-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_6-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_6-"] {
+    font-family: var(--awb-custom_typography_7-font-family) !important;
+    font-size: var(--awb-custom_typography_7-font-size) !important;
+    line-height: var(--awb-custom_typography_7-line-height) !important;
+    font-weight: var(--awb-custom_typography_7-font-weight) !important;
+    text-transform: var(--awb-custom_typography_7-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_7-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_8-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_8-"] {
+    font-family: var(--awb-custom_typography_9-font-family) !important;
+    font-size: var(--awb-custom_typography_9-font-size) !important;
+    line-height: var(--awb-custom_typography_9-line-height) !important;
+    font-weight: var(--awb-custom_typography_9-font-weight) !important;
+    text-transform: var(--awb-custom_typography_9-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_10-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_10-"] {
+    font-family: var(--awb-custom_typography_11-font-family) !important;
+    font-size: var(--awb-custom_typography_11-font-size) !important;
+    line-height: var(--awb-custom_typography_11-line-height) !important;
+    font-weight: var(--awb-custom_typography_11-font-weight) !important;
+    text-transform: var(--awb-custom_typography_11-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_11-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_12-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_12-"] {
+    font-family: var(--awb-custom_typography_13-font-family) !important;
+    font-size: var(--awb-custom_typography_13-font-size) !important;
+    line-height: var(--awb-custom_typography_13-line-height) !important;
+    font-weight: var(--awb-custom_typography_13-font-weight) !important;
+    text-transform: var(--awb-custom_typography_13-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_13-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_14-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_14-"] {
+    font-family: var(--awb-custom_typography_15-font-family) !important;
+    font-size: var(--awb-custom_typography_15-font-size) !important;
+    line-height: var(--awb-custom_typography_15-line-height) !important;
+    font-weight: var(--awb-custom_typography_15-font-weight) !important;
+    text-transform: var(--awb-custom_typography_15-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_15-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_20-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_20-"] {
+    font-family: var(--awb-custom_typography_21-font-family) !important;
+    font-size: var(--awb-custom_typography_21-font-size) !important;
+    line-height: var(--awb-custom_typography_21-line-height) !important;
+    font-weight: var(--awb-custom_typography_21-font-weight) !important;
+    text-transform: var(--awb-custom_typography_21-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_21-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_22-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_22-"] {
+    font-family: var(--awb-custom_typography_23-font-family) !important;
+    font-size: var(--awb-custom_typography_23-font-size) !important;
+    line-height: var(--awb-custom_typography_23-line-height) !important;
+    font-weight: var(--awb-custom_typography_23-font-weight) !important;
+    text-transform: var(--awb-custom_typography_23-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_23-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_24-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_24-"] {
+    font-family: var(--awb-custom_typography_25-font-family) !important;
+    font-size: var(--awb-custom_typography_25-font-size) !important;
+    line-height: var(--awb-custom_typography_25-line-height) !important;
+    font-weight: var(--awb-custom_typography_25-font-weight) !important;
+    text-transform: var(--awb-custom_typography_25-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_25-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_26-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_26-"] {
+    font-family: var(--awb-custom_typography_27-font-family) !important;
+    font-size: var(--awb-custom_typography_27-font-size) !important;
+    line-height: var(--awb-custom_typography_27-line-height) !important;
+    font-weight: var(--awb-custom_typography_27-font-weight) !important;
+    text-transform: var(--awb-custom_typography_27-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_27-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_28-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_28-"] {
+    font-family: var(--awb-custom_typography_29-font-family) !important;
+    font-size: var(--awb-custom_typography_29-font-size) !important;
+    line-height: var(--awb-custom_typography_29-line-height) !important;
+    font-weight: var(--awb-custom_typography_29-font-weight) !important;
+    text-transform: var(--awb-custom_typography_29-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_29-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_30-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_30-"] {
+    font-family: var(--awb-custom_typography_31-font-family) !important;
+    font-size: var(--awb-custom_typography_31-font-size) !important;
+    line-height: var(--awb-custom_typography_31-line-height) !important;
+    font-weight: var(--awb-custom_typography_31-font-weight) !important;
+    text-transform: var(--awb-custom_typography_31-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_31-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_32-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_32-"] {
+    font-family: var(--awb-custom_typography_33-font-family) !important;
+    font-size: var(--awb-custom_typography_33-font-size) !important;
+    line-height: var(--awb-custom_typography_33-line-height) !important;
+    font-weight: var(--awb-custom_typography_33-font-weight) !important;
+    text-transform: var(--awb-custom_typography_33-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_33-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_34-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_34-"] {
+    font-family: var(--awb-custom_typography_35-font-family) !important;
+    font-size: var(--awb-custom_typography_35-font-size) !important;
+    line-height: var(--awb-custom_typography_35-line-height) !important;
+    font-weight: var(--awb-custom_typography_35-font-weight) !important;
+    text-transform: var(--awb-custom_typography_35-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_35-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .display-type-container > div,
+.config-furniture-product-general-settings-shortcode .display-type-container > div {
+  margin: 0 0 30px;
+}
+@media (min-width: 991px) {
+  .config-term-settings-furniture-shortcode .display-type-container > div,
+  .config-furniture-product-general-settings-shortcode .display-type-container > div {
+    margin: 0 0 50px;
+  }
+}
+@media (min-width: 1201px) {
+  .config-term-settings-furniture-shortcode .display-type-container > div,
+  .config-furniture-product-general-settings-shortcode .display-type-container > div {
+    margin: 0 0 70px;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /********** theme button ************/
+}
+.config-term-settings-furniture-shortcode .furniture-config-btn,
+.config-furniture-product-general-settings-shortcode .furniture-config-btn {
+  background-color: #000;
+  padding: 14.5px 101.5px;
+  padding: 14.5px 30px;
+  width: 297px;
+  max-width: 100%;
+  border-radius: 10px;
+  color: #fff;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-term-settings-furniture-shortcode .furniture-config-btn.arrow-down::after,
+.config-furniture-product-general-settings-shortcode .furniture-config-btn.arrow-down::after {
+  content: "";
+  background-image: url(../images/arrow-down.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 12px;
+  height: 6px;
+  display: inline-block;
+  margin-left: 15px;
+}
+.config-term-settings-furniture-shortcode button.arrow-right-short::after,
+.config-furniture-product-general-settings-shortcode button.arrow-right-short::after {
+  content: "";
+  background-image: url(../images/arrow-right-short.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin: -3px 0 0 15px;
+}
+.config-term-settings-furniture-shortcode #add-to-cart-message:not(.empty),
+.config-furniture-product-general-settings-shortcode #add-to-cart-message:not(.empty) {
+  margin: 0 0 10px;
+}
+.config-term-settings-furniture-shortcode button .loader,
+.config-term-settings-furniture-shortcode .price-container .loader,
+.config-furniture-product-general-settings-shortcode button .loader,
+.config-furniture-product-general-settings-shortcode .price-container .loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.config-term-settings-furniture-shortcode .price-data .loader,
+.config-furniture-product-general-settings-shortcode .price-data .loader {
+  border: 3px solid #000;
+  border-bottom-color: transparent;
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /*******  form selectors********/
+}
+.config-term-settings-furniture-shortcode .config-label,
+.config-furniture-product-general-settings-shortcode .config-label {
+  padding: 6px 0;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  font-family: var(--awb-custom_typography_8-font-family) !important;
+  font-size: var(--awb-custom_typography_8-font-size) !important;
+  line-height: var(--awb-custom_typography_8-line-height) !important;
+  font-weight: var(--awb-custom_typography_8-font-weight) !important;
+  text-transform: var(--awb-custom_typography_8-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .config-label,
+  .config-furniture-product-general-settings-shortcode .config-label {
+    font-family: var(--awb-custom_typography_9-font-family) !important;
+    font-size: var(--awb-custom_typography_9-font-size) !important;
+    line-height: var(--awb-custom_typography_9-line-height) !important;
+    font-weight: var(--awb-custom_typography_9-font-weight) !important;
+    text-transform: var(--awb-custom_typography_9-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .config-label,
+.config-furniture-product-general-settings-shortcode .config-label {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio],
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox],
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio],
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox] {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--awb-color5);
+  margin: 0 12px 0 0;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio]:checked + .pseudo-input,
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox]:checked + .pseudo-input,
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio]:checked + .pseudo-input,
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox]:checked + .pseudo-input {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--awb-color5);
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio]:checked + .pseudo-input::after,
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox]:checked + .pseudo-input::after,
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio]:checked + .pseudo-input::after,
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox]:checked + .pseudo-input::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* W3C */
+  -webkit-transform: translate(-50%, -50%); /* Safari & Chrome */
+  -moz-transform: translate(-50%, -50%); /* Firefox */
+  -ms-transform: translate(-50%, -50%); /* Internet Explorer */
+  -o-transform: translate(-50%, -50%); /* Opera */
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio],
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio] {
+  border-radius: 50%;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio]:checked + .pseudo-input,
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio]:checked + .pseudo-input {
+  border-radius: 50%;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=radio]:checked + .pseudo-input::after,
+.config-furniture-product-general-settings-shortcode .config-label input[type=radio]:checked + .pseudo-input::after {
+  width: 18.29px;
+  height: 18.29px;
+  border-radius: 50%;
+  background-color: var(--awb-color5);
+}
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox],
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox] {
+  border-radius: 4px;
+}
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox]:checked + .pseudo-input,
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox]:checked + .pseudo-input {
+  border-radius: 4px;
+  background-color: var(--awb-color5);
+}
+.config-term-settings-furniture-shortcode .config-label input[type=checkbox]:checked + .pseudo-input::after,
+.config-furniture-product-general-settings-shortcode .config-label input[type=checkbox]:checked + .pseudo-input::after {
+  background-image: url(../images/checkmark.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  width: 15.29px;
+  height: 15.29px;
+  background-color: var(--awb-color5);
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /**************** settings container ************/
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container {
+  z-index: 5;
+  height: auto;
+  padding: 20px;
+  background-color: #fff;
+  -moz-box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2) !important;
+  -webkit-box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2) !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading {
+  margin: 0 0 20px;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading button,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading button {
+  flex-shrink: 0;
+  height: 24px;
+  width: 17px;
+  background-color: transparent;
+  border: none;
+  padding: 0 !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading button span,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading button span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-mask: url("../images/arrow-right-short.svg");
+  mask: url("../images/arrow-right-short.svg");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background-color: #000;
+  background-size: contain;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading button[disabled],
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading button[disabled] {
+  opacity: 40%;
+  pointer-events: none;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading button:not([disabled]),
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading button:not([disabled]) {
+  cursor: pointer;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading button.prev span,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading button.prev span {
+  transform: rotate(180deg); /* W3C */
+  -webkit-transform: rotate(180deg); /* Safari & Chrome */
+  -moz-transform: rotate(180deg); /* Firefox */
+  -ms-transform: rotate(180deg); /* Internet Explorer */
+  -o-transform: rotate(180deg); /* Opera */
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading .list,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading .list {
+  flex-grow: 1;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading .list .heading,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading .list .heading {
+  height: 24px;
+  display: none;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  font-family: var(--awb-custom_typography_24-font-family) !important;
+  font-size: var(--awb-custom_typography_24-font-size) !important;
+  line-height: var(--awb-custom_typography_24-line-height) !important;
+  font-weight: var(--awb-custom_typography_24-font-weight) !important;
+  text-transform: var(--awb-custom_typography_24-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_24-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading .list .heading,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading .list .heading {
+    font-family: var(--awb-custom_typography_25-font-family) !important;
+    font-size: var(--awb-custom_typography_25-font-size) !important;
+    line-height: var(--awb-custom_typography_25-line-height) !important;
+    font-weight: var(--awb-custom_typography_25-font-weight) !important;
+    text-transform: var(--awb-custom_typography_25-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_25-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading .list .heading,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading .list .heading {
+  color: var(--awb-custom_color_2) !important;
+  margin: 0;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-configurator-heading .list .heading.active,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-configurator-heading .list .heading.active {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container:not(.active),
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container:not(.active) {
+  visibility: hidden;
+  z-index: -1;
+  position: absolute;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  margin: 0 0 20px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  width: 83.36px;
+  height: 36px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  color: var(--awb-custom_color_3);
+  font-family: var(--awb-custom_typography_26-font-family) !important;
+  font-size: var(--awb-custom_typography_26-font-size) !important;
+  line-height: var(--awb-custom_typography_26-line-height) !important;
+  font-weight: var(--awb-custom_typography_26-font-weight) !important;
+  text-transform: var(--awb-custom_typography_26-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_26-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button {
+    font-family: var(--awb-custom_typography_27-font-family) !important;
+    font-size: var(--awb-custom_typography_27-font-size) !important;
+    line-height: var(--awb-custom_typography_27-line-height) !important;
+    font-weight: var(--awb-custom_typography_27-font-weight) !important;
+    text-transform: var(--awb-custom_typography_27-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_27-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.hidden,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.hidden {
+  display: none !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active {
+  color: var(--awb-custom_color_2);
+  pointer-events: none;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active .text,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active .text {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active .text::after,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button.active .text::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  left: 0;
+  bottom: -8px;
+  background-color: var(--awb-custom_color_2);
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button:not(.active),
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-tabs button:not(.active) {
+  cursor: pointer;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-multiple-lists .texture-multiple-lists-container:not(.active),
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-multiple-lists .texture-multiple-lists-container:not(.active) {
+  visibility: hidden;
+  z-index: -1;
+  position: absolute;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading {
+  font-family: var(--awb-custom_typography_26-font-family) !important;
+  font-size: var(--awb-custom_typography_26-font-size) !important;
+  line-height: var(--awb-custom_typography_26-line-height) !important;
+  font-weight: var(--awb-custom_typography_26-font-weight) !important;
+  text-transform: var(--awb-custom_typography_26-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_26-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading {
+    font-family: var(--awb-custom_typography_27-font-family) !important;
+    font-size: var(--awb-custom_typography_27-font-size) !important;
+    line-height: var(--awb-custom_typography_27-line-height) !important;
+    font-weight: var(--awb-custom_typography_27-font-weight) !important;
+    text-transform: var(--awb-custom_typography_27-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_27-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .heading-container .heading {
+  color: var(--awb-custom_color_2) !important;
+  margin: 0 0 10px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list {
+  width: calc(100% + 3px);
+  width: -webkit-calc(100% + 3px);
+  margin: -1.5px 0 0 -1.5px;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+}
+@supports not (flex-wrap: wrap) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list > *, .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list > *,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list > *,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-list > * {
+    margin: 0 -1px !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block {
+  margin: 32px 0 0;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price {
+  font-family: var(--awb-custom_typography_28-font-family) !important;
+  font-size: var(--awb-custom_typography_28-font-size) !important;
+  line-height: var(--awb-custom_typography_24-line-height) !important;
+  font-weight: var(--awb-custom_typography_28-font-weight) !important;
+  text-transform: var(--awb-custom_typography_28-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_28-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price {
+    font-family: var(--awb-custom_typography_29-font-family) !important;
+    font-size: var(--awb-custom_typography_29-font-size) !important;
+    line-height: var(--awb-custom_typography_29-line-height) !important;
+    font-weight: var(--awb-custom_typography_29-font-weight) !important;
+    text-transform: var(--awb-custom_typography_29-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_29-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  margin: 0;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del {
+  font-family: var(--awb-custom_typography_28-font-family) !important;
+  font-size: var(--awb-custom_typography_28-font-size) !important;
+  line-height: var(--awb-custom_typography_24-line-height) !important;
+  font-weight: var(--awb-custom_typography_28-font-weight) !important;
+  text-transform: var(--awb-custom_typography_28-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_28-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del {
+    font-family: var(--awb-custom_typography_29-font-family) !important;
+    font-size: var(--awb-custom_typography_29-font-size) !important;
+    line-height: var(--awb-custom_typography_29-line-height) !important;
+    font-weight: var(--awb-custom_typography_29-font-weight) !important;
+    text-transform: var(--awb-custom_typography_29-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_29-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .texture-price-block .top-block .price del {
+  margin: 0 0 0 5px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item {
+  padding: 1.5px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item button,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item button {
+  background-color: transparent !important;
+  padding: 3px;
+  border-radius: 7px;
+  border: 3px solid transparent;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item button img,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item button img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  -o-object-fit: cover;
+  border-radius: 5px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item.active button,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-list-container .texture-list-container-inner .list-item.active button {
+  border-color: #000;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  margin: 20px 0 0;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn {
+  width: 200px;
+  font-family: var(--awb-custom_typography_30-font-family) !important;
+  font-size: var(--awb-custom_typography_30-font-size) !important;
+  line-height: var(--awb-custom_typography_30-line-height) !important;
+  font-weight: var(--awb-custom_typography_30-font-weight) !important;
+  text-transform: var(--awb-custom_typography_30-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_30-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn {
+    font-family: var(--awb-custom_typography_31-font-family) !important;
+    font-size: var(--awb-custom_typography_31-font-size) !important;
+    line-height: var(--awb-custom_typography_31-line-height) !important;
+    font-weight: var(--awb-custom_typography_31-font-weight) !important;
+    text-transform: var(--awb-custom_typography_31-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_31-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-btn {
+  margin: 0 10px 0 0;
+  padding: 10px;
+  height: 36px;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-cards,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-cards {
+  background-color: transparent;
+  border-radius: 6px;
+  width: 40px;
+  height: 36px;
+  border: 1px solid var(--awb-custom_color_2);
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-term-settings-furniture-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-cards::after,
+.config-furniture-product-general-settings-shortcode .settings-configurator-container .settings-main-content .texture-bottom-block .continue-config-cards::after {
+  content: "";
+  display: block;
+  -webkit-mask: url("../images/cards.svg");
+  mask: url("../images/cards.svg");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background-color: var(--awb-custom_color_2);
+  width: 24px;
+  height: 20px;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .settings-configurator-container,
+  .config-furniture-product-general-settings-shortcode .settings-configurator-container {
+    width: 290px;
+    border-radius: 12px;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /********* accordion ***********/
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item {
+  border: 1px solid var(--awb-color5);
+  border-radius: 6px;
+  max-width: 626px;
+  font-family: var(--awb-custom_typography_8-font-family) !important;
+  font-size: var(--awb-custom_typography_8-font-size) !important;
+  line-height: var(--awb-custom_typography_8-line-height) !important;
+  font-weight: var(--awb-custom_typography_8-font-weight) !important;
+  text-transform: var(--awb-custom_typography_8-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item,
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item {
+    font-family: var(--awb-custom_typography_9-font-family) !important;
+    font-size: var(--awb-custom_typography_9-font-size) !important;
+    line-height: var(--awb-custom_typography_9-line-height) !important;
+    font-weight: var(--awb-custom_typography_9-font-weight) !important;
+    text-transform: var(--awb-custom_typography_9-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item.hidden,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item.hidden {
+  display: none;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item:not(:last-child),
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item:not(:last-child) {
+  margin: 0 0 15px;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .heading button,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .heading button {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  padding: 10px 15px;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: space-between !important;
+  justify-content: space-between !important;
+  font-family: var(--awb-custom_typography_8-font-family) !important;
+  font-size: var(--awb-custom_typography_8-font-size) !important;
+  line-height: var(--awb-custom_typography_8-line-height) !important;
+  font-weight: var(--awb-custom_typography_8-font-weight) !important;
+  text-transform: var(--awb-custom_typography_8-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .heading button,
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .heading button {
+    font-family: var(--awb-custom_typography_9-font-family) !important;
+    font-size: var(--awb-custom_typography_9-font-size) !important;
+    line-height: var(--awb-custom_typography_9-line-height) !important;
+    font-weight: var(--awb-custom_typography_9-font-weight) !important;
+    text-transform: var(--awb-custom_typography_9-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .heading button span,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .heading button span {
+  background-image: url(../images/plus.svg);
+  background-size: 24px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  height: 24px;
+  width: 40px;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content {
+  max-height: 0;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+  overflow: hidden;
+  visibility: hidden;
+  z-index: -1;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .content-inner,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .content-inner {
+  padding: 10px 15px;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .component-items:not(:last-child),
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .component-items:not(:last-child) {
+  margin: 0 0 30px;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .component-items h3,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .component-items h3 {
+  margin: 0 0 24px;
+  font-family: var(--awb-custom_typography_8-font-family) !important;
+  font-size: var(--awb-custom_typography_8-font-size) !important;
+  line-height: var(--awb-custom_typography_8-line-height) !important;
+  font-weight: var(--awb-custom_typography_8-font-weight) !important;
+  text-transform: var(--awb-custom_typography_8-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .component-items h3,
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .component-items h3 {
+    font-family: var(--awb-custom_typography_9-font-family) !important;
+    font-size: var(--awb-custom_typography_9-font-size) !important;
+    line-height: var(--awb-custom_typography_9-line-height) !important;
+    font-weight: var(--awb-custom_typography_9-font-weight) !important;
+    text-transform: var(--awb-custom_typography_9-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .component-items .component-items-inner,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .component-items .component-items-inner {
+  margin: -6px 0 0;
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item.active,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item.active {
+  background-color: var(--awb-color4);
+}
+.config-term-settings-furniture-shortcode .config-accordion .config-accordion-item.active .content,
+.config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item.active .content {
+  max-height: 10000px;
+  transition-property: none;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+  visibility: visible;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item:not(:last-child),
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item:not(:last-child) {
+    margin: 0 0 24px;
+  }
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .heading button,
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .heading button {
+    padding: 20px 24px;
+  }
+  .config-term-settings-furniture-shortcode .config-accordion .config-accordion-item .content .content-inner,
+  .config-furniture-product-general-settings-shortcode .config-accordion .config-accordion-item .content .content-inner {
+    padding: 22px 24px;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /************ config types **********/
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container h2,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container h2 {
+  text-align: center;
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+}
+@supports not (flex-wrap: wrap) {
+  .config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas > *, .config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas > *,
+  .config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas > *,
+  .config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas > * {
+    margin: 0 -1px !important;
+  }
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas {
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  margin: -5px 0 0 -5px;
+  width: calc(100% + 10px);
+  width: -webkit-calc(100% + 10px);
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas .button-container,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas .button-container {
+  padding: 5px;
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas .button-container button,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas .button-container button {
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas .button-container button:hover, .config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas .button-container button.current,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas .button-container button:hover,
+.config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas .button-container button.current {
+  transform: translateY(-5px); /* W3C */
+  -webkit-transform: translateY(-5px); /* Safari & Chrome */
+  -moz-transform: translateY(-5px); /* Firefox */
+  -ms-transform: translateY(-5px); /* Internet Explorer */
+  -o-transform: translateY(-5px); /* Opera */
+  background-color: var(--awb-custom_color_2);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3) !important;
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3) !important;
+}
+@media (min-width: 991px) {
+  .config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas,
+  .config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas {
+    margin: -10px 0 0 -10px;
+    width: calc(100% + 20px);
+    width: -webkit-calc(100% + 20px);
+  }
+  .config-term-settings-furniture-shortcode .builder-type-cta-container .builder-type-ctas .button-container,
+  .config-furniture-product-general-settings-shortcode .builder-type-cta-container .builder-type-ctas .button-container {
+    padding: 10px;
+  }
+}
+.config-term-settings-furniture-shortcode .config-furniture-settings-content .config-furniture-settings-content-inner h2,
+.config-furniture-product-general-settings-shortcode .config-furniture-settings-content .config-furniture-settings-content-inner h2 {
+  margin: 0 0 20px;
+}
+.config-term-settings-furniture-shortcode .config-furniture-settings-content .config-furniture-settings-content-inner > div:not(:last-child),
+.config-furniture-product-general-settings-shortcode .config-furniture-settings-content .config-furniture-settings-content-inner > div:not(:last-child) {
+  margin: 0 0 30px;
+}
+.config-term-settings-furniture-shortcode .components-container .components-container-inner > div:not(:last-child),
+.config-furniture-product-general-settings-shortcode .components-container .components-container-inner > div:not(:last-child) {
+  margin: 0 0 30px;
+}
+.config-term-settings-furniture-shortcode .components-container .components-container-inner .component-terms-children .component-terms-children-inner,
+.config-furniture-product-general-settings-shortcode .components-container .components-container-inner .component-terms-children .component-terms-children-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-term-settings-furniture-shortcode .components-container .components-container-inner .component-terms-children .component-terms-children-inner > div,
+.config-furniture-product-general-settings-shortcode .components-container .components-container-inner .component-terms-children .component-terms-children-inner > div {
+  width: 100%;
+}
+.config-term-settings-furniture-shortcode .components-container .components-container-inner .component-terms-children label,
+.config-furniture-product-general-settings-shortcode .components-container .components-container-inner .component-terms-children label {
+  display: block;
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /**************** gallery *************/
+}
+.config-term-settings-furniture-shortcode .preview-gallery-image,
+.config-furniture-product-general-settings-shortcode .preview-gallery-image {
+  height: 380px;
+}
+.config-term-settings-furniture-shortcode .preview-gallery-image img,
+.config-furniture-product-general-settings-shortcode .preview-gallery-image img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+  max-height: 80vh;
+  object-fit: cover;
+  -o-object-fit: cover;
+}
+.config-term-settings-furniture-shortcode .preview-gallery-image,
+.config-term-settings-furniture-shortcode .settings-gallery .swiper-slide,
+.config-furniture-product-general-settings-shortcode .preview-gallery-image,
+.config-furniture-product-general-settings-shortcode .settings-gallery .swiper-slide {
+  position: relative;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-term-settings-furniture-shortcode .preview-gallery-image img:not(:nth-of-type(1)),
+.config-term-settings-furniture-shortcode .settings-gallery .swiper-slide img:not(:nth-of-type(1)),
+.config-furniture-product-general-settings-shortcode .preview-gallery-image img:not(:nth-of-type(1)),
+.config-furniture-product-general-settings-shortcode .settings-gallery .swiper-slide img:not(:nth-of-type(1)) {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.config-term-settings-furniture-shortcode .preview-gallery-image img[data-cat_slug=countertop_all],
+.config-term-settings-furniture-shortcode .settings-gallery .swiper-slide img[data-cat_slug=countertop_all],
+.config-furniture-product-general-settings-shortcode .preview-gallery-image img[data-cat_slug=countertop_all],
+.config-furniture-product-general-settings-shortcode .settings-gallery .swiper-slide img[data-cat_slug=countertop_all] {
+  z-index: 10;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner .gallery-wrapper,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner .gallery-wrapper {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery {
+  overflow: hidden;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery.loading,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery.loading {
+  opacity: 0.4;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery .swiper-slide,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery .swiper-slide {
+  max-height: 80vh;
+  aspect-ratio: 16/9;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery .swiper-slide img,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -o-object-fit: cover;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-pagination,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-pagination {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  right: auto;
+  width: auto;
+  transform: translateX(-50%); /* W3C */
+  -webkit-transform: translateX(-50%); /* Safari & Chrome */
+  -moz-transform: translateX(-50%); /* Firefox */
+  -ms-transform: translateX(-50%); /* Internet Explorer */
+  -o-transform: translateX(-50%); /* Opera */
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-pagination .swiper-pagination-bullet,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-pagination .swiper-pagination-bullet {
+  background-color: rgba(255, 255, 255, 0.7);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 0 4px;
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container {
+    position: relative;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .settings-gallery-container-inner {
+    position: relative;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button {
+    position: absolute;
+    background-color: #fff;
+    width: 35px;
+    height: 35px;
+    bottom: 30px;
+    border-radius: 50%;
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    z-index: 5;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button:hover, .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-disabled,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button:hover,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-disabled {
+    background-color: #eaeaea;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button::after,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button::after {
+    content: "";
+    display: block;
+    width: 7px;
+    height: 12.8px;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-prev,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-prev {
+    left: 20px;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-prev::after,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-prev::after {
+    background-image: url(../images/arrow-left.svg);
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-next,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-next {
+    left: 71px;
+    left: -webkit-calc(20px + 35px + 16px);
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-next::after,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-button.swiper-button-next::after {
+    background-image: url(../images/arrow-right.svg);
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .swiper-pagination,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .swiper-pagination {
+    width: auto;
+    bottom: 40px;
+    transform: translate(0); /* W3C */
+    -webkit-transform: translate(0); /* Safari & Chrome */
+    -moz-transform: translate(0); /* Firefox */
+    -ms-transform: translate(0); /* Internet Explorer */
+    -o-transform: translate(0); /* Opera */
+    left: 122px;
+    left: -webkit-calc(20px + 35px + 35px + 16px + 16px);
+  }
+}
+@media (min-width: 1201px) {
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button {
+    width: 44px;
+    height: 44px;
+    bottom: 50px;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button.swiper-button-prev,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button.swiper-button-prev {
+    left: 30px;
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button.swiper-button-next,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-button.swiper-button-next {
+    left: 90px;
+    left: -webkit-calc(30px + 44px + 16px);
+  }
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-pagination,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container .swiper-pagination {
+    bottom: 65px;
+    left: 164px;
+    left: -webkit-calc(30px + 44px + 44px + 16px + 30px);
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /**************** settings container general *************/
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-preview-gallery-container,
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-gallery-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-preview-gallery-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-gallery-container {
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%); /* W3C */
+  -webkit-transform: translateX(-50%); /* Safari & Chrome */
+  -moz-transform: translateX(-50%); /* Firefox */
+  -ms-transform: translateX(-50%); /* Internet Explorer */
+  -o-transform: translateX(-50%); /* Opera */
+}
+.config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .settings-preview-container:not(.last-child), .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .settings-container:not(.last-child), .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .components-preview-container > *:not(.last-child),
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .settings-preview-container:not(.last-child),
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .settings-container:not(.last-child),
+.config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .components-preview-container > *:not(.last-child) {
+  margin: 0 0 50px;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner .settings-configurator-container,
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner .settings-configurator-container {
+    position: absolute;
+    z-index: 5;
+    top: 30px;
+    right: 30px;
+  }
+}
+@media (min-width: 991px) {
+  .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .settings-preview-container:not(.last-child), .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .settings-container:not(.last-child), .config-term-settings-furniture-shortcode .config-category-content .config-category-content-inner > .components-preview-container > *:not(.last-child),
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .settings-preview-container:not(.last-child),
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .settings-container:not(.last-child),
+  .config-furniture-product-general-settings-shortcode .config-category-content .config-category-content-inner > .components-preview-container > *:not(.last-child) {
+    margin: 0 0 102px;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /********** button *********/
+}
+.config-term-settings-furniture-shortcode .config-category-content .settings-preview-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .settings-preview-container {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .config-category-content .settings-preview-container .settings-preview-container-inner,
+.config-furniture-product-general-settings-shortcode .config-category-content .settings-preview-container .settings-preview-container-inner {
+  position: relative;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+  height: auto;
+  max-height: 380px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.config-term-settings-furniture-shortcode .config-category-content .settings-preview-container .settings-preview-container-inner .config-loader-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .settings-preview-container .settings-preview-container-inner .config-loader-container {
+  position: absolute;
+  visibility: hidden;
+  z-index: -1;
+}
+.config-term-settings-furniture-shortcode .config-category-content .settings-preview-container.loading .config-loader-container,
+.config-furniture-product-general-settings-shortcode .config-category-content .settings-preview-container.loading .config-loader-container {
+  visibility: visible;
+  z-index: 5;
+  top: 50%;
+  transform: translateY(-50%); /* W3C */
+  -webkit-transform: translateY(-50%); /* Safari & Chrome */
+  -moz-transform: translateY(-50%); /* Firefox */
+  -ms-transform: translateY(-50%); /* Internet Explorer */
+  -o-transform: translateY(-50%); /* Opera */
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /********************* componts block **********************/
+}
+.config-term-settings-furniture-shortcode .components-container .components-container-inner .components-main-data .left-content,
+.config-furniture-product-general-settings-shortcode .components-container .components-container-inner .components-main-data .left-content {
+  padding: 0 0 30px;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .components-container .components-container-inner .components-main-data .left-content,
+  .config-furniture-product-general-settings-shortcode .components-container .components-container-inner .components-main-data .left-content {
+    padding: 0 0 50px;
+  }
+}
+@media (min-width: 991px) {
+  .config-term-settings-furniture-shortcode .components-container .components-container-inner .components-main-data .left-content,
+  .config-furniture-product-general-settings-shortcode .components-container .components-container-inner .components-main-data .left-content {
+    width: 50%;
+    padding: 0 50px 0 0;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /************** products grid ***********/
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list {
+  position: relative;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .config-loader-container,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .config-loader-container {
+  visibility: hidden;
+  z-index: -1;
+  position: absolute;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .load-more-container,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .load-more-container {
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .products-list-inner,
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .load-more-container,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .products-list-inner,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .load-more-container {
+  opacity: 0.7;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .config-loader-container,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list.loading .config-loader-container {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* W3C */
+  -webkit-transform: translate(-50%, -50%); /* Safari & Chrome */
+  -moz-transform: translate(-50%, -50%); /* Firefox */
+  -ms-transform: translate(-50%, -50%); /* Internet Explorer */
+  -o-transform: translate(-50%, -50%); /* Opera */
+  visibility: visible;
+  z-index: 5;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item {
+  width: 100%;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item:not(:last-child),
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item:not(:last-child) {
+  margin: 0 0 50px;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail {
+  margin: 0 0 24px;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail img,
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail .postcard-image-container,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail img,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .thumbnail .postcard-image-container {
+  background-color: var(--awb-color7);
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 7/8;
+  object-fit: cover;
+  -o-object-fit: cover;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block h3,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block h3 {
+  margin: 0 !important;
+  font-family: var(--awb-custom_typography_16-font-family) !important;
+  font-size: var(--awb-custom_typography_16-font-size) !important;
+  line-height: var(--awb-custom_typography_16-line-height) !important;
+  font-weight: var(--awb-custom_typography_16-font-weight) !important;
+  text-transform: var(--awb-custom_typography_16-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_16-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block h3,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block h3 {
+    font-family: var(--awb-custom_typography_17-font-family) !important;
+    font-size: var(--awb-custom_typography_17-font-size) !important;
+    line-height: var(--awb-custom_typography_17-line-height) !important;
+    font-weight: var(--awb-custom_typography_17-font-weight) !important;
+    text-transform: var(--awb-custom_typography_17-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p {
+  font-family: var(--awb-custom_typography_12-font-family) !important;
+  font-size: var(--awb-custom_typography_12-font-size) !important;
+  line-height: var(--awb-custom_typography_12-line-height) !important;
+  font-weight: var(--awb-custom_typography_12-font-weight) !important;
+  text-transform: var(--awb-custom_typography_12-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_12-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p {
+    font-family: var(--awb-custom_typography_13-font-family) !important;
+    font-size: var(--awb-custom_typography_13-font-size) !important;
+    line-height: var(--awb-custom_typography_13-line-height) !important;
+    font-weight: var(--awb-custom_typography_13-font-weight) !important;
+    text-transform: var(--awb-custom_typography_13-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_13-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p:not(:empty),
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block p:not(:empty) {
+  margin: 12px 0 0 !important;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount {
+  margin: 24px 0 0 !important;
+  display: block;
+}
+.config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount bdi,
+.config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount bdi {
+  font-family: var(--awb-custom_typography_16-font-family) !important;
+  font-size: var(--awb-custom_typography_16-font-size) !important;
+  line-height: var(--awb-custom_typography_16-line-height) !important;
+  font-weight: var(--awb-custom_typography_16-font-weight) !important;
+  text-transform: var(--awb-custom_typography_16-text-transform) !important;
+  letter-spacing: var(--awb-custom_typography_16-letter-spacing) !important;
+}
+@media (max-width: 767px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount bdi,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item .container-block .woocommerce-Price-amount bdi {
+    font-family: var(--awb-custom_typography_17-font-family) !important;
+    font-size: var(--awb-custom_typography_17-font-size) !important;
+    line-height: var(--awb-custom_typography_17-line-height) !important;
+    font-weight: var(--awb-custom_typography_17-font-weight) !important;
+    text-transform: var(--awb-custom_typography_17-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important;
+  }
+}
+.config-term-settings-furniture-shortcode .products-grid-container .load-more-container button,
+.config-furniture-product-general-settings-shortcode .products-grid-container .load-more-container button {
+  margin: 50px auto 0;
+}
+@media (min-width: 531px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner {
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-flex-wrap: wrap !important;
+    -ms-flex-wrap: wrap !important;
+    flex-wrap: wrap !important;
+  }
+  @supports not (flex-wrap: wrap) {
+    .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner > *, .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner > *,
+    .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner > *,
+    .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner > * {
+      margin: 0 -1px !important;
+    }
+  }
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner {
+    margin: -20px 0 0 -7.5px;
+    width: calc(100% + 15px);
+    width: -webkit-calc(100% + 15px);
+  }
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item {
+    width: 50%;
+    padding: 20px 7.5px;
+  }
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item:not(:last-child),
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item:not(:last-child) {
+    margin: 0;
+  }
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner {
+    margin: -15px 0 0 -7.5px;
+  }
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item {
+    padding: 12px 7.5px;
+    width: 33.3%;
+  }
+}
+@media (min-width: 1201px) {
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .products-list-inner {
+    margin: -15px 0 0 -7.5px;
+    width: calc(100% + 15px);
+    width: -webkit-calc(100% + 15px);
+  }
+  .config-term-settings-furniture-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item,
+  .config-furniture-product-general-settings-shortcode .products-grid-container .products-grid-container-inner .products-list .product-item {
+    padding: 15px;
+    width: 25%;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  /*************** furniture types selector ****************/
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .selector-list-container,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .selector-list-container {
+  margin: 0 0 50px;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images {
+  margin: 0 -60px 0 0;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: stretch !important;
+  align-items: stretch !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full {
+  flex-shrink: 0;
+  width: 146px;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full img,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full img {
+  width: 100%;
+  height: auto;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small {
+  flex-shrink: 0;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-wall,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-wall {
+  width: 128px;
+  margin: 0 0 0 -7px;
+}
+.config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-base,
+.config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-base {
+  margin: auto 0 -10px -20px;
+  width: 263px;
+}
+@media (min-width: 768px) {
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner {
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .selector-list-container,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .selector-list-container {
+    margin: 0;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images {
+    margin: 0 -50px 0 0;
+  }
+}
+@media (min-width: 991px) {
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images {
+    width: 56%;
+    padding: 0 0 0 50px;
+    margin: 0 -50px 0 0;
+    flex-shrink: 0;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images {
+    -webkit-justify-content: flex-end !important;
+    justify-content: flex-end !important;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .image-block:not(.active),
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .image-block:not(.active) {
+    filter: saturate(0) brightness(1.6) invert(0.2);
+    -webkit-filter: saturate(0) brightness(1.6) invert(0.2);
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .image-block.active,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .image-block.active {
+    filter: saturate(1) brightness(1) invert(0);
+    -webkit-filter: saturate(1) brightness(1) invert(0);
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-full {
+    width: 196px;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-wall,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-wall {
+    width: 168px;
+    margin: 0 0 0 -15px;
+  }
+  .config-term-settings-furniture-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-base,
+  .config-furniture-product-general-settings-shortcode .furniture-types-selector .furniture-types-selector-inner .furniture-types-images .furniture-types-images-inner .images .images-small .image-base {
+    margin: auto 0 -20px -40px;
+    width: 353px;
+  }
+}
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+  background-color: #fff;
+}
+.config-term-settings-furniture-shortcode.disabled button, .config-term-settings-furniture-shortcode.disabled a, .config-term-settings-furniture-shortcode.disabled input,
+.config-furniture-product-general-settings-shortcode.disabled button,
+.config-furniture-product-general-settings-shortcode.disabled a,
+.config-furniture-product-general-settings-shortcode.disabled input {
+  pointer-events: none !important;
+}
+
+/******** load more container **********/
+.load-more-btn-container .load-more-btn-container-inner {
+  position: relative;
+  text-align: center;
+  padding: 12px 0 0;
+  background-color: #fff;
+  -moz-box-shadow: 0 0 15px 15px rgba(255, 255, 255, 0.5) !important;
+  -webkit-box-shadow: 0 0 15px 15px rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 15px 15px rgba(255, 255, 255, 0.5) !important;
+}
+.load-more-btn-container .load-more-btn-container-inner::after {
+  content: "";
+  z-index: 7;
+  display: block;
+  position: absolute;
+  height: 202px;
+  width: 100%;
+  left: 0;
+  bottom: 100%;
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0) 3%, #fff 100%);
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 3%, #fff 100%);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0) 3%, #fff 100%);
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 3%, #fff 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 3%, #fff 100%);
+}
+.load-more-btn-container .load-more-btn-container-inner button {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*# sourceMappingURL=bundle.css.map */

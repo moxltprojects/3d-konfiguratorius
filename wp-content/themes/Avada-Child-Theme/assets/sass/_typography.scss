@@ -1,0 +1,344 @@
+
+@font-face {
+    font-family: Graphie Bold;
+    src:url('../fonts/Graphie-Bold.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Graphie SemiBold;
+    src:url('../fonts/Graphie-SemiBold.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Graphie Regular;
+    src:url('../fonts/Graphie-Regular.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Graphie Book;
+    src:url('../fonts/Graphie-Book.woff') format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@mixin Inter40015px {
+    font-family: var(--awb-custom_typography_24-font-family) !important;
+    font-size: var(--awb-custom_typography_24-font-size) !important;
+    line-height: var(--awb-custom_typography_24-line-height) !important;
+    font-weight: var(--awb-custom_typography_24-font-weight) !important;
+    text-transform: var(--awb-custom_typography_24-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_24-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_25-font-family) !important;
+        font-size: var(--awb-custom_typography_25-font-size) !important;
+        line-height: var(--awb-custom_typography_25-line-height) !important;
+        font-weight: var(--awb-custom_typography_25-font-weight) !important;
+        text-transform: var(--awb-custom_typography_25-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_25-letter-spacing) !important; 
+    }
+}
+
+@mixin Inter40013px {
+    font-family: var(--awb-custom_typography_26-font-family) !important;
+    font-size: var(--awb-custom_typography_26-font-size) !important;
+    line-height: var(--awb-custom_typography_26-line-height) !important;
+    font-weight: var(--awb-custom_typography_26-font-weight) !important;
+    text-transform: var(--awb-custom_typography_26-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_26-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_27-font-family) !important;
+        font-size: var(--awb-custom_typography_27-font-size) !important;
+        line-height: var(--awb-custom_typography_27-line-height) !important;
+        font-weight: var(--awb-custom_typography_27-font-weight) !important;
+        text-transform: var(--awb-custom_typography_27-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_27-letter-spacing) !important; 
+    }
+}
+
+@mixin Inter40018px {
+    font-family: var(--awb-custom_typography_28-font-family) !important;
+    font-size: var(--awb-custom_typography_28-font-size) !important;
+    line-height: var(--awb-custom_typography_24-line-height) !important;
+    font-weight: var(--awb-custom_typography_28-font-weight) !important;
+    text-transform: var(--awb-custom_typography_28-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_28-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_29-font-family) !important;
+        font-size: var(--awb-custom_typography_29-font-size) !important;
+        line-height: var(--awb-custom_typography_29-line-height) !important;
+        font-weight: var(--awb-custom_typography_29-font-weight) !important;
+        text-transform: var(--awb-custom_typography_29-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_29-letter-spacing) !important; 
+    }
+}
+
+@mixin ButtonSmall {
+    font-family: var(--awb-custom_typography_30-font-family) !important;
+    font-size: var(--awb-custom_typography_30-font-size) !important;
+    line-height: var(--awb-custom_typography_30-line-height) !important;
+    font-weight: var(--awb-custom_typography_30-font-weight) !important;
+    text-transform: var(--awb-custom_typography_30-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_30-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_31-font-family) !important;
+        font-size: var(--awb-custom_typography_31-font-size) !important;
+        line-height: var(--awb-custom_typography_31-line-height) !important;
+        font-weight: var(--awb-custom_typography_31-font-weight) !important;
+        text-transform: var(--awb-custom_typography_31-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_31-letter-spacing) !important; 
+    }
+}
+
+@mixin Body30024px {
+    font-family: var(--awb-custom_typography_8-font-family) !important;
+    font-size: var(--awb-custom_typography_8-font-size) !important;
+    line-height: var(--awb-custom_typography_8-line-height) !important;
+    font-weight: var(--awb-custom_typography_8-font-weight) !important;
+    text-transform: var(--awb-custom_typography_8-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_9-font-family) !important;
+        font-size: var(--awb-custom_typography_9-font-size) !important;
+        line-height: var(--awb-custom_typography_9-line-height) !important;
+        font-weight: var(--awb-custom_typography_9-font-weight) !important;
+        text-transform: var(--awb-custom_typography_9-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important; 
+    }
+}
+
+@mixin H2 {
+    font-family: var(--awb-custom_typography_16-font-family) !important;
+    font-size: var(--awb-custom_typography_16-font-size) !important;
+    line-height: var(--awb-custom_typography_16-line-height) !important;
+    font-weight: var(--awb-custom_typography_16-font-weight) !important;
+    text-transform: var(--awb-custom_typography_16-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_16-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_17-font-family) !important;
+        font-size: var(--awb-custom_typography_17-font-size) !important;
+        line-height: var(--awb-custom_typography_17-line-height) !important;
+        font-weight: var(--awb-custom_typography_17-font-weight) !important;
+        text-transform: var(--awb-custom_typography_17-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important; 
+    }
+}
+
+@mixin Body30014px {
+    font-family: var(--awb-custom_typography_12-font-family) !important;
+    font-size: var(--awb-custom_typography_12-font-size) !important;
+    line-height: var(--awb-custom_typography_12-line-height) !important;
+    font-weight: var(--awb-custom_typography_12-font-weight) !important;
+    text-transform: var(--awb-custom_typography_12-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_12-letter-spacing) !important; 
+
+    @media #{$mobileMax} {
+        font-family: var(--awb-custom_typography_13-font-family) !important;
+        font-size: var(--awb-custom_typography_13-font-size) !important;
+        line-height: var(--awb-custom_typography_13-line-height) !important;
+        font-weight: var(--awb-custom_typography_13-font-weight) !important;
+        text-transform: var(--awb-custom_typography_13-text-transform) !important;
+        letter-spacing: var(--awb-custom_typography_13-letter-spacing) !important; 
+    }
+}
+
+
+@media #{$mobileMax} {
+    html body .fusion-layout-column {
+        .fusion-title,
+        .fusion-text {
+            [style*="var(--awb-typography1-"] {
+                font-family: var(--awb-typography2-font-family) !important;
+                font-size: var(--awb-typography2-font-size) !important;
+                line-height: var(--awb-typography2-line-height) !important;
+                font-weight: var(--awb-typography2-font-weight) !important;
+                text-transform: var(--awb-typography2-text-transform) !important;
+                letter-spacing: var(--awb-typography2-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-typography3-"]{
+                font-family: var(--awb-typography4-font-family) !important;
+                font-size: var(--awb-typography4-font-size) !important;
+                line-height: var(--awb-typography4-line-height) !important;
+                font-weight: var(--awb-typography4-font-weight) !important;
+                text-transform: var(--awb-typography4-text-transform) !important;
+                letter-spacing: var(--awb-typography4-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-typography5-"] {
+                font-family: var(--awb-custom_typography_1-font-family) !important;
+                font-size: var(--awb-custom_typography_1-font-size) !important;
+                line-height: var(--awb-custom_typography_1-line-height) !important;
+                font-weight: var(--awb-custom_typography_1-font-weight) !important;
+                text-transform: var(--awb-custom_typography_1-text-transform) !important;
+                letter-spacing: var(--awb-custom_typography_1-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_16-"] {
+                font-family: var(--awb-custom_typography_17-font-family) !important;
+                font-size: var(--awb-custom_typography_17-font-size)!important;
+                line-height: var(--awb-custom_typography_17-line-height)!important;
+                font-weight: var(--awb-custom_typography_17-font-weight)!important;
+                text-transform: var(--awb-custom_typography_17-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_18-"] {
+                font-family: var(--awb-custom_typography_19-font-family)!important;
+                font-size: var(--awb-custom_typography_19-font-size)!important;
+                line-height: var(--awb-custom_typography_19-line-height)!important;
+                font-weight: var(--awb-custom_typography_19-font-weight)!important;
+                text-transform: var(--awb-custom_typography_19-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_19-letter-spacing) !important;
+            }
+            
+            [style*="var(--awb-custom_typography_2-"] {
+                font-family: var(--awb-custom_typography_3-font-family)!important;
+                font-size: var(--awb-custom_typography_3-font-size)!important;
+                line-height: var(--awb-custom_typography_3-line-height)!important;
+                font-weight: var(--awb-custom_typography_3-font-weight)!important;
+                text-transform: var(--awb-custom_typography_3-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_3-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_4-"] {
+                font-family: var(--awb-custom_typography_5-font-family)!important;
+                font-size: var(--awb-custom_typography_5-font-size)!important;
+                line-height: var(--awb-custom_typography_5-line-height)!important;
+                font-weight: var(--awb-custom_typography_5-font-weight)!important;
+                text-transform: var(--awb-custom_typography_5-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_5-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_6-"] {
+                font-family: var(--awb-custom_typography_7-font-family)!important;
+                font-size: var(--awb-custom_typography_7-font-size)!important;
+                line-height: var(--awb-custom_typography_7-line-height)!important;
+                font-weight: var(--awb-custom_typography_7-font-weight)!important;
+                text-transform: var(--awb-custom_typography_7-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_7-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_8-"] {
+                font-family: var(--awb-custom_typography_9-font-family)!important;
+                font-size: var(--awb-custom_typography_9-font-size)!important;
+                line-height: var(--awb-custom_typography_9-line-height)!important;
+                font-weight: var(--awb-custom_typography_9-font-weight)!important;
+                text-transform: var(--awb-custom_typography_9-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_9-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_10-"] {
+                font-family: var(--awb-custom_typography_11-font-family)!important;
+                font-size: var(--awb-custom_typography_11-font-size)!important;
+                line-height: var(--awb-custom_typography_11-line-height)!important;
+                font-weight: var(--awb-custom_typography_11-font-weight)!important;
+                text-transform: var(--awb-custom_typography_11-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_11-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_12-"] {
+                font-family: var(--awb-custom_typography_13-font-family)!important;;
+                font-size: var(--awb-custom_typography_13-font-size)!important;
+                line-height: var(--awb-custom_typography_13-line-height)!important;
+                font-weight: var(--awb-custom_typography_13-font-weight)!important;
+                text-transform: var(--awb-custom_typography_13-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_13-letter-spacing) !important;
+            }
+            
+            [style*="var(--awb-custom_typography_14-"] {
+                font-family: var(--awb-custom_typography_15-font-family)!important;
+                font-size: var(--awb-custom_typography_15-font-size)!important;
+                line-height: var(--awb-custom_typography_15-line-height)!important;
+                font-weight: var(--awb-custom_typography_15-font-weight)!important;
+                text-transform: var(--awb-custom_typography_15-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_15-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_20-"] {
+                font-family: var(--awb-custom_typography_21-font-family)!important;
+                font-size: var(--awb-custom_typography_21-font-size)!important;
+                line-height: var(--awb-custom_typography_21-line-height)!important;
+                font-weight: var(--awb-custom_typography_21-font-weight)!important;
+                text-transform: var(--awb-custom_typography_21-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_21-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_22-"] {
+                font-family: var(--awb-custom_typography_23-font-family)!important;
+                font-size: var(--awb-custom_typography_23-font-size)!important;
+                line-height: var(--awb-custom_typography_23-line-height)!important;
+                font-weight: var(--awb-custom_typography_23-font-weight)!important;
+                text-transform: var(--awb-custom_typography_23-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_23-letter-spacing) !important;
+            }
+            [style*="var(--awb-custom_typography_24-"] {
+                font-family: var(--awb-custom_typography_25-font-family)!important;
+                font-size: var(--awb-custom_typography_25-font-size)!important;
+                line-height: var(--awb-custom_typography_25-line-height)!important;
+                font-weight: var(--awb-custom_typography_25-font-weight)!important;
+                text-transform: var(--awb-custom_typography_25-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_25-letter-spacing) !important;
+            }
+            [style*="var(--awb-custom_typography_26-"] {
+                font-family: var(--awb-custom_typography_27-font-family)!important;
+                font-size: var(--awb-custom_typography_27-font-size)!important;
+                line-height: var(--awb-custom_typography_27-line-height)!important;
+                font-weight: var(--awb-custom_typography_27-font-weight)!important;
+                text-transform: var(--awb-custom_typography_27-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_27-letter-spacing) !important;
+            }
+            [style*="var(--awb-custom_typography_28-"] {
+                font-family: var(--awb-custom_typography_29-font-family)!important;
+                font-size: var(--awb-custom_typography_29-font-size)!important;
+                line-height: var(--awb-custom_typography_29-line-height)!important;
+                font-weight: var(--awb-custom_typography_29-font-weight)!important;
+                text-transform: var(--awb-custom_typography_29-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_29-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_30-"] {
+                font-family: var(--awb-custom_typography_31-font-family)!important;
+                font-size: var(--awb-custom_typography_31-font-size)!important;
+                line-height: var(--awb-custom_typography_31-line-height)!important;
+                font-weight: var(--awb-custom_typography_31-font-weight)!important;
+                text-transform: var(--awb-custom_typography_31-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_31-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_32-"] {
+                font-family: var(--awb-custom_typography_33-font-family)!important;
+                font-size: var(--awb-custom_typography_33-font-size)!important;
+                line-height: var(--awb-custom_typography_33-line-height)!important;
+                font-weight: var(--awb-custom_typography_33-font-weight)!important;
+                text-transform: var(--awb-custom_typography_33-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_33-letter-spacing) !important;
+            }
+
+            [style*="var(--awb-custom_typography_34-"] {
+                font-family: var(--awb-custom_typography_35-font-family)!important;
+                font-size: var(--awb-custom_typography_35-font-size)!important;
+                line-height: var(--awb-custom_typography_35-line-height)!important;
+                font-weight: var(--awb-custom_typography_35-font-weight)!important;
+                text-transform: var(--awb-custom_typography_35-text-transform)!important;
+                letter-spacing: var(--awb-custom_typography_35-letter-spacing) !important;
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+body {
+    &.error404, &.search {
+        min-height: 100vh;
+
+        #boxed-wrapper {
+            min-height: 100vh;
+
+            #wrapper {
+                min-height: 100vh;
+                @include displayFlex;
+                @include flexDirectionColumn;
+
+                .fusion-tb-footer  {
+                    margin-top: auto;
+                }
+            }
+        }
+    }
+}

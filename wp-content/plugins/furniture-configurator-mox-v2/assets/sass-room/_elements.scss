@@ -1,0 +1,1696 @@
+/******** select **********/
+
+select,
+input {
+    color: $black2 !important;
+
+    @include placeholder {
+       color: $black2 !important; 
+    }
+}
+
+/******** header progress bar **********/
+
+.top-bar {
+    margin: 0 0 50px;
+    .config-progress-bar {
+        display: none;
+    }
+
+    .save-data-container {
+        margin: 30px 0 0;
+        .save-data-container-inner {
+            text-align: center;
+
+            .buttons-list {
+                @include displayFlex;
+                @include flexWrap(wrap);
+                @include justifyContent(center);
+                width: calc(100% + 10px);
+                margin: -5px 0 0 -5px;
+
+                .button-item {
+                    margin: 5px; 
+                }
+            }
+
+            #save-message {
+                text-align: center;
+                margin: 0 0 10px;
+            }
+            
+            .styled-button {
+                margin: auto;
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .top-bar {
+        display: block;
+
+        .top-bar-inner {
+
+            .config-progress-bar {
+                margin: 30px 0 0;
+                @include displayFlex;
+                @include justifyContent(center);
+
+                button {
+                    position: relative;
+                    padding: 16px 0;
+                    @include body18px700;
+                    border-top: none;
+                    border-right: none;
+                    border-left: none;
+                    border-bottom-style: solid;
+                    border-bottom-width: 4px;
+                    border-bottom-color: transparent;
+                    background-color: transparent;
+                    cursor: pointer;
+
+                    &:not(:last-child) {
+                        margin: 0 84px 0 0;
+
+                        &::after {
+                            content: "";
+                            margin: 0px 24px;
+                            width: 34px;
+                            height: 1px;
+                            background-color: $lightgreyPseudo;
+                            position: absolute;
+                            right: -84px;
+                            top: 26px;
+                            pointer-events: none;
+                            cursor: default;
+                        }
+                    }
+
+                       
+                    &.current {
+                        &::before {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            width: 100%;
+                            height: 3px;
+                            background-color: $themeBlack;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/******** footer progress buttons **********/
+
+.actions-container {
+    order: -1;
+
+    .actions-container-inner {
+        @include displayFlex;
+        width: 100%;
+        max-width: 1340px;
+        margin: auto;
+        button {
+            &.next-step {
+                margin: 0 0 0 auto;
+            }
+        }
+    }
+
+}
+
+@media #{$desktop} {
+    .actions-container {
+        order: 5;
+        padding: 50px 0;
+    }
+}
+
+
+// /********** 3d model *********/
+// .room-model-container {
+//     width: 100%;
+//     .room-model-container-inner {
+//         height: 70vh;
+//         width: 100%;
+
+//         button {
+//         width: 32px;
+//         height: 32px;
+//         border-radius: 50%;
+//         background-size: 17px auto;
+//         background-position: center;
+//         background-repeat: no-repeat;
+//         background-color: $white;
+//         @include boxShadow(rgba(35, 35, 35, 0.06) 0px 8px 28px 5px);
+
+//             &.duplicate {
+//                 background-image: url("data:image/svg+xml;utf8,<svg width='12' height='15' viewBox='0 0 12 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z' fill='currentColor'/></svg>");
+//             }
+
+//             &.delete {
+//                 background-image: url("data:image/svg+xml;utf8,<svg width='13' height='14' viewBox='0 0 13 14' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.647 1.918h-.125a.125.125 0 0 0 .125-.125v.125h4.75v-.125c0 .07.057.125.125.125h-.125v1.125h1.125v-1.25a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v1.25h1.125V1.918Zm7.876 1.125h-11a.5.5 0 0 0-.5.5v.5c0 .07.056.125.124.125h.944l.386 8.172a1 1 0 0 0 .999.954h7.093a.999.999 0 0 0 .999-.954l.386-8.172h.944a.125.125 0 0 0 .125-.125v-.5a.5.5 0 0 0-.5-.5ZM9.449 12.17H2.596l-.378-8h7.61l-.379 8Z' fill='currentColor'/></svg>");
+//             }
+//         }
+
+//     }
+// }
+
+// .model-display-container {
+//     width: calc(100% - 355px);
+//     width: -webkit-calc(100% - 355px);
+
+//     .model-display-container-inner {
+//         width: 100%;
+
+//         @include displayFlex;
+
+//         .model-settings-sidebar {
+//             width: 100px;
+
+//             .model-settings-sidebar-inner {
+//                 width: 100%;
+//                 text-align: center;
+
+//                 .zoom-settings {
+//                     .zoom-slider {
+//                         height: 100px;
+//                         input {
+//                             @include transform((rotate(90deg)));
+//                             width: 100px;
+//                             height: 100px;
+//                         }
+                        
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+// }
+
+/************ room-layout *************/
+
+.dimension-container {
+    h3 {
+        @include fontH3;
+        color: $black2 !important;
+    }
+    .input-container {
+        span {
+            display: block;
+        }
+
+        input {
+            color: $black2 !important;
+        }
+    }
+}
+
+.room-layout {
+    .room-layout-options {
+        @include displayFlex;
+        @include justifyContent(center);
+        width: calc(100% + 10px);
+        margin: 0 0 0 -5px;
+        .option {
+            padding: 0 5px;
+            max-width: 400px;
+            
+            &:not(.current) {
+                .dimensions-block {
+                    display: none;
+                }
+            }
+
+            button {
+                margin: 0 0 30px;
+                padding: 10px;
+                border-radius: 8px;
+                border: 2px solid transparent;
+                @include transition;
+    
+                .image-block {
+                    position: relative;
+                    height: auto;
+                }
+
+                &:hover {
+                    border: 2px solid $lightgrey2;
+                }
+            }
+
+            .dimensions-block {
+                width: 200%;
+
+                .list-container {
+                    &:not(:last-child) {
+                        margin: 0 0 30px;
+                    }
+                }
+            }
+
+            &:nth-child(2) {
+                .dimensions-block {
+                    margin-left: -100%;
+                }
+            }
+
+            &.current,
+            &:hover {
+                button {
+                    border: 2px solid $black;
+                    .image-block {
+                        &::after {
+                            content: '✓';
+                            @include displayFlex;
+                            @include justifyContent(center);
+                            @include alignItems(center);
+                            display: block;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            width: 20px;
+                            height: 20px;
+                            font-size: 18px;
+                            line-height: 0.5;
+                            border-radius: 50%;
+                            border: 1px solid $blue;
+                            background-color: $blue;
+                            color: $white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$mobileSmMin} {
+    .room-layout {
+        .room-layout-options {
+            .option {
+
+                .dimensions-block {
+                    width: 100%;
+                    margin-left: 0 !important;
+                }
+            }
+        }
+    }
+}
+
+@media #{$tablet} {
+    .room-layout {
+        .room-layout-options {
+            width: calc(100% + 40px);
+            margin: 0 0 0 -20px;
+            .option {
+                padding: 0 20px;
+
+                button {
+                    padding: 20px;
+                }
+
+                &.current {
+                    button {
+                        .image-block {
+                            &::after {
+                                right: 0;
+                                top: 0;
+                                width: 25px;
+                                height: 25px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .room-layout {
+        .room-layout-options {
+            width: calc(100% + 80px);
+            margin: 0 0 0 -40px;
+            .option {
+                padding: 0 40px;
+            }
+        }
+    }
+}
+
+/********** edit container ******************/
+
+.cabinet-settings {
+    z-index: 3;
+    position: relative;
+    height: 100%;
+    @include boxShadow(rgba(35, 35, 35, 0.05) 0px 0px 16px);
+
+    .cabinet-settings-inner {
+        height: 100%;
+
+        .main-settings-sidebar {
+            height: 100%;
+
+            .main-settings-sidebar-inner  {
+                position: relative;
+                height: 100%;
+            }
+        }
+
+        .main-tabs {
+            display: none;
+            position: absolute;
+            right: 100%;
+            top: 0;
+            background-color: $white;
+            padding: 15px;
+            @include boxShadow(rgba(35, 35, 35, 0.06) 0px 8px 28px 5px);
+
+            button {
+                display: block;
+                margin: 0 auto;
+                &:not(:last-child) {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+
+        .main-content {
+            background-color: $white;
+            height: 100%;
+
+            .content {
+                position: relative !important;
+                overflow: visible !important;
+
+                .edit-container {
+                    height: calc(100% + 50.99px) !important;
+                    height: -webkit-calc(100% + 50.99px) !important;
+                }
+            }
+
+            & > .content-item  {
+                height: 100%;
+
+                & > div {
+                    height: 100%;
+
+                    & > div {
+                        height: 100%;
+                    }
+                }
+                &:not(.current) {
+                    display: none !important;
+                }
+
+                .furniture-types-container-inner,
+                .textures,
+                .dimensions {
+                    padding: 15px;
+                    overflow: hidden;
+                }
+
+                .cabinets {
+                    .cabinets-inner {
+                        @include displayFlex;
+                        @include flexDirectionColumn;
+                        .tabs {
+                            flex-shrink: 0;
+                        }
+                        .content {
+                            height: 100%;
+                            flex-shrink: 1;
+                            overflow: hidden;
+                            .content-inner {
+                                height: 100%;
+
+                                .tab-content {
+                                    min-height: 350px;
+
+                                    .furniture-types-container-inner,
+                                    .furniture-types-list {
+                                        min-height: 350px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/********** edit container - cabinets******************/
+
+.cabinet-settings {
+
+    .tabs,
+    .room-type-tabs {
+        @include displayFlex;
+        border-radius: 3px;
+        overflow: hidden;
+        button {
+            width: 100%;
+            @include body16px600;
+            flex-shrink: 1;
+            height: 44px;
+            border-bottom: 2px solid $lightgrey4;
+            color: $black2;
+
+            &:hover {
+                color: $blue;
+            }
+
+            &.active {
+                color: $blue;
+                border-bottom-color: $blue;
+                background-color: $lightgrey3;
+            }
+        }
+    }
+
+    .content {
+        .tab-content {
+            &:not(.current) {
+                display: none !important;
+            }
+        }
+    }
+
+    .edit-container {
+        display: none;
+
+        button[data-action_type="go-back"] {
+            margin: 0 0 25px;
+        }
+
+        &.active {
+            overflow: hidden;
+            display: block;
+            position: absolute;
+            z-index: 55;
+            width: 100%;
+            height: 100%;
+            padding: 20px 15px;
+            left: 0;
+            top: 0;
+            background-color: $white;
+            box-sizing: border-box;
+        }
+    }
+
+    /***************** cabinets list item ********************/
+
+    .tabs-content {
+        position: relative;
+        
+        & > .tabs-content-inner {
+            position: static;
+
+            .tab-item {
+                position: static;
+
+                .content {
+                    position: static;
+
+                    .content-inner {
+                        position: static;
+
+                        .cabinets{
+                            position: static;
+
+                            .cabinets-inner{
+                                position: static;
+
+                                .tab-content {
+                                    position: static;
+
+                                    .dynamic-list-inner{
+                                        position: static;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .cabinet-item {
+        width: 100%;
+        background-color: $lightgrey3;
+        padding: 10px 15px;
+        box-sizing: border-box;
+        position: static;
+
+        &:not(:last-child) {
+            margin: 0 0 10px;
+        }
+
+        .add-cabinet-item-inner,
+        .my-cabinet-item-inner {
+            @include displayFlex;
+            @include alignItems(center);
+
+            .image-container {
+                flex-shrink: 0;
+                width: 40px;
+                height: 70px;
+
+                img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover;
+                    -o-object-fit: cover;
+                }
+            }
+
+            .main-container {
+                width: 100%;
+                flex-shrink: 1;
+                padding: 0 10px;
+            }
+
+            .side-container {
+                flex-shrink: 0;
+
+                .price-block {
+                    margin: 5px 0 0;
+                    @include body13px400;
+                }
+
+                .item-actions-container {
+                    @include displayFlex;
+                    @include alignItems(center);
+
+                    button {
+                        text-align: center;
+                        @include displayFlex;
+                        @include alignItems(center);
+                        svg {
+                            width: 20px;
+                            height: 20px;
+                            margin: 0 3px 0 0;
+                        }
+
+                        &:not(:last-child) {
+                            margin: 0 8px 0 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /********** add cabinet *************/
+
+    .furniture-types-list-container {
+        height: 100%;
+        .furniture-types-container-inner {
+            height: 100%;
+            .furniture-types-list {
+                height: 100%;
+                position: relative;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+
+                .furniture-type {
+                    position: static;
+                    &:not(:last-child) {
+                        margin: 0 0 15px 0;
+                    }
+
+                    & > button:not([data-type="go-back"]) {
+                        padding: 10px 15px;
+                        width: 100%;
+                        background-color: $white;
+                        @include boxShadow(rgba(87, 87, 87, 0.08) 0px 0px 12px 5px);
+                    }
+
+                    ul {
+                        padding: 0;
+                        margin: 0;
+                    }
+
+                    &:not(.active) {
+                        .furniture-type-list {
+                            display: none;
+                        }
+                    }
+
+                    &.active {
+                        .furniture-type-list {
+                            @include displayFlex;
+                            @include flexDirectionColumn;
+                        }
+                    }
+                }
+            }
+
+            .furniture-type-list {
+                position: absolute;
+                width: calc(100% + 30px);
+                width: -webkit-calc(100% + 30px);
+                height: calc(100% + 30px);
+                height: -webkit-calc(100% + 30px);
+                // height: calc(100% + 50px);
+                // height: -webkit-calc(100% + 50px);
+                top: -15px;
+                left: -15px;
+                padding: 15px 0 0;
+                background-color: $white;
+
+                .furniture-type-list-inner {
+                    overflow: auto;
+
+                    & > p {
+                        height: 100px;
+                        padding: 0 15px;
+                    }
+                }
+            }
+        }
+
+        .load-more-container {
+            margin: auto 0 0;
+            button {
+                margin: 15px 0 0;
+                width: 100%;
+                
+            }
+        }
+    }
+
+    /********** my cabinets *************/
+    .my-cabinets-list {
+        height: 100%;
+        padding: 0;
+        position: relative;
+        @include displayFlex;
+        @include flexDirectionColumn;
+        .my-cabinets-list-inner {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            overflow: auto;
+        }
+
+        .edit-container {
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .total-container {
+            margin: auto 0 0;
+        }
+    }
+    
+    /****** summary *******/
+
+    .summary {
+        height: 100%;
+        background-color: $white;
+        .summary-inner {
+            height: 100%;
+            padding: 15px;
+            @include displayFlex;
+            @include flexDirectionColumn;
+
+            .summary-content {
+                height: 100%;
+            }
+
+            h2 {
+                margin: 0 0 20px;
+            }
+
+            .summary-cabinets-list {
+                height: calc(100% - 63px - 44px);
+                height: -webkit-calc(100% - 63px - 44px);
+                position: relative;
+
+                .summary-cabinets-list-inner {
+                    overflow: auto;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                }
+
+                .summary-cabinet-item {
+                    .price-data {
+                        @include body17px700;
+                    }
+                }
+            }
+
+            .buy-container {
+                margin: auto 0 0;
+                @include displayFlex;
+                @include flexDirectionColumn;
+                @include justifyContent(center);
+
+                #add-to-cart-message {
+                    text-align: center;
+                }
+            }
+
+            .summary-cta-container {
+                a {
+                    display: block;
+                }
+            }
+
+        }
+    }
+
+    // .summary {
+    //     background-color: $white;
+    //     .summary-inner {
+    //         padding: 15px;
+    //     }
+    //     /****** list *******/
+    //     .total-container {
+    //         @include displayFlex;
+    //         padding: 15px;
+
+    //         .price-block {
+    //             margin: 0 0 0 auto;
+    //         }
+    //     }
+
+    //     /****** buy-container *******/
+    //     .buy-container {
+    //         margin: 50px 0 0;
+    //         button {
+    //             width: 100%;
+    //             margin: 0 auto;
+    //         }
+    //     }
+
+    // }
+
+    // /****** total-container *******/
+    // .total-container {
+    //     @include displayFlex;
+    //     padding: 15px;
+
+    //     .price-block {
+    //         margin: 0 0 0 auto;
+    //     }
+    // }
+}
+
+/********** 3d model ******************/
+
+.progress-content-inner {
+    padding: 0 0 30px;
+
+    .steps-content {
+        background-color: $white;
+        width: 100%;
+
+        .cabinet-settings {
+            @include transition;
+        }
+
+        .config-loader-container {
+            display: none !important;
+        }
+
+        &.loading {
+            .cabinet-settings {
+                position: relative;
+                opacity: .6;
+            }
+            .config-loader-container {
+                @include displayFlex;
+                @include justifyContent(center);
+                @include alignItems(center);
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .progress-content-inner {
+        padding: 0;
+    }
+}
+
+.cabinet-settings {
+    .cabinet-settings-inner {
+        @include displayFlex;
+        @include flexDirectionColumn;
+
+        .main-container-wrap {
+            width: 100%;
+            height: 100%;
+            min-height: 350px;
+            @include displayFlex;
+            @include flexDirectionColumn;
+
+            .total-container {
+                margin: auto 0 0;
+                padding: 15px;
+
+                p {
+                    margin: 0;
+                }
+            }
+
+            h3 {
+                @include body17px700;
+                margin: 0;
+            }
+
+            .dimensions-info {
+                @include body13px400;
+                margin: 0;
+
+                .range {
+                    @include body13px400;
+                }
+            }
+        }
+    }
+}
+
+.room-model-container {
+    width: 100%;
+    .room-model-container-inner {
+        height: 70vh;
+        width: 100%;
+        flex-shrink: 1;
+        position: relative;
+
+        .config-loader-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: $white;
+        }
+
+        .canvas-parent {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: -1;
+            position: relative;
+
+            &.current {
+                opacity: 1;
+                z-index: 2;
+            }
+            &:not(:nth-child(1)) {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+
+        // canvas {
+        //     width: 100% !important;
+        // }
+
+        button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: 17px auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: $white;
+            @include boxShadow(rgba(35, 35, 35, 0.06) 0px 8px 28px 5px);
+
+            &.duplicate {
+                background-image: url("data:image/svg+xml;utf8,<svg width='12' height='15' viewBox='0 0 12 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z' fill='currentColor'/></svg>");
+            }
+
+            &.delete {
+                background-image: url("data:image/svg+xml;utf8,<svg width='13' height='14' viewBox='0 0 13 14' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.647 1.918h-.125a.125.125 0 0 0 .125-.125v.125h4.75v-.125c0 .07.057.125.125.125h-.125v1.125h1.125v-1.25a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v1.25h1.125V1.918Zm7.876 1.125h-11a.5.5 0 0 0-.5.5v.5c0 .07.056.125.124.125h.944l.386 8.172a1 1 0 0 0 .999.954h7.093a.999.999 0 0 0 .999-.954l.386-8.172h.944a.125.125 0 0 0 .125-.125v-.5a.5.5 0 0 0-.5-.5ZM9.449 12.17H2.596l-.378-8h7.61l-.379 8Z' fill='currentColor'/></svg>");
+            }
+        }
+
+    }
+}
+
+.model-display-container {
+    width: 100%;
+
+    .model-display-container-inner {
+        width: 100%;
+        @include displayFlex;
+
+        .model-settings-sidebar {
+           display: none;
+
+            .model-settings-sidebar-inner {
+                width: 100%;
+                text-align: center;
+
+                .zoom-settings {
+                    .zoom-slider {
+                        height: 100px;
+                        input {
+                            @include transform((rotate(90deg)));
+                            width: 100px;
+                            height: 100px;
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media #{$mobile} {
+    .progress-content-inner {
+        @include displayFlex;
+        @include justifyContent(center);
+    }
+    
+    .cabinet-settings {
+        .cabinet-settings-inner {
+
+            .main-container-wrap {
+                width: 220px;
+            }
+        }
+    }
+    
+    .model-display-container {
+        width: calc(100% - 220px);
+        width: -webkit-calc(100% - 220px);
+
+        .model-display-container-inner {
+            .model-settings-sidebar {
+                display: block;
+                width: 100px;
+            }
+
+            .room-model-container {
+                width: calc(100% - 100px);
+                width: -webkit-calc(100% - 100px);
+            }
+
+        }
+    }
+}
+ 
+@media #{$desktop} {
+    
+    .cabinet-settings {
+        .cabinet-settings-inner {
+
+            .main-container-wrap {
+                width: 355px;
+            }
+        }
+    }
+    
+    .model-display-container {
+        width: calc(100% - 355px);
+        width: -webkit-calc(100% - 355px);
+    }
+}
+
+
+/************** general-settings ******************/
+
+
+.general-settings {
+    width: 100%;
+    padding: 0 20px;
+
+    .general-settings-inner {
+        max-width: 1340px;
+        margin: auto;
+    }
+    
+    .dimensions-block {
+        .multiple-containers {
+            &:not(:last-child) {
+                margin: 0 0 15px;
+            }
+
+            .multiple-heading {
+                margin: 0 0 15px;
+                color: $black2 !important;
+                @include fontH22px;
+            }
+        }
+    }
+
+    .display-container {
+        width: 400px;
+        text-align: center;
+        @include displayFlex;
+        @include alignItems(center);
+        & > img {
+            margin: 0 auto;
+            width: 300px;
+            height: 300px;
+        }
+
+        .general-settings-display-image {
+            width: 300px;
+            height: 400px;
+            // padding: 0 80px;
+            margin: 0 auto;
+
+            .general-image-inner {
+                height: 100%;
+                width: 100%;
+                @include displayFlex;
+                @include alignItems(flex-end);
+                
+                position: relative;
+
+                .image-container-wrapper {
+                    height: 100%;
+                    .image-container {
+                        height: 100%; 
+                        padding: 5px;
+
+                       .image-container-inner {
+                            height: 100%; 
+
+                            img {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: fill;
+                                -o-object-fit: fill;
+                            }
+                        }
+                    }
+                        
+                }
+
+                .image-data-container {
+                    position: absolute;
+                    height: 100%;
+                    width: 80px;
+
+                    .data-container-inner {
+                        position: relative;
+                        height: 100%;
+                        width: 100%;
+
+                        .data-arrow-top,
+                        .data-arrow-bottom {
+                            display: block;
+                            position: absolute;
+                            color: $black;
+                            width: auto;
+                            height: auto;
+                        }
+
+                        .data-arrow-top {
+                            @include transform(rotate(90deg));
+                            top: -8px;
+                        }
+
+                        .data-arrow-bottom {
+                            @include transform(rotate(-90deg));
+                            bottom: -8px;
+                        }
+
+                        &::before {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            background-color: $black;
+                            width: 1px;
+                            height: 100%;
+                            top: 0;
+                        }
+                    }
+
+                    .number {
+                        position: absolute;
+                        top: 50%;
+                        @include transform(translateY(-50%));
+                    }
+                }
+
+                .full-furniture {
+                    position: relative;
+                    .image-data-container {
+                        right: 100%;
+                        .data-container-inner {
+                            .data-arrow-top,
+                            .data-arrow-bottom {
+                                right: 11px;
+                            }
+
+                            &::before {
+                                right: 15px;
+                            }
+
+                            .number {
+                                right: 25px;
+                            }
+                        }
+                    }
+                }
+
+                .right-side {
+                    height: 100%;
+                    @include displayFlex;
+                    @include flexDirectionColumn;
+                    @include justifyContent(flex-end);
+
+                    .top-furniture,
+                    .bottom-furniture,
+                    .space-container {
+                        position: relative;
+                        .image-data-container {
+                            left: 100%;
+                            .data-container-inner {
+                                .data-arrow-top,
+                                .data-arrow-bottom {
+                                    left: 11px;
+                                }
+
+                                &::before {
+                                    left: 15px;
+                                }
+
+                                .number {
+                                    left: 25px;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-furniture {
+                        .countertop {
+                            padding: 15px 0 0;
+                            background-color: $black; 
+                        }
+
+                        .image-container {
+                            height: calc(100% - 15px);
+                            height: -webkit-calc(100% - 15px);
+                        }
+
+                    }
+
+                    .space-container {
+                        position: relative;
+                    }
+                }
+            }
+                
+        }
+    }
+}
+
+@media #{$mobileSmMin} {
+    .general-settings {
+
+        .dimensions-block {
+
+            .multiple-containers {
+
+                .multiple-containers-inner {
+                    @include displayFlex;
+                    @include flexWrap(wrap);
+                    width: calc(100% + 20px);
+                    width: -webkit-calc(100% + 20px);
+                    margin: -10px 0 0 -10px;
+
+                    .dimension-container {
+                        flex-grow: 1;
+                        flex-shrink: 1;
+                        width: 33.3%;
+                        max-width: 120px;
+                        min-width: 80px;
+                        padding: 10px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$mobile} {
+    .general-settings {
+        .general-settings-inner {
+            @include displayFlex;
+
+            .data-container {
+                width: calc(100% - 350px);
+                width: -webkit-calc(100% - 350px);
+                padding: 0 30px 0 0;
+            }
+
+            .display-container {
+                width: 350px;
+                & > img {
+                    width: 300px;
+                    height: 300px;
+                }
+
+                .general-settings-display-image {
+                    width: 300px;
+                    height: 300px;  
+                }
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .general-settings {
+        .general-settings-inner {
+
+            .data-container {
+                width: calc(100% - 460px);
+                width: -webkit-calc(100% - 460px);
+                padding: 0 30px 0 0;
+            }
+
+            .display-container {
+                width: 460px;
+                & > img {
+                    width: 400px;
+                    height: 400px;
+                }
+
+                .general-settings-display-image {
+                    width: 400px;
+                    height: 400px;  
+                    // padding: 0 80px;   
+                }
+            }
+        }
+    }
+}
+
+@media #{$wide} {
+    .general-settings {
+        .general-settings-inner {
+            .data-container {
+                width: calc(100% - 560px);
+                width: -webkit-calc(100% - 560px);
+            }
+
+            .display-container {
+                width: 560px;
+
+                & > img {
+                    width: 450px;
+                    height: 450px;
+                }
+
+                .general-settings-display-image {
+                    width: 450px;
+                    height: 450px;
+                    // padding: 0 80px; 
+                }
+            }
+        }
+    }
+}
+
+/******** slider container ********/
+
+.slider-container {
+    input {
+        width: 100%;
+    }
+}
+
+
+/********* templates **********/
+
+
+.templates-container {
+    max-width: 1340px;
+    margin: auto;
+    
+    .configurator-selector {
+        text-align: center;
+
+        select {
+            height: 40px;
+            padding: 0 10px;
+        }
+    }
+
+    .types-separator {
+        p {
+            margin: 50px 0;
+            text-align: center;
+            position: relative;
+            @include displayFlex;
+            @include alignItems(center);
+            @include justifyContent(center);
+
+            &::before,
+            &::after {
+                content: '';
+                display: inline-block;
+                width: 50px;
+                height: 1px;
+                background-color: $lightgrey2;
+            }
+
+            &::before {
+                margin-right: 10px;
+            }
+            &::after {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .templates-container-inner {
+        .templates-list {
+            .templates-list-inner {
+                @include displayFlex;
+                @include flexWrap;
+                width: calc(100% + 10px);
+                width: -webkit-calc(100% + 10px);
+                margin: -5px 0 0 -5px;
+
+                & > p {
+                    width: 100%;
+                    padding: 5px 10px;
+                    text-align: center;
+                }
+
+                .single-template {
+                    width: 50%;
+                    padding: 5px;
+                    .single-template-inner {
+                        padding: 5px;
+                        border-radius: 7px;
+                        border: 1px solid $lightgrey2;
+
+                        &.selected {
+                            border-color: $black2;
+                        }
+
+                        .image-container {
+                            img {
+                                aspect-ratio: 14/9;
+                                object-fit: contain;
+                                -o-object-fit: contain;
+                                background-color: $white;
+                            }
+                        }
+
+                        .main-container {
+                            padding: 10px 0;
+                            h3 {
+                                @include fontH3;
+                                margin: 0 0 10px;
+                                text-align: center;
+                            }
+
+                            form {
+                                text-align: center;
+                                label {
+                                    @include body13px400;
+
+                                    select {
+                                        @include body13px400;
+                                        height: 30px;
+                                    }
+                                }
+
+                                button {
+                                    width: 100%;
+                                    margin: 20px 0 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$mobileSmMin} {
+    .templates-container {
+        .templates-container-inner {
+            .templates-list {
+                .templates-list-inner {
+                    .single-template {
+                        width: 33.3%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$mobile} {
+    .templates-container {
+        .templates-container-inner {
+            .templates-list {
+                .templates-list-inner {
+                    width: calc(100% + 20px);
+                    width: -webkit-calc(100% + 20px);
+                    margin: -10px 0 0 -10px;
+
+                    .single-template {
+                        padding: 10px;
+                        width: 33.3%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$tablet} {
+    .templates-container {
+        .templates-container-inner {
+            .templates-list {
+                .templates-list-inner {
+
+                    .single-template {
+                        padding: 10px;
+                        width: 25%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .templates-container {
+        .templates-container-inner {
+            .templates-list {
+                .templates-list-inner {
+                    width: calc(100% + 30px);
+                    width: -webkit-calc(100% + 30px);
+                    margin: -15px 0 0 -15px;
+
+                    .single-template {
+                        padding: 15px;
+                        width: 16.66%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/********** loader **********/
+
+.config-loader-container {
+    height: 120px;
+    width: 100%;
+    @include displayFlex;
+    @include justifyContent(center);
+    @include alignItems(center);
+
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid $black;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    } 
+}
+
+/************ login-register modal *****************/
+
+.login-register-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,.6);
+    @include displayFlex;
+    @include justifyContent(center);
+    @include alignItems(center);
+    z-index: 99;
+
+    .login-register-modal-main {
+        padding: 50px 15px 30px;
+        background-color: $white;
+        max-height: 90vh;
+        width: 500px;
+        max-width: 95vw;
+        overflow: auto;
+        @include boxShadow(rgba(35, 35, 35, 0.05) 0px 0px 16px);
+        position: relative;
+
+        .close-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: $black2;
+            font-size: 20px;
+        }
+
+        form {
+            text-align: center;
+            input {
+                margin: 0 0 15px;
+            }
+
+            button {
+                margin: 10px auto 0;
+            }
+        }
+
+        .bottom-container {
+            margin: 15px 0 0;
+            text-align: center;
+            button {
+                text-decoration: underline;
+            }
+        }
+
+    }
+}
+
+/****** accordion *********/
+
+.theme-accordion {
+    .theme-accordion-item {
+        border-bottom: 1px solid $lightgrey5;
+        .heading {
+            a {
+                @include displayFlex;
+                @include alignItems(center);
+                @include justifyContent(space-between);
+                height: 100px;
+                padding: 15px 0;
+
+                .heading {
+                    width: 100%;
+                    flex-shrink: 1;
+                    margin: 0;
+                    padding: 0 34px 0 0;
+                    @include bodyFont16px24line;
+                }
+
+                .toggle-icon-wrapper {
+                    flex-shrink: 0;
+                    width: 44px;
+                    padding: 4.5px;
+                    background-color: var(--awb-icon-box-color) !important;
+                    border-radius: 50%;
+                    i {
+                        width: 44px;
+                        height: 44px;
+                        font-size: 16px;
+                        color: var(--awb-icon-color);
+                        &.awb-icon-minus {
+                            display: none;
+                        }
+
+                        &.awb-icon-plus {
+                            @include displayFlex;
+                            @include alignItems(center);
+                            @include justifyContent(space-between);
+                        }
+                    }
+                } 
+            } 
+        }
+
+        .body {
+            visibility: hidden;
+            max-height: 0;
+            @include transition;
+            @include bodyFont16px24line;
+
+            .body-inner {
+                padding: 8px 66px 24px 0;
+            }
+        }
+
+        &.active {
+            .heading {
+                a {
+
+                    .toggle-icon-wrapper {
+
+                        i {
+                            &.awb-icon-minus {
+                                display: block;
+                                @include displayFlex;
+                                @include alignItems(center);
+                                @include justifyContent(space-between);
+                            }
+                            &.awb-icon-plus {
+                                display: none !important;
+                            }
+                        }
+                    } 
+                } 
+            }
+
+            .body {
+                visibility: visible;
+                max-height: 100000px;
+            }
+        }
+    }
+}

@@ -1,0 +1,65 @@
+
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/var';
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/mixins';
+@import '../../../../../wp-content/themes/Avada-Child-Theme/assets/sass/typography';
+
+// .config-term-settings-furniture-shortcode {
+//     background-color: $white;
+// }
+
+.config-term-settings-furniture-shortcode,
+.config-furniture-product-general-settings-shortcode {
+    // @import '../../../furniture-configurator-mox-v2/assets/sass/config_vars';
+    // @import '../../../furniture-configurator-mox-v2/assets/sass/config_vars';
+    // @import '../../../furniture-configurator-mox-v2/assets/sass/_config_typography';
+    @import 'container';
+    @import 'elements';
+    @import 'general';
+    @import 'category';
+
+    background-color: $white;
+
+    &.disabled {
+        button, a, input {
+            pointer-events: none !important;
+        }
+    } 
+}
+
+
+/******** load more container **********/
+.load-more-btn-container {
+    .load-more-btn-container-inner {
+        position: relative;
+        text-align: center;
+        padding: 12px 0 0;
+        // padding: 24px 0 0;
+        background-color: $white;
+        @include boxShadow(0 0 15px 15px rgba(255,255,255,.5));
+
+        &::after {
+            content: '';
+            z-index: 7;
+            display: block;
+            position: absolute;
+            // height: 100px;
+            // width: 100%;
+            // left: 0;
+            // bottom: 100%;
+            // @include gradient((top, rgba(255,255,255, 0.9) 0, $white 100%));
+            height: 202px;
+            width: 100%;
+            left: 0;
+            bottom: 100%;
+            @include gradient((top, rgba(255,255,255, 0) 3%, $white 100%));
+
+        }
+        button {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+}
+
+

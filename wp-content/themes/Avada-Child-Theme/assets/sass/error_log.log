@@ -1,0 +1,3 @@
+02/11/26 5:24:02: bundle.scss - parse error: failed at `@include justifyContent(center)` C:\Program Files\Ampps\www\darbai\furniture-config-v2-2\wp-content\themes\Avada-Child-Theme\assets\sass/_carousel.scss on line 31, at column 9
+02/11/26 5:24:54: bundle.scss - parse error: failed at `@include justifyContent(center)` C:\Program Files\Ampps\www\darbai\furniture-config-v2-2\wp-content\themes\Avada-Child-Theme\assets\sass/_carousel.scss on line 31, at column 9
+02/11/26 5:25:05: bundle.scss - parse error: failed at `@include justifyContent(center)` C:\Program Files\Ampps\www\darbai\furniture-config-v2-2\wp-content\themes\Avada-Child-Theme\assets\sass/_carousel.scss on line 31, at column 9

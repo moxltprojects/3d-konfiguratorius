@@ -1,0 +1,39 @@
+/********* preview sidebar ********/
+
+.config-preview-container {
+    .config-sidebar {
+        width: 100%;
+    }
+}
+
+@media #{$mobile} {
+    .config-preview-container {
+        .main-info {
+            @include displayFlex;
+        }
+        .config-sidebar {
+            width: 220px;
+
+            .config-sidebar-inner {
+                height: 100%;
+            }
+
+            .summary-cabinets-list {
+                width: 100%;
+            }
+            .total-container {
+                background-color: $white;
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .config-preview-container {
+
+        .config-sidebar {
+            width: 355px;
+
+        }
+    }
+}

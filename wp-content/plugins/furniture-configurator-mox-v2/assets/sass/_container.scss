@@ -1,0 +1,32 @@
+
+
+.display-type-container {
+    
+    & > div {
+        margin: 0 0 30px;
+    }
+
+}
+
+
+@media #{$tablet} {
+    
+    .display-type-container {
+        
+        & > div {
+            margin: 0 0 50px;
+        }
+
+    }
+}
+
+@media #{$desktop} {
+    
+    .display-type-container {
+        
+        & > div {
+            margin: 0 0 70px;
+        }
+
+    }
+}

@@ -1,0 +1,40 @@
+
+.config-furniture-settings-content {
+    .config-furniture-settings-content-inner {
+        h2 {
+            margin: 0 0 20px;
+        }
+
+        & > div {
+            &:not(:last-child) {
+                margin: 0 0 30px;
+            }
+        }
+    }
+}
+
+.components-container {
+    .components-container-inner {
+
+        & > div {
+            &:not(:last-child) {
+                margin: 0 0 30px;
+            }
+        }
+
+        .component-terms-children {
+            .component-terms-children-inner {
+                @include displayFlex;
+
+                & > div {
+                    width: 100%;
+                }
+            }
+           
+            label {
+                display: block;
+            }
+        }
+        
+    }
+}

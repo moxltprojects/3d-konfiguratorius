@@ -1,0 +1,55 @@
+/.tmb
+/.well-known
+/data
+/optimum_crm
+/wp-admin
+/wp-includes/
+.hcflag
+.htaccess
+.htaccess.bk
+.user.ini
+google7408002e6f6eb826.html
+.litespeed_flag
+error_log
+index.php
+index2.html
+license.txt
+php.ini
+readme.html
+robots.txt
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-config.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
+# Ignore everything in wp-content
+wp-content/*
+
+# Allow plugins directory
+!wp-content/plugins/
+
+# Ignore all plugins
+wp-content/plugins/*
+
+# Allow only plugins starting with mox-
+!wp-content/plugins/furniture-configurator-*/
+!wp-content/plugins/furniture-configurator-*/**
+
+# Allow themes directory
+!wp-content/themes/
+
+# Ignore all themes
+wp-content/themes/*
+
+# Allow only Avada-Child-Theme
+!wp-content/themes/Avada-Child-Theme/
+!wp-content/themes/Avada-Child-Theme/**

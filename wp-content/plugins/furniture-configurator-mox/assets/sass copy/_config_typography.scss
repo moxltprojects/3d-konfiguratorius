@@ -1,0 +1,86 @@
+
+@mixin bodyFont18px {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;;
+}
+
+@mixin bodyFont16px {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont14px {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont12px {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+@mixin bodyFont10px {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+
+
+@mixin fontH1 {
+    font-size: 27px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+@mixin fontH2 {
+    font-size: 27px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH22px {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH22pxLibreFranklin {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+@mixin fontH3 {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    font-weight: 600!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+
+@mixin fontH4 {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 500!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+@mixin fontH5 {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 700!important;
+    font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+
+

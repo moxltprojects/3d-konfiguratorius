@@ -1,0 +1,1441 @@
+@charset "UTF-8";
+/*** Horizontal wrap **/
+@font-face {
+  font-family: Usual Regular;
+  src: url("../fonts/Usual-regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@media (max-width: 767px) {
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography1-"],
+  html body .fusion-layout-column .fusion-title h1:not([style*=typography]):not([style*=typography] h1),
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography1-"],
+  html body .fusion-layout-column .fusion-text h1:not([style*=typography]):not([style*=typography] h1) {
+    font-family: var(--awb-typography2-font-family) !important;
+    font-size: var(--awb-typography2-font-size) !important;
+    line-height: var(--awb-typography2-line-height) !important;
+    font-weight: var(--awb-typography2-font-weight) !important;
+    text-transform: var(--awb-typography2-text-transform) !important;
+    letter-spacing: var(--awb-typography2-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography3-"],
+  html body .fusion-layout-column .fusion-title h2:not([style*=typography] h2):not([style*=typography]):not([style*=typography]):not([style*=typography] h3),
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography3-"],
+  html body .fusion-layout-column .fusion-text h2:not([style*=typography] h2):not([style*=typography]):not([style*=typography]):not([style*=typography] h3) {
+    font-family: var(--awb-typography4-font-family) !important;
+    font-size: var(--awb-typography4-font-size) !important;
+    line-height: var(--awb-typography4-line-height) !important;
+    font-weight: var(--awb-typography4-font-weight) !important;
+    text-transform: var(--awb-typography4-text-transform) !important;
+    letter-spacing: var(--awb-typography4-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-typography5-"],
+  html body .fusion-layout-column .fusion-title h4:not([style*=typography]):not([style*=typography] h4),
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-typography5-"],
+  html body .fusion-layout-column .fusion-text h4:not([style*=typography]):not([style*=typography] h4) {
+    font-family: var(--awb-custom_typography_1-font-family) !important;
+    font-size: var(--awb-custom_typography_1-font-size) !important;
+    line-height: var(--awb-custom_typography_1-line-height) !important;
+    font-weight: var(--awb-custom_typography_1-font-weight) !important;
+    text-transform: var(--awb-custom_typography_1-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_1-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_5-"],
+  html body .fusion-layout-column .fusion-title h5:not([style*=typography]):not([style*=typography] h5),
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_5-"],
+  html body .fusion-layout-column .fusion-text h5:not([style*=typography]):not([style*=typography] h5) {
+    font-family: var(--awb-custom_typography_6-font-family) !important;
+    font-size: var(--awb-custom_typography_6-font-size) !important;
+    line-height: var(--awb-custom_typography_6-line-height) !important;
+    font-weight: var(--awb-custom_typography_6-font-weight) !important;
+    text-transform: var(--awb-custom_typography_6-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_6-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_7-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_7-"] {
+    font-family: var(--awb-custom_typography_8-font-family) !important;
+    font-size: var(--awb-custom_typography_8-font-size) !important;
+    line-height: var(--awb-custom_typography_8-line-height) !important;
+    font-weight: var(--awb-custom_typography_8-font-weight) !important;
+    text-transform: var(--awb-custom_typography_8-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_8-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_9-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_9-"] {
+    font-family: var(--awb-custom_typography_10-font-family) !important;
+    font-size: var(--awb-custom_typography_10-font-size) !important;
+    line-height: var(--awb-custom_typography_10-line-height) !important;
+    font-weight: var(--awb-custom_typography_10-font-weight) !important;
+    text-transform: var(--awb-custom_typography_10-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_10-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_11-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_11-"] {
+    font-family: var(--awb-custom_typography_2-font-family) !important;
+    font-size: var(--awb-custom_typography_2-font-size) !important;
+    line-height: var(--awb-custom_typography_2-line-height) !important;
+    font-weight: var(--awb-custom_typography_2-font-weight) !important;
+    text-transform: var(--awb-custom_typography_2-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_2-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_3-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_3-"] {
+    font-family: var(--awb-custom_typography_4-font-family) !important;
+    font-size: var(--awb-custom_typography_4-font-size) !important;
+    line-height: var(--awb-custom_typography_4-line-height) !important;
+    font-weight: var(--awb-custom_typography_4-font-weight) !important;
+    text-transform: var(--awb-custom_typography_4-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_4-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_12-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_12-"] {
+    font-family: var(--awb-custom_typography_13-font-family) !important;
+    font-size: var(--awb-custom_typography_13-font-size) !important;
+    line-height: var(--awb-custom_typography_13-line-height) !important;
+    font-weight: var(--awb-custom_typography_13-font-weight) !important;
+    text-transform: var(--awb-custom_typography_13-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_13-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_14-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_14-"] {
+    font-family: var(--awb-custom_typography_15-font-family) !important;
+    font-size: var(--awb-custom_typography_15-font-size) !important;
+    line-height: var(--awb-custom_typography_15-line-height) !important;
+    font-weight: var(--awb-custom_typography_15-font-weight) !important;
+    text-transform: var(--awb-custom_typography_15-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_15-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_16-"],
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_16-"] {
+    font-family: var(--awb-custom_typography_17-font-family) !important;
+    font-size: var(--awb-custom_typography_17-font-size) !important;
+    line-height: var(--awb-custom_typography_17-line-height) !important;
+    font-weight: var(--awb-custom_typography_17-font-weight) !important;
+    text-transform: var(--awb-custom_typography_17-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_17-letter-spacing) !important;
+  }
+  html body .fusion-layout-column .fusion-title [style*="var(--awb-custom_typography_18-"],
+  html body .fusion-layout-column .fusion-title p:not([style*="var(--awb-custom_typography"]):not([style*="var(--awb-custom_typography"] p),
+  html body .fusion-layout-column .fusion-text [style*="var(--awb-custom_typography_18-"],
+  html body .fusion-layout-column .fusion-text p:not([style*="var(--awb-custom_typography"]):not([style*="var(--awb-custom_typography"] p) {
+    font-family: var(--awb-custom_typography_19-font-family) !important;
+    font-size: var(--awb-custom_typography_19-font-size) !important;
+    line-height: var(--awb-custom_typography_19-line-height) !important;
+    font-weight: var(--awb-custom_typography_19-font-weight) !important;
+    text-transform: var(--awb-custom_typography_19-text-transform) !important;
+    letter-spacing: var(--awb-custom_typography_19-letter-spacing) !important;
+  }
+}
+.config-furniture-shortcode {
+  /******** actions container *********/
+  /********** loader **********/
+  /************ general *************/
+  /******** header progress bar **********/
+  /******** footer progress buttons **********/
+  /******** list-container **********/
+  /************** basic-settings ******************/
+  /************ room-layout *************/
+  /********** model container ******************/
+  /********** edit container ******************/
+  /********** edit container - cabinets******************/
+  /************ login-register modal *****************/
+  /************ footer *************/
+  /*************** progress content 1 - dimensions*****************/
+  /*************** progress content 2 - room layout type *****************/
+  /*************** progress content 3,4 - 3d model *****************/
+  /*************** progress content 3 - 3d edit *****************/
+  /*************** progress content 4 - summary *****************/
+  background-color: #fff;
+}
+@font-face {
+  font-family: Rajdhani;
+  src: url("../fonts/Rajdhani/Rajdhani-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Rajdhani;
+  src: url("../fonts/Rajdhani/Rajdhani-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Rajdhani;
+  src: url("../fonts/Rajdhani/Rajdhani-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Rajdhani;
+  src: url("../fonts/Rajdhani/Rajdhani-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Rajdhani;
+  src: url("../fonts/Rajdhani/Rajdhani-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+.config-furniture-shortcode {
+  font-family: Rajdhani, sans-serif !important;
+}
+.config-furniture-shortcode h1, .config-furniture-shortcode .h1, .config-furniture-shortcode h2, .config-furniture-shortcode .h2, .config-furniture-shortcode h3, .config-furniture-shortcode .h3, .config-furniture-shortcode h4, .config-furniture-shortcode .h4, .config-furniture-shortcode h5, .config-furniture-shortcode .h5, .config-furniture-shortcode h6 .h6 {
+  color: rgb(19, 49, 92) !important;
+}
+.config-furniture-shortcode h1 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+}
+.config-furniture-shortcode h2 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+}
+.config-furniture-shortcode p {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 21px;
+}
+.config-furniture-shortcode * {
+  color: #000;
+}
+.config-furniture-shortcode h1, .config-furniture-shortcode .h1, .config-furniture-shortcode h2, .config-furniture-shortcode .h2, .config-furniture-shortcode h3, .config-furniture-shortcode .h3, .config-furniture-shortcode h4, .config-furniture-shortcode .h4, .config-furniture-shortcode h5, .config-furniture-shortcode .h5, .config-furniture-shortcode h6 .h6 {
+  color: #000;
+}
+.config-furniture-shortcode h1 {
+  font-size: 27px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+.config-furniture-shortcode h2 {
+  font-size: 27px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+.config-furniture-shortcode h3 {
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+  margin: 0 0 12px;
+}
+.config-furniture-shortcode h4 {
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  font-weight: 500 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+.config-furniture-shortcode h5 {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+}
+.config-furniture-shortcode p {
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 400 !important;
+  color: #000;
+}
+.config-furniture-shortcode .config-furniture-main-content {
+  position: relative;
+}
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner {
+  height: 100%;
+	padding: 0 30px;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner .progress-content {
+  flex-grow: 1;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner .progress-content .progress-content-inner > section {
+  display: none;
+}
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner .progress-content .progress-content-inner > section [data-step-data="3"],
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner .progress-content .progress-content-inner > section [data-step-data="4"] {
+  display: none;
+}
+.config-furniture-shortcode .config-furniture-main-content .config-furniture-main-content-inner .progress-content .progress-content-inner .model-display-container {
+  position: absolute;
+  z-index: -1;
+  visibility: hidden;
+  pointer-events: none;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="1"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="1"] {
+  display: block;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="1"] .actions-container .prev-step {
+  display: none;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="2"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="2"] {
+  display: block;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="3"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="3"] {
+  display: block;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="3"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="3"] [data-step-data="3"] {
+  display: block;
+  height: 100%;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="3"] .config-furniture-main-content-inner .progress-content .progress-content-inner .model-display-container {
+  position: relative;
+  z-index: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="4"] .config-furniture-main-content-inner .progress-content {
+  padding-bottom: 0;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="4"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="4"] {
+  display: block;
+  height: 100%;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="4"] .config-furniture-main-content-inner .progress-content .progress-content-inner > [data-step*="4"] [data-step-data="4"] {
+  display: block;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="4"] .config-furniture-main-content-inner .progress-content .progress-content-inner .model-display-container {
+  position: relative;
+  z-index: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+.config-furniture-shortcode .config-furniture-main-content[data-progress="4"] .actions-container .next-step {
+  display: none;
+}
+.config-furniture-shortcode .actions-container {
+  margin: auto 0 0;
+  padding: 70px 0 0;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-furniture-shortcode .actions-container .next-step {
+  margin-left: auto;
+}
+.config-furniture-shortcode .config-loader-container {
+  height: 120px;
+  width: 100%;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-furniture-shortcode .config-loader-container .loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #000;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.config-furniture-shortcode .top-bar {
+  margin: 0 0 50px;
+}
+.config-furniture-shortcode .top-bar .config-progress-bar {
+  display: none;
+}
+.config-furniture-shortcode .top-bar .save-data-container {
+  margin: 30px 0 0;
+}
+.config-furniture-shortcode .top-bar .save-data-container .save-data-container-inner #save-message {
+  text-align: center;
+  margin: 0 0 10px;
+}
+.config-furniture-shortcode .top-bar .save-data-container .save-data-container-inner .styled-button {
+  margin: auto;
+}
+@media (min-width: 1201px) {
+  .config-furniture-shortcode .top-bar {
+    display: block;
+  }
+  .config-furniture-shortcode .top-bar .top-bar-inner .config-progress-bar {
+    margin: 30px 0 0;
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+  }
+  .config-furniture-shortcode .top-bar .top-bar-inner .config-progress-bar button {
+    padding: 16px 0;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom-style: solid;
+    border-bottom-width: 4px;
+    border-bottom-color: transparent;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 21px;
+  }
+  .config-furniture-shortcode .top-bar .top-bar-inner .config-progress-bar button:not(:last-child) {
+    position: relative;
+    margin: 0 84px 0 0;
+  }
+  .config-furniture-shortcode .top-bar .top-bar-inner .config-progress-bar button:not(:last-child)::after {
+    content: "";
+    margin: 0px 24px;
+    width: 34px;
+    height: 1px;
+    background-color: rgb(207, 207, 207);
+    position: absolute;
+    right: -84px;
+    top: 26px;
+    pointer-events: none;
+    cursor: default;
+  }
+  .config-furniture-shortcode .top-bar .top-bar-inner .config-progress-bar button.current {
+    border-color: rgb(226, 33, 28);
+  }
+}
+.config-furniture-shortcode .actions-container .actions-container-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  width: 100%;
+}
+.config-furniture-shortcode .actions-container .actions-container-inner button.next-step {
+  margin: 0 0 0 auto;
+}
+.config-furniture-shortcode .data-container .dimensions-container:nth-child(2) {
+  margin: 30px 0 0;
+}
+.config-furniture-shortcode .list-container:not(:last-child) {
+  margin: 0 0 25px;
+}
+.config-furniture-shortcode .list-container .heading-block {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-furniture-shortcode .list-container .heading-block .heading {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 21px;
+  text-transform: uppercase;
+  margin: 0 7px 12px 0;
+}
+.config-furniture-shortcode .list-container .heading-block span {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21px;
+}
+.config-furniture-shortcode .list-container .texture-list {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+  width: calc(100% + 28px);
+  width: -webkit-calc(100% + 28px);
+  margin: -6px 0 0 -14px;
+}
+@supports not (flex-wrap: wrap) {
+  .config-furniture-shortcode .list-container .texture-list > *, .config-furniture-shortcode .list-container .texture-list > * {
+    margin: 0 -1px !important;
+  }
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item {
+  padding: 6px 14px;
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item button {
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item.current button, .config-furniture-shortcode .list-container .texture-list .texture-list-item:hover button {
+  position: relative;
+  overflow: hidden;
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item.current button::before, .config-furniture-shortcode .list-container .texture-list .texture-list-item.current button::after, .config-furniture-shortcode .list-container .texture-list .texture-list-item:hover button::before, .config-furniture-shortcode .list-container .texture-list .texture-list-item:hover button::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 2px;
+  height: 70px;
+  top: 50%;
+  left: 50%;
+  background-color: #fff;
+  border: 1px solid #666;
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item.current button::before, .config-furniture-shortcode .list-container .texture-list .texture-list-item:hover button::before {
+  transform: translate(-50%, -50%) rotate(45deg); /* W3C */
+  -webkit-transform: translate(-50%, -50%) rotate(45deg); /* Safari & Chrome */
+  -moz-transform: translate(-50%, -50%) rotate(45deg); /* Firefox */
+  -ms-transform: translate(-50%, -50%) rotate(45deg); /* Internet Explorer */
+  -o-transform: translate(-50%, -50%) rotate(45deg); /* Opera */
+}
+.config-furniture-shortcode .list-container .texture-list .texture-list-item.current button::after, .config-furniture-shortcode .list-container .texture-list .texture-list-item:hover button::after {
+  transform: translate(-50%, -50%) rotate(-45deg); /* W3C */
+  -webkit-transform: translate(-50%, -50%) rotate(-45deg); /* Safari & Chrome */
+  -moz-transform: translate(-50%, -50%) rotate(-45deg); /* Firefox */
+  -ms-transform: translate(-50%, -50%) rotate(-45deg); /* Internet Explorer */
+  -o-transform: translate(-50%, -50%) rotate(-45deg); /* Opera */
+}
+.config-furniture-shortcode .basic-settings {
+  width: 100%;
+}
+.config-furniture-shortcode .basic-settings-inner {
+  	max-width: 1340px;
+	margin: 0 auto;
+}
+.config-furniture-shortcode .basic-settings .display-container {
+  width: 400px;
+  text-align: center;
+}
+.config-furniture-shortcode .basic-settings .display-container > img {
+  margin: 0 auto;
+  width: 300px;
+  height: 300px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: flex-end !important;
+  align-items: flex-end !important;
+  position: relative;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-container-wrapper {
+  height: 100%;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-container-wrapper .image-container {
+  height: 100%;
+  padding: 5px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-container-wrapper .image-container .image-container-inner {
+  height: 100%;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-container-wrapper .image-container .image-container-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  -o-object-fit: fill;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container {
+  position: absolute;
+  height: 100%;
+  width: 80px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner .data-arrow-top,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner .data-arrow-bottom {
+  display: block;
+  position: absolute;
+  color: #000;
+  width: auto;
+  height: auto;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner .data-arrow-top {
+  transform: rotate(90deg); /* W3C */
+  -webkit-transform: rotate(90deg); /* Safari & Chrome */
+  -moz-transform: rotate(90deg); /* Firefox */
+  -ms-transform: rotate(90deg); /* Internet Explorer */
+  -o-transform: rotate(90deg); /* Opera */
+  top: -8px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner .data-arrow-bottom {
+  transform: rotate(-90deg); /* W3C */
+  -webkit-transform: rotate(-90deg); /* Safari & Chrome */
+  -moz-transform: rotate(-90deg); /* Firefox */
+  -ms-transform: rotate(-90deg); /* Internet Explorer */
+  -o-transform: rotate(-90deg); /* Opera */
+  bottom: -8px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .data-container-inner::before {
+  content: "";
+  display: block;
+  position: absolute;
+  background-color: #000;
+  width: 1px;
+  height: 100%;
+  top: 0;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .image-data-container .number {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); /* W3C */
+  -webkit-transform: translateY(-50%); /* Safari & Chrome */
+  -moz-transform: translateY(-50%); /* Firefox */
+  -ms-transform: translateY(-50%); /* Internet Explorer */
+  -o-transform: translateY(-50%); /* Opera */
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture {
+  position: relative;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture .image-data-container {
+  right: 100%;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture .image-data-container .data-container-inner .data-arrow-top,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture .image-data-container .data-container-inner .data-arrow-bottom {
+  right: 11px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture .image-data-container .data-container-inner::before {
+  right: 15px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .full-furniture .image-data-container .data-container-inner .number {
+  right: 25px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side {
+  height: 100%;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+  -webkit-justify-content: flex-end !important;
+  justify-content: flex-end !important;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container {
+  position: relative;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture .image-data-container,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-data-container,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container .image-data-container {
+  left: 100%;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture .image-data-container .data-container-inner .data-arrow-top,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture .image-data-container .data-container-inner .data-arrow-bottom,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-data-container .data-container-inner .data-arrow-top,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-data-container .data-container-inner .data-arrow-bottom,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container .image-data-container .data-container-inner .data-arrow-top,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container .image-data-container .data-container-inner .data-arrow-bottom {
+  left: 11px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture .image-data-container .data-container-inner::before,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-data-container .data-container-inner::before,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container .image-data-container .data-container-inner::before {
+  left: 15px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .top-furniture .image-data-container .data-container-inner .number,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-data-container .data-container-inner .number,
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container .image-data-container .data-container-inner .number {
+  left: 25px;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .countertop {
+  padding: 15px 0 0;
+  background-color: #000;
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .bottom-furniture .image-container {
+  height: calc(100% - 15px);
+  height: -webkit-calc(100% - 15px);
+}
+.config-furniture-shortcode .basic-settings .display-container .basic-settings-display-image .display-image-inner .right-side .space-container {
+  position: relative;
+}
+@media (min-width: 1201px) {
+  .config-furniture-shortcode .basic-settings .basic-settings-inner {
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .data-container {
+    width: calc(100% - 460px);
+    -webkit-width: calc(100% - 460px);
+    padding: 0 30px 0 0;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container {
+    width: 460px;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container > img {
+    width: 300px;
+    height: 300px;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container .basic-settings-display-image {
+    width: 300px;
+    height: 300px;
+  }
+}
+@media (min-width: 1215px) {
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .data-container {
+    width: calc(100% - 560px);
+    -webkit-width: calc(100% - 560px);
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container {
+    width: 560px;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container > img {
+    width: 400px;
+    height: 400px;
+  }
+  .config-furniture-shortcode .basic-settings .basic-settings-inner .display-container .basic-settings-display-image {
+    width: 400px;
+    height: 400px;
+  }
+}
+.config-furniture-shortcode .room-layout {
+  margin: auto;
+}
+.config-furniture-shortcode .room-layout .room-layout-options {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  width: calc(100% + 10px);
+  margin: 0 0 0 -5px;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option {
+  padding: 0 5px;
+  max-width: 400px;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option:not(.current) .dimensions-block {
+  display: none;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option button {
+  padding: 10px;
+  border: 1px solid #666;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option button .image-block {
+  position: relative;
+  height: 170px;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option button:hover {
+  border: 2px solid #000;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option.current button {
+  border: 2px solid #000;
+}
+.config-furniture-shortcode .room-layout .room-layout-options .option.current button .image-block::after {
+  content: "✓";
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+  line-height: 0.5;
+  border-radius: 50%;
+  border: 1px solid rgb(19, 49, 92);
+  background-color: rgb(19, 49, 92);
+  color: #fff;
+}
+@media (min-width: 991px) {
+  .config-furniture-shortcode .room-layout .room-layout-options {
+    width: calc(100% + 40px);
+    margin: 0 0 0 -20px;
+  }
+  .config-furniture-shortcode .room-layout .room-layout-options .option {
+    padding: 0 20px;
+  }
+  .config-furniture-shortcode .room-layout .room-layout-options .option button {
+    padding: 20px;
+  }
+  .config-furniture-shortcode .room-layout .room-layout-options .option.current button .image-block::after {
+    right: 0;
+    top: 0;
+    width: 25px;
+    height: 25px;
+  }
+}
+@media (min-width: 1201px) {
+  .config-furniture-shortcode .room-layout .room-layout-options {
+    width: calc(100% + 80px);
+    margin: 0 0 0 -40px;
+  }
+  .config-furniture-shortcode .room-layout .room-layout-options .option {
+    padding: 0 40px;
+  }
+}
+.config-furniture-shortcode .progress-content-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap {
+  width: 355px;
+}
+.config-furniture-shortcode .room-model-container {
+  width: 100%;
+}
+.config-furniture-shortcode .room-model-container .room-model-container-inner {
+  height: 70vh;
+  width: 100%;
+}
+.config-furniture-shortcode .room-model-container .room-model-container-inner button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: 17px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  -moz-box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+  -webkit-box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+  box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+}
+.config-furniture-shortcode .room-model-container .room-model-container-inner button.duplicate {
+  background-image: url("data:image/svg+xml;utf8,<svg width='12' height='15' viewBox='0 0 12 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z' fill='currentColor'/></svg>");
+}
+.config-furniture-shortcode .room-model-container .room-model-container-inner button.delete {
+  background-image: url("data:image/svg+xml;utf8,<svg width='13' height='14' viewBox='0 0 13 14' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.647 1.918h-.125a.125.125 0 0 0 .125-.125v.125h4.75v-.125c0 .07.057.125.125.125h-.125v1.125h1.125v-1.25a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v1.25h1.125V1.918Zm7.876 1.125h-11a.5.5 0 0 0-.5.5v.5c0 .07.056.125.124.125h.944l.386 8.172a1 1 0 0 0 .999.954h7.093a.999.999 0 0 0 .999-.954l.386-8.172h.944a.125.125 0 0 0 .125-.125v-.5a.5.5 0 0 0-.5-.5ZM9.449 12.17H2.596l-.378-8h7.61l-.379 8Z' fill='currentColor'/></svg>");
+}
+.config-furniture-shortcode .model-display-container {
+  width: calc(100% - 355px);
+  width: -webkit-calc(100% - 355px);
+}
+.config-furniture-shortcode .model-display-container .model-display-container-inner {
+  width: 100%;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+.config-furniture-shortcode .model-display-container .model-display-container-inner .model-settings-sidebar {
+  width: 100px;
+}
+.config-furniture-shortcode .model-display-container .model-display-container-inner .model-settings-sidebar .model-settings-sidebar-inner {
+  width: 100%;
+  text-align: center;
+}
+.config-furniture-shortcode .model-display-container .model-display-container-inner .model-settings-sidebar .model-settings-sidebar-inner .zoom-settings .zoom-slider {
+  height: 100px;
+}
+.config-furniture-shortcode .model-display-container .model-display-container-inner .model-settings-sidebar .model-settings-sidebar-inner .zoom-settings .zoom-slider input {
+  transform: rotate(90deg); /* W3C */
+  -webkit-transform: rotate(90deg); /* Safari & Chrome */
+  -moz-transform: rotate(90deg); /* Firefox */
+  -ms-transform: rotate(90deg); /* Internet Explorer */
+  -o-transform: rotate(90deg); /* Opera */
+  width: 100px;
+  height: 100px;
+}
+.config-furniture-shortcode .play-edit-summary {
+  z-index: 3;
+  position: relative;
+  -moz-box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+  -webkit-box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+  box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner {
+  position: relative;
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-tabs {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  background-color: #fff;
+  padding: 15px;
+  -moz-box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+  -webkit-box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+  box-shadow: rgba(35, 35, 35, 0.06) 0px 8px 28px 5px !important;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-tabs button {
+  display: block;
+  margin: 0 auto;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-tabs button:not(:last-child) {
+  margin-bottom: 10px;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content {
+  background-color: #fff;
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item > div {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item > div > div {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item:not(.current) {
+  display: none;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .content .content-inner,
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .textures,
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .dimensions {
+  padding: 15px;
+  overflow: hidden;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .cabinets .cabinets-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -moz-box-orient: vertical !important;
+  -webkit-box-direction: vertical !important;
+  -moz-box-direction: vertical !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .cabinets .cabinets-inner .tabs {
+  flex-shrink: 0;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .cabinets .cabinets-inner .content {
+  height: 100%;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+.config-furniture-shortcode .play-edit-summary .play-edit-summary-inner .main-container-wrap .main-settings-sidebar .main-settings-sidebar-inner .main-content > .content-item .cabinets .cabinets-inner .content .content-inner {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary {
+  /***************** cabinets list item ********************/
+  /********** add cabinet *************/
+  /********** my cabinets *************/
+  /****** summary *******/
+  /****** total-container *******/
+}
+.config-furniture-shortcode .play-edit-summary .tabs {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.config-furniture-shortcode .play-edit-summary .tabs button {
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  flex-shrink: 1;
+  height: 44px;
+  border-bottom: 2px solid rgb(230, 230, 230);
+  color: rgb(38, 42, 49);
+}
+.config-furniture-shortcode .play-edit-summary .tabs button:hover {
+  color: rgb(19, 49, 92);
+}
+.config-furniture-shortcode .play-edit-summary .tabs button.active {
+  color: rgb(19, 49, 92);
+  border-bottom-color: rgb(19, 49, 92);
+  background-color: rgb(231, 235, 241);
+}
+.config-furniture-shortcode .play-edit-summary .content .tab-content:not(.current) {
+  display: none;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item {
+  width: 100%;
+  background-color: rgb(231, 235, 241);
+  padding: 10px 15px;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item:not(:last-child) {
+  margin: 0 0 10px;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .image-container,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .image-container {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .main-container,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .main-container {
+  width: 100%;
+  flex-shrink: 1;
+  padding: 0 10px;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .main-container h3,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .main-container h3 {
+  margin: 0;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .main-container .dimensions-info,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .main-container .dimensions-info {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .main-container .dimensions-info .range,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .main-container .dimensions-info .range {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .side-container,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .side-container {
+  flex-shrink: 0;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .side-container .item-actions-container,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .side-container .item-actions-container {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .side-container .item-actions-container button,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .side-container .item-actions-container button {
+  text-align: center;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .side-container .item-actions-container button svg,
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .side-container .item-actions-container button svg {
+  width: 20px;
+  height: 20px;
+  margin: 0 3px 0 0;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .add-cabinet-item-inner .side-container .item-actions-container button:not(:last-child),
+.config-furniture-shortcode .play-edit-summary .cabinet-item .my-cabinet-item-inner .side-container .item-actions-container button:not(:last-child) {
+  margin: 0 8px 0 0;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .edit-container {
+  display: none;
+}
+.config-furniture-shortcode .play-edit-summary .cabinet-item .edit-container.active {
+  display: block;
+  position: absolute;
+  width: calc(100% + 15px);
+  height: calc(100% + 30px);
+  padding: 15px;
+  left: -15px;
+  top: -15px;
+  background-color: #fff;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list {
+  height: 100%;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list .furniture-type-term {
+  position: static;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list .furniture-type-term:not(:last-child) {
+  margin: 0 0 15px 0;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list .furniture-type-term > button {
+  padding: 10px 15px;
+  width: 100%;
+  background-color: #fff;
+  -moz-box-shadow: rgba(87, 87, 87, 0.08) 0px 0px 12px 5px !important;
+  -webkit-box-shadow: rgba(87, 87, 87, 0.08) 0px 0px 12px 5px !important;
+  box-shadow: rgba(87, 87, 87, 0.08) 0px 0px 12px 5px !important;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list .furniture-type-term ul {
+  padding: 0;
+  margin: 0;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-types-list .furniture-type-term:not(.active) .furniture-list-container {
+  display: none;
+}
+.config-furniture-shortcode .play-edit-summary .furniture-types-list-container .furniture-types-container-inner .furniture-list-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+.config-furniture-shortcode .play-edit-summary .my-cabinets-list {
+  height: 100%;
+}
+.config-furniture-shortcode .play-edit-summary .my-cabinets-list .my-cabinets-list-inner {
+  height: 100%;
+  position: relative;
+}
+.config-furniture-shortcode .play-edit-summary .my-cabinets-list .my-cabinets-list-inner .edit-container {
+  height: 90%;
+}
+.config-furniture-shortcode .play-edit-summary .summary {
+  background-color: #fff;
+  /****** list *******/
+  /****** buy-container *******/
+}
+.config-furniture-shortcode .play-edit-summary .summary .summary-inner {
+  padding: 15px;
+}
+.config-furniture-shortcode .play-edit-summary .summary .total-container {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  padding: 15px;
+}
+.config-furniture-shortcode .play-edit-summary .summary .total-container .price-block {
+  margin: 0 0 0 auto;
+}
+.config-furniture-shortcode .play-edit-summary .summary .buy-container {
+  margin: 50px 0 0;
+}
+.config-furniture-shortcode .play-edit-summary .summary .buy-container button {
+  width: 100%;
+  margin: 0 auto;
+}
+.config-furniture-shortcode .play-edit-summary .total-container {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  padding: 15px;
+}
+.config-furniture-shortcode .play-edit-summary .total-container .price-block {
+  margin: 0 0 0 auto;
+}
+.config-furniture-shortcode .login-register-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  z-index: 99;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main {
+  padding: 50px 15px 30px;
+  background-color: #fff;
+  max-height: 90vh;
+  width: 500px;
+  max-width: 95vw;
+  overflow: auto;
+  -moz-box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+  -webkit-box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+  box-shadow: rgba(35, 35, 35, 0.05) 0px 0px 16px !important;
+  position: relative;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main .close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: rgb(38, 42, 49);
+  font-size: 20px;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main form {
+  text-align: center;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main form input {
+  margin: 0 0 15px;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main form button {
+  margin: 10px auto 0;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main .bottom-container {
+  margin: 15px 0 0;
+  text-align: center;
+}
+.config-furniture-shortcode .login-register-modal .login-register-modal-main .bottom-container button {
+  text-decoration: underline;
+}
+.config-furniture-shortcode button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+.config-furniture-shortcode button.styled-button {
+  position: relative;
+  cursor: pointer;
+  border: medium;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  white-space: nowrap;
+  height: 44px;
+  box-sizing: border-box;
+  border-radius: 0px;
+  letter-spacing: 0.4px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 21px;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  min-width: 116px;
+  color: #fff !important;
+}
+.config-furniture-shortcode button.styled-button.dark {
+  background-color: rgb(19, 49, 92);
+}
+.config-furniture-shortcode button.styled-button.bright {
+  background-color: rgb(226, 33, 28);
+}
+.config-furniture-shortcode button.styled-button::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 4px;
+  opacity: 0.2;
+  background-color: #000;
+  transition-property: height;
+  transition-duration: 0.15s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.config-furniture-shortcode button.styled-button:hover {
+  height: 44px;
+}
+.config-furniture-shortcode button.styled-button .text {
+  color: #fff;
+}
+.config-furniture-shortcode button.styled-button > svg {
+  min-width: 20px;
+}
+.config-furniture-shortcode button.styled-button > svg path {
+  fill: #fff;
+}
+.config-furniture-shortcode button.styled-button > svg:nth-child(1) {
+  margin-right: 10px;
+  transform: rotate(180deg); /* W3C */
+  -webkit-transform: rotate(180deg); /* Safari & Chrome */
+  -moz-transform: rotate(180deg); /* Firefox */
+  -ms-transform: rotate(180deg); /* Internet Explorer */
+  -o-transform: rotate(180deg); /* Opera */
+}
+.config-furniture-shortcode button.styled-button > svg:nth-child(2) {
+  margin-left: 10px;
+}
+.config-furniture-shortcode button .loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.config-furniture-shortcode form button[type=submit] {
+  position: relative;
+  cursor: pointer;
+  border: medium;
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  white-space: nowrap;
+  height: 34px;
+  box-sizing: border-box;
+  border-radius: 0px;
+  letter-spacing: 0.4px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  min-width: 100px;
+  background-color: rgb(19, 49, 92);
+  color: #fff;
+}
+.config-furniture-shortcode form button[type=submit]::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 4px;
+  opacity: 0.2;
+  background-color: #000;
+  transition-property: height;
+  transition-duration: 0.15s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.config-furniture-shortcode form button[type=submit]:hover {
+  height: 34px;
+}
+.config-furniture-shortcode .model-settings-sidebar button .image-block {
+  display: inline-block;
+  padding: 5px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+.config-furniture-shortcode .model-settings-sidebar button.active .image-block {
+  background-color: #C5C5C5;
+}
+.config-furniture-shortcode .model-settings-sidebar button.active div {
+  color: rgb(19, 49, 92);
+}
+.config-furniture-shortcode.disabled button, .config-furniture-shortcode.disabled a, .config-furniture-shortcode.disabled input {
+  pointer-events: none !important;
+}
+
+/*# sourceMappingURL=bundle.css.map */

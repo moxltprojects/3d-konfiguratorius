@@ -1,0 +1,10 @@
+#wrapper {
+	@include displayFlex;
+	@include flexDirectionColumn;
+	@include alignItems(stretch);
+	min-height: 100vh;
+
+	.fusion-tb-footer {
+		margin-top: auto;
+	}
+}

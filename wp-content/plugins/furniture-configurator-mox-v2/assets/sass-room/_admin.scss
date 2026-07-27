@@ -1,0 +1,272 @@
+&.admin-shortcode {
+
+    /************container**************/
+    .room-config-container {
+        &[data-progress="3"] {
+            .room-config-container-inner {
+                .progress-content {
+                    .progress-content-inner {
+                        .steps-content {
+                            & > [data-step*="3"] {
+                                display: block;
+
+                                .tabs-content {
+                                    .cabinets {
+                                        display: block;
+                                    }
+                                    .summary {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+
+                        .model-display-container {
+                            position: relative;
+                            z-index: 1;
+                            visibility: visible;
+                            pointer-events: all;
+                        }
+                    }
+                }
+            }
+        }
+
+        &[data-progress="4"] {
+            .room-config-container-inner {
+                .progress-content {
+                    padding-bottom: 0;
+                    .progress-content-inner {
+                        .steps-content {
+                            & > [data-step*="3"] {
+                                display: block !important;
+                                .tabs {
+                                    display: none !important;
+                                }
+
+                                .tabs-content {
+                                    .cabinets {
+                                        display: none;
+                                    }
+                                    .summary {
+                                        display: block;
+                                    }
+                                }
+                            }
+                        }
+                        .model-display-container {
+                            position: relative;
+                            z-index: 1;
+                            visibility: visible;
+                            pointer-events: all;
+                        }
+                    }
+                }
+
+                .actions-container {
+                    .next-step {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    /************** elements**************/
+
+    .cabinet-settings {
+        width: 250px;
+        .main-container {
+            height: 100%;
+
+            .cabinets-content {
+                height: 100%;
+
+                .cabinets-content-inner {
+                    height: 100%;
+                    @include displayFlex;
+                    @include flexDirectionColumn;
+
+                    .tabs-content-inner {
+                        height: 100%;
+                    
+                        .dynamic-list {
+                            position: relative !important;        
+                            overflow: hidden;  
+                        }
+
+                        .dynamic-list-inner {
+                            height: 100%;
+                            left: 0;
+                            width: 100%;
+                            // left: 20px;
+                            // width: calc(100% - 40px);
+                            // width: -webkit-calc(100% - 40px);
+                            position: absolute !important;
+                            overflow: auto;
+                        }
+
+                        .tab-item {
+                            height: 100%;
+
+                            .content {
+                                height: 100%;
+                                @include displayFlex;
+                                @include flexDirectionColumn;
+
+                                .content-inner {
+                                    flex-grow: 1;
+
+                                    & > div {
+                                        height: 100%;
+
+                                        & > div {
+                                            height: 100%;
+                                        }
+                                    }
+
+                                    .furniture-type-list-inner {
+                                        flex-grow: 1;
+                                    }
+                                }
+
+                                .total-container {
+                                    margin: 20px 0 0 0;
+
+                                    p {
+                                        margin: 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .cabinets-content {
+
+                .room-type-tabs {
+                    button {
+                        @include body16px600;
+                        border-bottom: 2px solid $lightgrey4;
+                        color: $black2;
+                        background-color: $lightgrey4;
+
+                        &:hover {
+                            color: $blue;
+                        }
+
+                        &.active {
+                            color: $lightgrey3;
+                            border-bottom-color: $blue;
+                            background-color: $blue;
+                        }
+                    }
+                }
+
+                .tabs-content {
+                    flex-grow: 1;
+                    min-height: 300px;
+                    padding: 15px;
+
+                    .summary {
+                        height: 100% !important;
+
+                        .summary-inner {
+                            padding: 0 !important;
+                        }
+
+                        .summary-content {
+                            height: 100% !important;
+
+                            .dynamic-list  {
+                                height: 100% !important;
+                            }
+                        }
+                    }
+                    .tab-item {
+                        height: 100% !important;
+                        &:not(.current) {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*********** dimensions **********/
+
+    .dimensions-block {
+        .dimension-container {
+            .input-container {
+                input {
+                    width: 100%;
+                }
+                span {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    @media #{$mobile} {
+        .room-layout {
+            .dimensions-block {
+                @include displayFlex;
+                @include flexWrap(wrap);
+                width: calc(100% + 10px);
+                width: -webkit-calc(100% + 10px);
+                margin: -5px 0 0 -5px;
+
+                .dimension-container {
+                    padding: 5px;
+                    flex-grow: 1;
+                    min-width: 200px;
+                }
+            }
+        }
+
+    }
+
+    @media #{$desktop} {
+        .cabinet-settings {
+            width: 300px;
+        }
+    }
+
+    /******** loader ****/
+
+    .room-config-preview-container {
+        .config-loader-container {
+            height: 120px;
+            width: 100%;
+            @include displayFlex;
+            @include justifyContent(center);
+            @include alignItems(center);
+
+            .loader {
+                width: 48px;
+                height: 48px;
+                border: 5px solid $black;
+                border-bottom-color: transparent;
+                border-radius: 50%;
+                display: inline-block;
+                box-sizing: border-box;
+                animation: rotation 1s linear infinite;
+
+                @keyframes rotation {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+            } 
+        }
+    }
+}
+

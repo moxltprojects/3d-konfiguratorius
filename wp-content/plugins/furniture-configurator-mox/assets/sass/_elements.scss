@@ -1,0 +1,1075 @@
+/********** loader **********/
+
+.config-loader-container {
+    height: 120px;
+    width: 100%;
+    @include displayFlex;
+    @include justifyContent(center);
+    @include alignItems(center);
+
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid $black;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    } 
+}
+
+/************ general *************/
+
+
+/******** header progress bar **********/
+
+.top-bar {
+    margin: 0 0 50px;
+    .config-progress-bar {
+        display: none;
+    }
+
+    .save-data-container {
+        margin: 30px 0 0;
+        .save-data-container-inner {
+
+            #save-message {
+                text-align: center;
+                margin: 0 0 10px;
+            }
+            
+            .styled-button {
+                margin: auto;
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .top-bar {
+        display: block;
+
+        .top-bar-inner {
+
+            .config-progress-bar {
+                margin: 30px 0 0;
+                @include displayFlex;
+                @include justifyContent(center);
+
+                button {
+                    padding: 16px 0;
+                    border-top: none;
+                    border-right: none;
+                    border-left: none;
+                    border-bottom-style: solid;
+                    border-bottom-width: 4px;
+                    border-bottom-color: transparent;
+                    background-color: transparent;
+                    cursor: pointer;
+                    @include body18px700;
+
+                    &:not(:last-child) {
+                        position: relative;
+                        margin: 0 84px 0 0;
+
+                        &::after {
+                            content: "";
+                            margin: 0px 24px;
+                            width: 34px;
+                            height: 1px;
+                            background-color: $lightgreyPseudo;
+                            position: absolute;
+                            right: -84px;
+                            top: 26px;
+                            pointer-events: none;
+                            cursor: default;
+                        }
+                    }
+
+                    &.current {
+                        border-color: $orange;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/******** footer progress buttons **********/
+
+.actions-container {
+    .actions-container-inner {
+        @include displayFlex;
+        width: 100%;
+
+        button {
+            &.next-step {
+                margin: 0 0 0 auto;
+            }
+        }
+    }
+
+}
+
+
+/******** list-container **********/
+
+.data-container {
+    .dimensions-container {
+        &:nth-child(2) {
+            margin: 30px 0 0;
+        }
+    }
+}
+
+.list-container {
+
+    &:not(:last-child) {
+        margin: 0 0 25px;
+    }
+
+    .heading-block {
+        @include displayFlex;
+        .heading {
+            @include body18px700Upper;
+            margin: 0 7px 12px 0;
+        }
+
+        span {
+            @include body18px400;
+        }
+    }
+
+    .texture-list {
+        @include displayFlex;
+        @include flexWrap(wrap);
+        width: calc(100% + 28px);
+        width: -webkit-calc(100% + 28px);
+        margin: -6px 0 0 -14px;
+
+        .texture-list-item {
+            padding: 6px 14px;
+
+            button {
+                width: 40px;
+                height: 40px;
+                border-radius: 3px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            &.current,
+            &:hover {
+
+                button {
+                    position: relative;
+                    overflow: hidden;
+
+                    &::before,
+                    &::after {
+                        content: '';
+                        display: block;
+                        position: absolute;
+                        width: 2px;
+                        height: 70px;
+                        top: 50%;
+                        left: 50%;
+                        background-color: $white;
+                        border: 1px solid $grey;
+                    }
+
+                    &::before {
+                        @include transform((translate(-50%, -50%) rotate(45deg)));
+                    }
+
+                    &::after {
+                        @include transform((translate(-50%, -50%) rotate(-45deg)));
+                    }
+                }
+            
+            }
+        }
+    }
+}
+
+/************** basic-settings ******************/
+
+
+.basic-settings {
+    width: 100%;
+	
+	.basic-settings { 
+		max-width: 1340px;
+		margin: 0 auto;
+	}
+     .display-container {
+        width: 400px;
+        text-align: center;
+        & > img {
+            margin: 0 auto;
+            width: 300px;
+            height: 300px;
+        }
+
+        .basic-settings-display-image {
+            width: 300px;
+            height: 300px;
+            // padding: 0 80px;
+            margin: 0 auto;
+
+            .display-image-inner {
+                height: 100%;
+                width: 100%;
+                @include displayFlex;
+                @include alignItems(flex-end);
+                
+                position: relative;
+
+                .image-container-wrapper {
+                    height: 100%;
+                    .image-container {
+                        height: 100%; 
+                        padding: 5px;
+
+                       .image-container-inner {
+                            height: 100%; 
+
+                            img {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: fill;
+                                -o-object-fit: fill;
+                            }
+                        }
+                    }
+                        
+                }
+
+                .image-data-container {
+                    position: absolute;
+                    height: 100%;
+                    width: 80px;
+
+                    .data-container-inner {
+                        position: relative;
+                        height: 100%;
+                        width: 100%;
+
+                        .data-arrow-top,
+                        .data-arrow-bottom {
+                            display: block;
+                            position: absolute;
+                            color: $black;
+                            width: auto;
+                            height: auto;
+                        }
+
+                        .data-arrow-top {
+                            @include transform(rotate(90deg));
+                            top: -8px;
+                        }
+
+                        .data-arrow-bottom {
+                            @include transform(rotate(-90deg));
+                            bottom: -8px;
+                        }
+
+                        &::before {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            background-color: $black;
+                            width: 1px;
+                            height: 100%;
+                            top: 0;
+                        }
+                    }
+
+                    .number {
+                        @include body18px500;
+                        position: absolute;
+                        top: 50%;
+                        @include transform(translateY(-50%));
+                    }
+                }
+
+                .full-furniture {
+                    position: relative;
+                    .image-data-container {
+                        right: 100%;
+                        .data-container-inner {
+                            .data-arrow-top,
+                            .data-arrow-bottom {
+                                right: 11px;
+                            }
+
+                            &::before {
+                                right: 15px;
+                            }
+
+                            .number {
+                                right: 25px;
+                            }
+                        }
+                    }
+                }
+
+                .right-side {
+                    height: 100%;
+                    @include displayFlex;
+                    @include flexDirectionColumn;
+                    @include justifyContent(flex-end);
+
+                    .top-furniture,
+                    .bottom-furniture,
+                    .space-container {
+                        position: relative;
+                        .image-data-container {
+                            left: 100%;
+                            .data-container-inner {
+                                .data-arrow-top,
+                                .data-arrow-bottom {
+                                    left: 11px;
+                                }
+
+                                &::before {
+                                    left: 15px;
+                                }
+
+                                .number {
+                                    left: 25px;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-furniture {
+                        .countertop {
+                            padding: 15px 0 0;
+                            background-color: $black; 
+                        }
+
+                        .image-container {
+                            height: calc(100% - 15px);
+                            height: -webkit-calc(100% - 15px);
+                        }
+
+                    }
+
+                    .space-container {
+                        position: relative;
+                    }
+                }
+            }
+                
+        }
+    }
+}
+
+@media #{$desktop} {
+    .basic-settings {
+        .basic-settings-inner {
+            @include displayFlex;
+
+            .data-container {
+                width: calc(100% - 460px);
+                -webkit-width: calc(100% - 460px);
+                padding: 0 30px 0 0;
+            }
+
+            .display-container {
+                width: 460px;
+                & > img {
+                    width: 300px;
+                    height: 300px;
+                }
+
+                .basic-settings-display-image {
+                    width: 300px;
+                    height: 300px;  
+                    // padding: 0 80px;   
+                }
+            }
+        }
+    }
+}
+
+@media #{$wide} {
+    .basic-settings {
+        .basic-settings-inner {
+            .data-container {
+                width: calc(100% - 560px);
+                -webkit-width: calc(100% - 560px);
+            }
+
+            .display-container {
+                width: 560px;
+
+                & > img {
+                    width: 400px;
+                    height: 400px;
+                }
+
+                .basic-settings-display-image {
+                    width: 400px;
+                    height: 400px;
+                    // padding: 0 80px; 
+                }
+            }
+        }
+    }
+}
+
+/************ room-layout *************/
+
+.room-layout {
+	margin: auto;
+    .room-layout-options {
+        @include displayFlex;
+        @include justifyContent(center);
+        width: calc(100% + 10px);
+        margin: 0 0 0 -5px;
+        .option {
+            padding: 0 5px;
+            max-width: 400px;
+            
+            &:not(.current) {
+                .dimensions-block {
+                    display: none;
+                }
+            }
+
+            button {
+                padding: 10px;
+                border: 1px solid $grey;
+                @include transition;
+    
+                .image-block {
+                    position: relative;
+                    height: 170px;
+                }
+
+                &:hover {
+                    border: 2px solid $black;
+                }
+            }
+
+
+            &.current {
+                button {
+                    border: 2px solid $black;
+                    .image-block {
+                        &::after {
+                            content: '✓';
+                            @include displayFlex;
+                            @include justifyContent(center);
+                            @include alignItems(center);
+                            display: block;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            width: 20px;
+                            height: 20px;
+                            font-size: 18px;
+                            line-height: 0.5;
+                            border-radius: 50%;
+                            border: 1px solid $blue;
+                            background-color: $blue;
+                            color: $white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$tablet} {
+    .room-layout {
+        .room-layout-options {
+            width: calc(100% + 40px);
+            margin: 0 0 0 -20px;
+            .option {
+                padding: 0 20px;
+
+                button {
+                    padding: 20px;
+                }
+
+                &.current {
+                    button {
+                        .image-block {
+                            &::after {
+                                right: 0;
+                                top: 0;
+                                width: 25px;
+                                height: 25px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media #{$desktop} {
+    .room-layout {
+        .room-layout-options {
+            width: calc(100% + 80px);
+            margin: 0 0 0 -40px;
+            .option {
+                padding: 0 40px;
+            }
+        }
+    }
+}
+
+/********** model container ******************/
+
+.progress-content-inner {
+    @include displayFlex;
+}
+
+.play-edit-summary {
+    .play-edit-summary-inner {
+        @include displayFlex;
+        @include flexDirectionColumn;
+
+        .main-container-wrap {
+            width: 355px;
+        }
+    }
+}
+
+.room-model-container {
+    width: 100%;
+    .room-model-container-inner {
+        height: 70vh;
+        width: 100%;
+
+        button {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 17px auto;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: $white;
+        @include boxShadow(rgba(35, 35, 35, 0.06) 0px 8px 28px 5px);
+
+            &.duplicate {
+                background-image: url("data:image/svg+xml;utf8,<svg width='12' height='15' viewBox='0 0 12 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z' fill='currentColor'/></svg>");
+            }
+
+            &.delete {
+                background-image: url("data:image/svg+xml;utf8,<svg width='13' height='14' viewBox='0 0 13 14' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.647 1.918h-.125a.125.125 0 0 0 .125-.125v.125h4.75v-.125c0 .07.057.125.125.125h-.125v1.125h1.125v-1.25a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v1.25h1.125V1.918Zm7.876 1.125h-11a.5.5 0 0 0-.5.5v.5c0 .07.056.125.124.125h.944l.386 8.172a1 1 0 0 0 .999.954h7.093a.999.999 0 0 0 .999-.954l.386-8.172h.944a.125.125 0 0 0 .125-.125v-.5a.5.5 0 0 0-.5-.5ZM9.449 12.17H2.596l-.378-8h7.61l-.379 8Z' fill='currentColor'/></svg>");
+            }
+        }
+
+    }
+}
+
+.model-display-container {
+    width: calc(100% - 355px);
+    width: -webkit-calc(100% - 355px);
+
+    .model-display-container-inner {
+        width: 100%;
+
+        @include displayFlex;
+
+        .model-settings-sidebar {
+            width: 100px;
+
+            .model-settings-sidebar-inner {
+                width: 100%;
+                text-align: center;
+
+                .zoom-settings {
+                    .zoom-slider {
+                        height: 100px;
+                        input {
+                            @include transform((rotate(90deg)));
+                            width: 100px;
+                            height: 100px;
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/********** edit container ******************/
+
+.play-edit-summary {
+    z-index: 3;
+    position: relative;
+    @include boxShadow(rgba(35, 35, 35, 0.05) 0px 0px 16px);
+    .play-edit-summary-inner {
+        height: 100%;
+        .main-container-wrap {
+            height: 100%;
+            .main-settings-sidebar {
+                height: 100%;
+                .main-settings-sidebar-inner {
+                    position: relative;
+                    height: 100%;
+   
+                    .main-tabs {
+                        position: absolute;
+                        right: 100%;
+                        top: 0;
+                        background-color: $white;
+                        padding: 15px;
+                        @include boxShadow(rgba(35, 35, 35, 0.06) 0px 8px 28px 5px);
+
+                        button {
+                            display: block;
+                            margin: 0 auto;
+                            &:not(:last-child) {
+                                margin-bottom: 10px;
+                            }
+                        }
+                    }
+
+                    .main-content {
+                        background-color: $white;
+                        height: 100%;
+
+                        & > .content-item  {
+                            height: 100%;
+
+                            & > div {
+                                height: 100%;
+
+                                & > div {
+                                    height: 100%;
+                                }
+                            }
+                            &:not(.current) {
+                                display: none;
+                            }
+
+                            .content .content-inner,
+                            .textures,
+                            .dimensions {
+                                padding: 15px;
+                                overflow: hidden;
+                            }
+
+                            .cabinets {
+                                .cabinets-inner {
+                                    @include displayFlex;
+                                    @include flexDirectionColumn;
+                                    .tabs {
+                                        flex-shrink: 0;
+                                    }
+                                    .content {
+                                        height: 100%;
+                                        flex-shrink: 1;
+                                        overflow: hidden;
+                                        .content-inner {
+                                            height: 100%;
+                                            // .furniture-types-container {
+                                            //     height: 100%;
+
+                                            //     .furniture-types-container-inner {
+                                            //         height: 100%;
+                                            //     }
+                                            // }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/********** edit container - cabinets******************/
+
+.play-edit-summary {
+    .tabs {
+        @include displayFlex;
+        border-radius: 3px;
+        overflow: hidden;
+        button {
+            width: 100%;
+            @include body16px600;
+            flex-shrink: 1;
+            height: 44px;
+            border-bottom: 2px solid $lightgrey4;
+            color: $black2;
+
+            &:hover {
+                color: $blue;
+            }
+
+            &.active {
+                color: $blue;
+                border-bottom-color: $blue;
+                background-color: $lightgrey3;
+            }
+        }
+    }
+
+    .content {
+        .tab-content {
+            &:not(.current) {
+                display: none;
+            }
+        }
+    }
+
+    /***************** cabinets list item ********************/
+
+    .cabinet-item {
+        width: 100%;
+        background-color: $lightgrey3;
+        padding: 10px 15px;
+
+        &:not(:last-child) {
+            margin: 0 0 10px;
+        }
+
+        .add-cabinet-item-inner,
+        .my-cabinet-item-inner {
+            @include displayFlex;
+            @include alignItems(center);
+
+            .image-container {
+                flex-shrink: 0;
+                width: 40px;
+                height: 40px;
+            }
+
+            .main-container {
+                width: 100%;
+                flex-shrink: 1;
+                padding: 0 10px;
+
+                h3 {
+                    margin: 0;
+                }
+
+                .dimensions-info {
+                    @include body14px400;
+
+                    .range {
+                        @include body11px400;
+                    }
+
+                }
+            }
+
+            .side-container {
+                flex-shrink: 0;
+
+                .item-actions-container {
+                    @include displayFlex;
+                    @include alignItems(center);
+
+                    button {
+                        text-align: center;
+                        @include displayFlex;
+                        @include alignItems(center);
+                        svg {
+                            width: 20px;
+                            height: 20px;
+                            margin: 0 3px 0 0;
+                        }
+
+                        &:not(:last-child) {
+                            margin: 0 8px 0 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        .edit-container {
+            display: none;
+
+            &.active {
+                display: block;
+                position: absolute;
+                width: calc(100% + 15px);
+                height: calc(100% + 30px);
+                padding: 15px;
+                left: -15px;
+                top: -15px;
+                background-color: $white;
+            }
+        }
+
+    }
+
+    /********** add cabinet *************/
+
+    .furniture-types-list-container {
+        height: 100%;
+        .furniture-types-container-inner {
+            height: 100%;
+            .furniture-types-list {
+                height: 100%;
+                position: relative;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+
+                .furniture-type-term {
+                    position: static;
+                    &:not(:last-child) {
+                        margin: 0 0 15px 0;
+                    }
+
+                    & > button {
+                        padding: 10px 15px;
+                        width: 100%;
+                        background-color: $white;
+                        @include boxShadow(rgba(87, 87, 87, 0.08) 0px 0px 12px 5px);
+                    }
+
+                    ul {
+                        padding: 0;
+                        margin: 0;
+                    }
+
+                    &:not(.active) {
+                        .furniture-list-container {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            .furniture-list-container {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-color: $white;
+
+                // .add-cabinet-item {
+                //     width: 100%;
+                //     background-color: $lightgrey3;
+                //     padding: 10px 15px;
+
+                //     .add-cabinet-item-inner {
+                //         @include displayFlex;
+                //         @include alignItems(center);
+
+                //         .image-container {
+                //             flex-shrink: 0;
+                //             width: 40px;
+                //             height: 40px;
+                //         }
+
+                //         .main-container {
+                //             width: 100%;
+                //             flex-shrink: 1;
+                //             padding: 0 10px;
+
+                //             h3 {
+                //                 margin: 0;
+                //             }
+
+                //             .dimensions-info {
+                //                 @include body14px400;
+
+                //                 .range {
+                //                     @include body11px400;
+                //                 }
+
+                //             }
+                //         }
+
+                //         .side-container {
+                //             flex-shrink: 0;
+
+                //             .item-actions-container {
+                //                 @include displayFlex;
+                //                 @include alignItems(center);
+
+                //                 button {
+                //                     text-align: center;
+                //                     @include displayFlex;
+                //                     @include alignItems(center);
+                //                     svg {
+                //                         width: 20px;
+                //                         height: 20px;
+                //                         margin: 0 3px 0 0;
+                //                     }
+
+                //                     &:not(:last-child) {
+                //                         margin: 0 8px 0 0;
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+
+                //     .edit-container {
+                //         display: none;
+
+                //         &.active {
+                //             display: block;
+                //             position: absolute;
+                //             width: calc(100% + 15px);
+                //             height: calc(100% + 30px);
+                //             padding: 15px;
+                //             left: -15px;
+                //             top: -15px;
+                //             background-color: $white;
+                //         }
+                //     }
+                // }
+            }
+        }
+    }
+
+    /********** my cabinets *************/
+    .my-cabinets-list {
+        height: 100%;
+        .my-cabinets-list-inner {
+            height: 100%;
+            position: relative;
+
+            .edit-container {
+                height: 90%;
+            }
+        }
+    }
+    
+    /****** summary *******/
+
+    .summary {
+        background-color: $white;
+        .summary-inner {
+            padding: 15px;
+        }
+        /****** list *******/
+        .total-container {
+            @include displayFlex;
+            padding: 15px;
+
+            .price-block {
+                margin: 0 0 0 auto;
+            }
+        }
+
+        /****** buy-container *******/
+        .buy-container {
+            margin: 50px 0 0;
+            button {
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
+
+    }
+
+    /****** total-container *******/
+    .total-container {
+        @include displayFlex;
+        padding: 15px;
+
+        .price-block {
+            margin: 0 0 0 auto;
+        }
+    }
+}
+
+/************ login-register modal *****************/
+
+.login-register-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,.6);
+    @include displayFlex;
+    @include justifyContent(center);
+    @include alignItems(center);
+    z-index: 99;
+
+    .login-register-modal-main {
+        padding: 50px 15px 30px;
+        background-color: $white;
+        max-height: 90vh;
+        width: 500px;
+        max-width: 95vw;
+        overflow: auto;
+        @include boxShadow(rgba(35, 35, 35, 0.05) 0px 0px 16px);
+        position: relative;
+
+        .close-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: $black2;
+            font-size: 20px;
+        }
+
+        form {
+            text-align: center;
+            input {
+                margin: 0 0 15px;
+            }
+
+            button {
+                margin: 10px auto 0;
+            }
+        }
+
+        .bottom-container {
+            margin: 15px 0 0;
+            text-align: center;
+            button {
+                text-decoration: underline;
+            }
+        }
+
+    }
+}
+
+/************ footer *************/
+
+/*************** progress content 1 - dimensions*****************/
+
+
+
+/*************** progress content 2 - room layout type *****************/
+
+
+
+/*************** progress content 3,4 - 3d model *****************/
+
+
+/*************** progress content 3 - 3d edit *****************/
+
+
+/*************** progress content 4 - summary *****************/

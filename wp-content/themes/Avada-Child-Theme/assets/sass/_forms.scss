@@ -1,0 +1,36 @@
+
+
+
+
+.gform_heading {
+    display: none !important;
+}
+
+.gform_wrapper {
+    margin-bottom: 0 !important;
+    .gform_submission_error {
+        display: none;
+    }
+
+    .gform_submission_error, .validation_message  {
+        font-size: 14px !important;
+        line-height: 17.2px !important;
+
+        .gform-icon {
+            font-size: 17px !important;
+        }
+    }
+}
+
+.gform_confirmation_wrapper {
+    padding-top: 35px !important;
+    padding-bottom: 35px !important;
+
+    .gform_confirmation_message {
+        color: $white !important;
+        text-align: center;
+        font-size: 20.9px;
+        line-height: 25.08px;
+    }
+}
+

@@ -1,0 +1,261 @@
+.room-config-container-inner {
+    font-family: Rajdhani, sans-serif !important;
+
+    @include headings {
+        &:not(.room-config-summary-item *) {
+            color: $blue !important;
+        }
+        
+    }
+
+    h1 {
+        @include h2;
+    }
+
+    h2 {
+        @include h2;
+    }
+
+    h3 {
+
+    }
+
+    h4 {
+
+    }
+
+    p {
+        @include body18px700;
+    }
+}
+
+.room-config-summary {
+    @include actorFontFamily;
+
+    .theme-accordion {
+        .body-inner {
+            @include bodyMRegular;
+        }
+    }
+}
+
+.room-config-container {
+    position: relative;
+
+    .room-config-container-inner {
+        background-color: $white;
+        @include displayFlex;
+        @include flexDirectionColumn;
+
+        .progress-content {
+
+            .progress-content-inner {
+                .steps-content {
+                    & > section {
+                        &:not([data-step*="2"]) {
+                            display: none;
+                        }
+       
+                        &[data-step*="2"] {
+                            position: absolute;
+                            z-index: -1;
+                            visibility: hidden;
+                            pointer-events: none;
+                        }
+                       
+                        .main-settings-sidebar,
+                        .summary {
+                            display: none;
+                        }
+                    }
+                }
+
+                .model-display-container {
+                    position: absolute;
+                    z-index: -1;
+                    visibility: hidden;
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+    &[data-progress="1"] {
+        .room-config-container-inner {
+            .progress-content {
+                .progress-content-inner {
+                    .steps-content {
+                        & > [data-step*="1"] {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .prev-step {
+                display: none !important;
+            }
+        }
+
+        .room-config-summary {
+            display: none !important;
+        }
+    }
+
+    &:not([data-progress="1"]){
+        .room-config-container-inner {
+            .progress-content {
+                .progress-content-inner {
+                    .steps-content {
+                            @include fitContentWidth;
+                    }
+                }
+            }
+        }
+     }
+    &[data-progress="2"] {
+        .room-config-container-inner {
+            .progress-content {
+                .progress-content-inner {
+                    .steps-content {
+                        & > [data-step*="2"] {
+                            position: relative;
+                            z-index: 1;
+                            visibility: visible;
+                            pointer-events: all;
+                        }
+                    }
+                }
+            }
+        }
+
+        .room-config-summary {
+            display: none !important;
+        }
+    }
+
+    &[data-progress="3"] {
+        .room-config-container-inner {
+            .progress-content {
+                .progress-content-inner {
+                    .steps-content {
+                        
+                        & > [data-step*="3"] {
+                            display: block;
+
+                            // .main-settings-sidebar {
+                            //     display: block;
+                            //     height: 100%;
+                            // }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+     &[data-progress="4"] {
+        .room-config-container-inner {
+            .progress-content {
+                .progress-content-inner {
+                    .steps-content {
+                        & > [data-step*="4"] {
+                            display: block;
+
+                            .main-settings-sidebar {
+                                display: block;
+                                height: 100%;
+                            }
+                        }
+                    }
+
+                    .model-display-container {
+                        position: relative;
+                        z-index: 1;
+                        visibility: visible;
+                        pointer-events: all;
+                    }
+                }
+            }
+        }
+    }
+
+    &[data-progress="5"] {
+        .room-config-container-inner {
+            .progress-content {
+                padding-bottom: 0;
+                .progress-content-inner {
+                    .steps-content {
+                        & > [data-step*="4"] {
+                            display: block;
+                            height: 100%;
+
+                            .summary {
+                                display: block;
+                            }
+                        }
+                    }
+
+                    .model-display-container {
+                        position: relative;
+                        z-index: 1;
+                        visibility: visible;
+                        pointer-events: all;
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .next-step {
+                display: none !important;
+            }
+        }
+    }
+
+    &.loading {
+        .room-config-container-inner {
+            opacity: .5;
+        }
+    }
+
+    & > .config-loader-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    .room-config-summary {
+        display: block;
+        &.hidden {
+            display: none;
+        }
+    }
+}
+
+@media #{$tablet} {
+    .room-config-container {
+
+        .room-config-container-inner {
+            height: 100%;
+
+
+        }
+    }
+}
+
+
+/******** actions container *********/
+
+.actions-container {
+    margin: auto 0 0;
+    padding: 70px 0 0;
+    @include displayFlex;
+
+    .next-step {
+        margin-left: auto;
+    }
+}

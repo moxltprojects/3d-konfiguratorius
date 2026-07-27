@@ -1,0 +1,22 @@
+@import 'config_vars';
+@import '_config_typography';
+@import '../../../../assets/sass/var';
+@import '../../../../assets/sass/mixins';
+@import '../../../../assets/sass/typography';
+
+.config-furniture-shortcode {
+    @import 'general';
+    @import 'container';
+    @import 'elements';
+    @import 'buttons';
+    background-color: $white;
+    padding: 30px;
+
+    &.disabled {
+        button, a, input {
+            pointer-events: none !important;
+        }
+    }
+
+}
+

@@ -1,0 +1,262 @@
+.room-config-summary {
+    margin: 140px 0 0;   
+    padding: 70px 0 0;
+    position: relative;
+
+    &::after {
+        content: '';
+        display: block;
+        text-align: center;
+        width: 646px;
+        max-width: 80%;
+        background-color: $lightgrey5;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        @include transform(translateX(-50%));
+    }
+
+    .room-config-summary-description {
+        text-align: center;
+        margin: 0 0 70px;
+
+        @include headings {
+            color: $black3 !important;
+            margin: 0 0 24px;
+            @include h28px;
+        } 
+
+        p {
+            color: $black3 !important;
+            @include bodyFont16px24line;
+        }
+    }
+    
+    .room-config-summary-item {
+        &:not(:last-child) {
+            padding: 0 0 140px 0;
+            margin: 0 0 70px;
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                display: block;
+                text-align: center;
+                margin: auto;
+                width: 646px;
+                max-width: 80%;
+                height: 1px;
+                bottom: 0;
+                left: 50%;
+                @include transform(translateX(-50%));
+                background-color: $lightgrey5;
+            }
+        }
+
+        .room-config-summary-item-header {
+            margin: 0 0 40px;
+            @include fitContentWidth;
+            padding: 4px 12px;
+            border-radius: 16px;
+            background-color: $lightgrey5;
+
+            p {
+                @include body14pxline20px400;
+                margin: 0;
+                display: inline-block;
+            }
+        }
+        
+        .room-config-summary-item-inner {
+            @include displayFlex;
+
+
+            .image-container {
+                width: 40%;
+
+                .title {
+                    @include h28px;
+                    margin: 0 0 40px;
+                }
+
+                .room-config-summary-item-image {
+                    position: relative;
+                    border: 4px solid $white;
+                    @include fitContentWidth;
+                    max-width: 100%;
+                    @include boxShadow((
+                        0 0 0 1px rgba(0,0,0,.05),
+                        0 2px 3px rgba(0,0,0,.05),
+                        2px 6px 10px rgba(0,0,0,0.31)
+                    ));
+                }
+            }
+
+            .content {
+                // width: 56%;
+                width: 60%;
+                padding-left: 140px;
+
+                .content-container-inner {
+                    .room-config-summary-item-description {
+                        .theme-accordion {
+                            margin: 30px 0 0;
+                        }
+                    }
+
+                    .description {
+                        @include bodyFont16px24line;
+
+                        p {
+                            @include bodyFont16px24line;
+                        }
+                    }
+
+                    .room-config-summary-item-options {
+                        .room-config-summary-item-options-inner {
+                            .options-container {
+                                margin: 130px 0 0;
+                                .title {
+                                    @include h28px;
+                                    margin: 0 0 42px;
+                                }
+
+                                .options-items {
+                                    .option-item {   
+                                        position: relative;
+                                        @include displayFlex;
+                                        @include flexWrap;
+
+                                        &:not(:last-child) {
+                                            margin: 0 0 10px;
+                                        } 
+
+                                        .pseudo {
+                                            height: 20px;
+                                            width: 20px;
+                                            border-radius: 4px;
+                                            flex-shrink: 0;
+                                        }
+
+                                        .pseudo-box {
+                                           border: 1px solid $lightgrey5;
+                                           margin: 0 10px 0 0;
+                                        }
+
+                                        .pseudo-checked {
+                                            position: absolute;
+                                            left: 0;
+                                            top: 0;
+                                        }
+
+                                        input {
+                                            width: 20px;
+                                            height: 20px;
+                                            opacity: 0;
+                                            position: absolute;
+                                            margin: 0 10px 0 0;
+                                            border-radius: 4px;
+                                            border: 1px solid transparent;
+
+                                            &:checked + .pseudo-checked {
+                                                border: 1px solid $black3;
+                                                background-color: $black3;
+                                                &::before {
+                                                    content: "\e903";
+                                                    display: block;
+                                                    font-family: 'imox' !important;
+                                                    width: 20px;
+                                                    height: 20px;
+                                                    font-size: 16px;
+                                                    position: absolute;
+                                                    left: 0;
+                                                    top: 0;
+                                                    color: $white;
+                                                    @include displayFlex;
+                                                    @include justifyContent(center);
+                                                    @include alignItems(center);
+                                                }
+                                            }
+                                        }
+
+                                        label {
+                                            @include body20px400;
+                                            @include displayFlex;
+                                        }
+
+                                        .show-subitems-container {
+                                            margin: 0 0 0 10px;
+                                            button {
+                                                background-color: transparent;
+                                                border: 2px solid $electric;
+                                                @include displayFlex;
+                                                @include alignItems(center);
+                                                padding: 0 8px;
+                                                height: 30px;
+                                                color: $black3;
+                                                @include bodyFont16px24line;
+                                                border-radius: 32px;
+
+                                                i {
+                                                    margin: 0 0 0 8px;
+                                                    flex-shrink: 0;
+                                                    font-size: 16px;
+                                                    color: inherit;
+                                                }
+
+                                                &:hover {
+                                                    background-color: $electric;
+                                                    color: $white;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        
+                        }
+                    }
+
+                    .room-config-summary-item-price {
+                        margin: 53px 0 0;
+
+                        .price-block {
+                            @include h28px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/******** buy-container *********/ 
+.room-config-summary { 
+    .room-config-summary-items {
+        &:empty +  .buy-container {
+            display: none;
+        }
+    }
+    .buy-container {
+        text-align: center;
+        margin: 50px 0 0;
+    }   
+}
+
+@media #{$mobile} {
+    .room-config-summary { 
+        .buy-container {
+            margin: 70px 0 0;
+        }   
+    }
+}
+
+@media #{$tablet} {
+    .room-config-summary { 
+        .buy-container {
+            margin: 90px 0 0;
+        }   
+    }
+}

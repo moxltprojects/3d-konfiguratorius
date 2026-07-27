@@ -1,0 +1,212 @@
+button:not(.fusion-button) {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
+.fusion-button {
+    &[disabled] {
+        background-color: $lightgrey6;
+        border-color: $lightgrey6;
+    }
+}
+
+button,
+a {
+    &.styled-button {
+        position: relative;
+        cursor: pointer;
+        border: medium;
+        @include alignItems(center);
+        @include justifyContent(center);
+        white-space: nowrap;
+        height: 44px;
+        box-sizing: border-box;
+        border-radius: 0px;
+        letter-spacing: 0.4px;
+        @include body18px700Upper;
+        padding: 14px 24px;
+        min-width: 116px;
+        color: $white !important;
+        text-align: center;
+
+        &.dark {
+            background-color: $blue;
+        }
+
+        &.bright {
+            background-color: $orange;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            height: 4px;
+            opacity: 0.2;
+            background-color: $black;
+            @include transition(height, 0.15s);
+        }
+
+        &:hover {
+            height: 44px;
+        }
+
+        .text {
+            color: $white;
+        }
+
+        & > svg {
+            min-width: 20px;
+
+            path {
+                fill: $white;
+            }
+
+            &:nth-child(1) {
+                margin-right: 10px;
+                @include transform(rotate(180deg));
+            }
+            &:nth-child(2) {
+                margin-left: 10px;
+            }
+        }
+    }
+    
+    .loader {
+        width: 20px;
+        height: 20px;
+        border: 3px solid $white;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    } 
+}
+
+form {
+    button[type="submit"]:not(.fusion-button) {
+        position: relative;
+        cursor: pointer;
+        border: medium;
+        @include displayFlex;
+        @include justifyContent(center);
+        @include alignItems(center);
+        white-space: nowrap;
+        height: 34px;
+        box-sizing: border-box;
+        border-radius: 0px;
+        letter-spacing: 0.4px;
+        @include body16px700Upper;
+        padding: 12px 20px;
+        min-width: 100px;
+        background-color: $blue;
+        color: $white;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            height: 4px;
+            opacity: 0.2;
+            background-color: $black;
+            @include transition(height, 0.15s);
+        }
+
+        &:hover {
+            height: 34px;
+        }
+    }
+}
+
+.model-settings-sidebar {
+    .model-settings-sidebar-inner {
+        button {
+            &:not(:last-child) {
+                margin: 0 0 10px;
+            }
+        }
+    }
+    button {
+        .image-block {
+            margin: 0 auto;
+            padding: 5px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            @include displayFlex;
+            @include alignItems(center);
+            @include justifyContent(center);
+        }
+
+        &[data-type="turnon-light"] {
+            svg {
+                filter: grayscale(1);
+            }
+            
+        }
+        &.active,
+        &:hover {
+            .image-block {
+                background-color: $lightgrey;
+            }
+            div {
+                color: $blue;
+            }
+
+            svg {
+                filter: grayscale(0);
+            }
+            
+        }
+    }
+
+    .zoom-slider {
+        &:not(:last-child) {
+            margin: 0 0 10px;
+        }
+    }
+}
+
+button[data-type="go-back"] {
+    margin: 0 auto 15px 15px;
+    display: inline-block;
+}
+
+button[data-action_type="add"] {
+    svg {
+        margin: 0 0 -2px;
+    }
+}
+
+.actions-container {
+
+    .prev-step {
+        svg {
+            @include transform(rotate(180deg));
+            margin: 0 10px 0 0;
+        }
+    }
+
+    .next-step {
+        svg {
+            margin: 0 0 0 10px;
+        }
+    }
+
+}

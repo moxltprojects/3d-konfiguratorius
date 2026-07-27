@@ -1,0 +1,59 @@
+/*********** product item ***********/
+
+.cart_item {
+    .product-info {
+        .config-id {
+            @include body13px400;
+            margin: 0;
+        }
+
+        .variation {
+            .variation- {
+                &:not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(8)):not(:nth-child(odd)) {
+                    display: block;
+                }
+            }
+
+            dt {
+                display: none;
+            }
+
+            dd {
+                p {
+                    font-size: 14px;
+                }
+
+                &:nth-of-type(1) {
+                    float: none;
+                    display: block;
+                    p {
+                        white-space: nowrap;
+                    }
+                }
+
+                &:nth-of-type(1),
+                &:nth-of-type(2) {
+                    margin-left: 0;
+                }
+            }
+
+            .texture-container {
+                text-align: center;
+                @include fitContentWidth;
+                .heading {
+                    font-size: 10px;
+                    margin: 0 0 3px;
+                    width: 45px;
+                    min-width: 100%;
+                    text-align: center;
+                    @include displayFlex;
+                    @include justifyContent(center);
+                }
+                img {
+                    width: 45px;
+                    height: 45px;
+                }
+            }
+        }
+    }
+}

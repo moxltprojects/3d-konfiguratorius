@@ -1,0 +1,131 @@
+.config-furniture-main-content {
+    position: relative;
+
+    .config-furniture-main-content-inner {
+        height: 100%;
+		padding: 0 30px;
+        @include displayFlex;
+        @include flexDirectionColumn;
+
+        .progress-content {
+            flex-grow: 1;
+            @include displayFlex;
+            @include flexDirectionColumn;
+
+            .progress-content-inner {
+                & > section {
+                    display: none;
+
+                    [data-step-data="3"],
+                    [data-step-data="4"] {
+                        display: none;
+                    }
+                }
+
+                .model-display-container {
+                    position: absolute;
+                    z-index: -1;
+                    visibility: hidden;
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+    &[data-progress="1"] {
+        .config-furniture-main-content-inner {
+            .progress-content {
+                .progress-content-inner {
+                    & > [data-step*="1"] {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .prev-step {
+                display: none;
+            }
+        }
+    }
+    &[data-progress="2"] {
+        .config-furniture-main-content-inner {
+            .progress-content {
+                .progress-content-inner {
+                    & > [data-step*="2"] {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+
+    &[data-progress="3"] {
+        .config-furniture-main-content-inner {
+            .progress-content {
+                .progress-content-inner {
+                    & > [data-step*="3"] {
+                        display: block;
+
+                        [data-step-data="3"] {
+                            display: block;
+                            height: 100%;
+                        }
+                    }
+
+                    .model-display-container {
+                        position: relative;
+                        z-index: 1;
+                        visibility: visible;
+                        pointer-events: all;
+                    }
+                }
+            }
+        }
+    }
+
+    &[data-progress="4"] {
+        .config-furniture-main-content-inner {
+            .progress-content {
+                padding-bottom: 0;
+                .progress-content-inner {
+                    & > [data-step*="4"] {
+                        display: block;
+                        height: 100%;
+
+                        [data-step-data="4"] {
+                            display: block;
+                        }
+                    }
+                    
+                    .model-display-container {
+                        position: relative;
+                        z-index: 1;
+                        visibility: visible;
+                        pointer-events: all;
+                    }
+                }
+            }
+        }
+
+        .actions-container {
+            .next-step {
+                display: none;
+            }
+        }
+    }
+}
+
+
+
+/******** actions container *********/
+
+.actions-container {
+    margin: auto 0 0;
+    padding: 70px 0 0;
+    @include displayFlex;
+
+    .next-step {
+        margin-left: auto;
+    }
+}

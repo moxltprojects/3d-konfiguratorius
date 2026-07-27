@@ -1,0 +1,27 @@
+
+
+html body .fusion-tb-header {
+
+
+    [class*="awb-menu__m-collapse-icon-"] {
+        @include transform(rotate(0) !important);
+    }
+
+    .menu-mobile-menu {
+        max-height: 75vh !important;
+    }
+
+    .main-block {
+        .awb-menu {
+            @include fitContentWidth;
+            &:not(:last-child) {
+                margin: 0 30px 0 0;
+            }
+
+            .fusion-menu {
+                @include fitContentWidth;
+            }
+        }
+    }
+
+}
