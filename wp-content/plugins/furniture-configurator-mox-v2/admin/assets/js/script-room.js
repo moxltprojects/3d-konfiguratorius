@@ -836,7 +836,7 @@ async function saveAdminSettingsAjax(
     if (messageDiv) {
         messageDiv.innerHTML = '';
     }
-console.log(furnitureDimensions)
+
     try {
         let formData = new FormData();
         formData.append("action", "ajax_save_admin_config_settings");
