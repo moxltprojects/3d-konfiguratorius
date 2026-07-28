@@ -2677,7 +2677,7 @@ function addGLBModel(
                 }
 
                 if(modelSettings.visibleDimensionsArrows) {
-                    createFurnitureDimensionArrows(wrapper, modelScene, modelObj.box); 
+                    createFurnitureDimensionArrows(wrapper, modelScene, roomObj.box);
                 }
 
                 /***** end push item ****/
