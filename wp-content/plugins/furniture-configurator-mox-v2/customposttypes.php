@@ -6,7 +6,7 @@ function furniture_config_v2_create_all() {
     furniture_config_v2_create_taxonomies();
     furniture_config_v2_create_posttypes();
     furniture_config_v2_insert_default_furniture_types();
-    furniture_config_v2_insert_default_config_thumbnail_types();
+    furniture_config_v2_insert_default_config_attachment_types();
     furniture_config_v2_insert_default_furniture_texture_types();
     furniture_config_v2_insert_default_dynamic_components_categories();
     furniture_config_v2_insert_default_dynamic_components_types();
@@ -321,7 +321,7 @@ function furniture_config_v2_insert_default_furniture_types() {
     }
 }
 
-function furniture_config_v2_insert_default_config_thumbnail_types() {
+function furniture_config_v2_insert_default_config_attachment_types() {
     global $FURNITURE_TYPE_WALL, $FURNITURE_TYPE_WALL_TOP, $THUMB_TYPE_HORIZONTAL_WALL_TOP;
     $terms = [$FURNITURE_TYPE_WALL, $FURNITURE_TYPE_WALL_TOP, $THUMB_TYPE_HORIZONTAL_WALL_TOP ];
 

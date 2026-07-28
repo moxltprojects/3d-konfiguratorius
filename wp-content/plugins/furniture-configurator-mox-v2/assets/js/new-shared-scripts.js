@@ -730,7 +730,7 @@ function furnitureTypeAddInit(
             attachment_url,
             db_data,
         } = foundItem;
-        const { width, height, depth, space_bottom, prices, has_brand_texture, object_src, attachment_type } = db_data;
+        const { width, height, depth, space_bottom, prices, has_brand_texture, object_src, thumbnail_type } = db_data;
 
         if(stepsContainer) {
             stepsContainer.classList.add('loading');
@@ -818,7 +818,7 @@ function furnitureTypeAddInit(
 
         const {itemPositionMm} = await addGLBModel(
             object_src,
-            attachment_type, 
+            thumbnail_type, 
             attachment_url,
             furniture_type, 
             productId, 
@@ -1832,7 +1832,7 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         const childProductId = child.product_id;
         const childCustomId = dbData.custom_id;
         const childSrc = dbData.object_src;
-        const childThumbType = dbData.attachment_type;
+        const childThumbType = dbData.thumbnail_type;
         const childAttachmentUrl = child.attachment_url;
         const childType = child.furniture_type;
         const hasBrandTexture = dbData.has_brand_texture;
@@ -2187,8 +2187,8 @@ export function updateRoomSize(modelObj, dimensions) {
                 userData.depthMm
             );
 
-            const spaceBottomPx = calculateTopSpaceIn3dModel(furnitureType, userData.spaceBottomMm, box);
-            // const spaceBottomPx = getTopFurnitureYPositionIn3dRoom(userData.spaceBottomMm, box);
+            const spaceBottomPx = calculateTopSpaceIn3dModel(furnitureType, userData.spaceMm, box);
+            // const spaceBottomPx = getTopFurnitureYPositionIn3dRoom(userData.spaceMm, box);
 
             const placeResult = placeFurnitureInRoom(
                 furnitureType,
@@ -2329,7 +2329,7 @@ function addExistingGLBModel(
             wrapper.userData.widthMm = itemWidth;
             wrapper.userData.heightMm = itemHeight;
             wrapper.userData.depthMm = itemDepth;
-            wrapper.userData.spaceBottomMm = itemSpaceBottom;
+            wrapper.userData.spaceMm = itemSpaceBottom;
             wrapper.userData.positionMm = childPositionMm;
             wrapper.userData.rotation = childRotation;
             wrapper.userData.hasBrandTexture = hasBrandTexture;
@@ -3401,7 +3401,7 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
         attachment_url,
         db_data,
     } = itemObj;
-    const { height, depth, width, space_bottom, rotation, prices, object_src, furniture_position_mm, attachment_type, hasBrandTexture } = db_data;
+    const { height, depth, width, space_bottom, rotation, prices, object_src, furniture_position_mm, thumbnail_type, hasBrandTexture } = db_data;
 
     // changeTotalPrice(prices);
     const {my_item_html, summary_item_html, new_object} = await addFurnitureItem(
@@ -3414,7 +3414,7 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
     roomState.modelsList[roomState.roomType].dbChildren.push(new_object);
         const {itemPositionMm} = await addGLBModel(
         object_src, 
-        attachment_type,
+        thumbnail_type,
         attachment_url,
         furniture_type, 
         product_id, 
@@ -4818,7 +4818,7 @@ function openEditModal(userData, customId, actionTypeAdd = true) {
     const width = userData.widthMm;
     const height = userData.heightMm;
     const depth = userData.depthMm;
-    const spaceBottom = userData.spaceBottomMm;
+    const spaceBottom = userData.spaceMm;
 
     const furnitureItem = currentModel.dbChildren.find(item => item.custom_id == customId);
 
@@ -5110,24 +5110,12 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
     userData.widthMm = itemWidth;
     userData.heightMm = itemHeight;
     userData.depthMm = itemDepth;
-    userData.spaceBottomMm = itemSpaceBottom;
+    userData.spaceMm = itemSpaceBottom;
 
     // ---------- SAVE LOCAL POSITION ----------
     childObj.position.y = spaceBottomPx;
     const localPos = childObj.position.clone();
     userData.savedPosition = localPos.clone();
-
-    // placeFurnitureInRoom(
-    //     furnitureType,
-    //     childObj,
-    //     modelWidth,
-    //     modelHeight,
-    //     modelDepth,
-    //     spaceBottomPx,
-    //     userData.positionMm,
-    //     null,
-    //     childObj.rotation.y
-    // );
 
     // ---------- COLLISION CHECK ----------
     const isFitting = checkIfAbleToDragChildToPosition(childObj);
@@ -5150,13 +5138,13 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
     const childWorldPos = new THREE.Vector3();
     childObj.getWorldPosition(childWorldPos);
 
-    resaveObjPosition(
-        childWorldPos.clone(), 
-        childObj.rotation.y, 
-        customId, 
-        itemPositionMm, 
-        isFitting
-    );
+    // resaveObjPosition(
+    //     childWorldPos.clone(), 
+    //     childObj.rotation.y, 
+    //     customId, 
+    //     itemPositionMm, 
+    //     isFitting
+    // );
 
     // ---------- VISUAL ERROR ----------
     if (!isFitting) {
@@ -6028,6 +6016,7 @@ export function removeLighting(scene, renderer, dirLight) {
     }
 
     removeShadowElements(renderer, dirLight);
+    switchBaseLightsIntensity(scene, renderer);
 }
 export function removeLighting2(scene, renderer) {
     const oldCeilingLamps = scene.getObjectByName('ceiling-lamps');

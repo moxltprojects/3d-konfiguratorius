@@ -698,6 +698,8 @@ function getProductThumbnailData($standImageData, $productId) {
     $attachmentTypes = get_the_terms($productId, 'config-thumbnail-type');
     $typeSlug = null;
 
+    $defaultThumbnailId = get_post_thumbnail_id($productId);
+
     if(!empty($attachmentTypes)) {
         $attachmentType = $attachmentTypes[0];
         $typeSlug = $attachmentType->slug;
@@ -713,11 +715,12 @@ function getProductThumbnailData($standImageData, $productId) {
             } 
         } 
     }
- 
+
     if(!$attachmentId) {
         $attachmentId = get_post_thumbnail_id($productId);
-        $attachmentUrl = wp_get_attachment_image_url( $attachmentId, 'full' );
+        $attachmentUrl = wp_get_attachment_image_url( $defaultThumbnailId, 'full' );
     } 
+    
 
     return [
         'attachmentType' => $typeSlug,

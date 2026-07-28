@@ -39,7 +39,12 @@ function render_config_room()
         getTemplateByPostId($currentTemplatePostId) :
         getSettingsByConfigId($currentConfigId, $userId);
 
-    $currentRoomType = $currentTemplateData ? $currentTemplateData->room_type : $savedSettings->room_type;
+    $currentRoomType = $currentTemplateData ? 
+        $currentTemplateData->room_type : (
+            $savedSettings ? 
+                $savedSettings->room_type : 
+                null
+        );
 
     $furnitureDimensions = getAdminDefaultFurnitureDimensions($savedSettings);
     $furnitureDimensionsSortedByType = getFurnitureDimensionsArraySortedByType($furnitureDimensions);
@@ -381,11 +386,13 @@ function config_3d_products_addtocart() {
 
     $quantity = 1;
     $completedAddToCart = true;
-    
+
+    $productsToAdd = !empty($mod_products) ? $mod_products : (array) $products;
+
     $aiTextures = (array) $aiTextures;
     $brand_texture = $aiTextures['brand'] ?? null;
 
-    foreach($mod_products as $product) {
+    foreach($productsToAdd as $product) {
         $product = (object) $product;
 
         $productId = $product->product_id;
@@ -600,7 +607,7 @@ function config_3d_products_addtocart() {
 		$cart_hash = WC()->cart->get_cart_hash();
 		
         wp_send_json_success([
-            'cart_count' => count($products),
+            'cart_count' => count($productsToAdd),
             'message' => 'Products added!',
             'config_id' => $configId,
             'ai_textures' => $aiTextures,

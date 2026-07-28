@@ -356,6 +356,7 @@ function initRoomConfigFunctions(
 				button,
                 messageContainer,
                 configSelector,
+                roomState.currentConfigId,
             );
 
             button.innerHTML = innerHtml;
