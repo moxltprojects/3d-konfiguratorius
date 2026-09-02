@@ -5,7 +5,7 @@ global
     $DEPTH_SLUG, 
     $SPACE_SLUG, 
     $FURNITURE_TYPE_FULL, 
-    $FURNITURE_TYPE_WALL, 
+    $FURNITURE_TYPE_TOP, 
     $FURNITURE_TYPE_BASE,
     $VERTICAL_SPACE_SLUG;
 ?>
@@ -17,7 +17,7 @@ global
             <div class="multiple-containers-inner">
                 <?php 
                     $heading = __("Top", 'furniture-config');
-                    $type = $FURNITURE_TYPE_WALL;
+                    $type = $FURNITURE_TYPE_TOP;
                     $dimension_type = $HEIGHT_SLUG;
                     $standard = $furnitureDimensions['top_height'];
                     $min = $furnitureDimensions['top_height_min'];
@@ -51,7 +51,7 @@ global
             <div class="multiple-containers-inner">
                 <?php 
                     $heading = __("Top", 'furniture-config');
-                    $type = $FURNITURE_TYPE_WALL;
+                    $type = $FURNITURE_TYPE_TOP;
                     $dimension_type = $DEPTH_SLUG;
                     $standard = $furnitureDimensions['top_depth'];
                     $min = $furnitureDimensions['top_depth_min'];

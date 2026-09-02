@@ -4481,15 +4481,6 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         threeJSControls.enabled = false;
 
         setBgPlanesVisibleForWrapper(obj, false);
-
-        if (modelSettings.visibleDimensionsArrows && obj.userData.dimensions) {
-            obj.userData.dimensions.forEach(arrow => {
-                if (arrow.geometry) arrow.geometry.dispose();
-                if (arrow.material) arrow.material.dispose();
-                modelScene.remove(arrow);
-            });
-            obj.userData.dimensions = [];
-        }
     });
 
     dragControls.addEventListener('drag', event => {
@@ -4510,6 +4501,12 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 				updateBgPlane(obj);
 		}
 
+        if (roomState.visibleDimensionArrows) {
+            if(!obj.productId) {
+               return; 
+            }
+            createFurnitureDimensionArrows(obj, room3DGroup);
+        }
     });
 
     dragControls.addEventListener('dragend', event => {
@@ -4574,10 +4571,6 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 
         const rotation = obj.userData.rotatedManually || obj.rotation.y != 0 ? obj.rotation.y : null;
         resaveObjPosition(childWorldPos.clone(), rotation, obj.userData.customId, itemPositionMm, isFitting);
-
-        if (modelSettings.visibleDimensionsArrows) {
-            createFurnitureDimensionArrows(obj, modelScene, roomModelBox);
-        }
     });
 }
 
