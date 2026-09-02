@@ -913,7 +913,7 @@ function getRoomHeightDimensions() {
 export function getTopFurnitureYPositionMm(defaultTop = null) {
     const { bottom, top } = roomState.furnitureDimensions;
 
-    const currentTop = defaultTop ?? top;
+    const currentTop = defaultTop ?? top.space_bottom;
     const yMm = bottom.height / 10 + currentTop / 10;
 
     return yMm;
