@@ -3,20 +3,56 @@ $devMode = $args['devMode'];
 ?>
 <div id="furnitureAnalyzeFormWrapper" class="furniture-analyze">
     <form id="furnitureAnalyzeForm" class="furniture-analyze__form">
-        <div class="furniture-analyze__field">
-            <p class="furniture-analyze__label picker-label" id="pickerLabel">Photo</p>
+        <div class="furniture-analyze__fields">
+            <div class="dragDrop-container">
+                <p class="furniture-analyze__label picker-label" id="pickerLabel">Photo</p>
 
-            <div class="picker-desktop furniture-analyze__upload" id="desktopPicker">
-                <label class="furniture-analyze__upload-zone" for="fileInputDesktop">
-                    <span class="furniture-analyze__upload-icon" aria-hidden="true">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    <span class="furniture-analyze__upload-title">Choose a photo</span>
-                    <span class="furniture-analyze__upload-hint">JPEG or PNG</span>
-                    <input type="file" id="fileInputDesktop" class="furniture-analyze__file-input" accept="image/png,image/jpeg,image/*">
-                </label>
+                <div class="picker-desktop furniture-analyze__upload" id="desktopPicker">
+                    <label class="furniture-analyze__upload-zone" for="fileInputDesktop">
+                        <span class="furniture-analyze__upload-icon" aria-hidden="true">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="furniture-analyze__upload-title">Choose a photo</span>
+                        <span class="furniture-analyze__upload-hint">JPEG or PNG</span>
+                        <input type="file" id="fileInputDesktop" class="furniture-analyze__file-input" accept="image/png,image/jpeg,image/*">
+                    </label>
+                </div>
+            </div>
+
+            <div class="dragDrop-container">
+                <p class="furniture-analyze__label picker-label" id="pickerLabel">Wall Photo</p>
+
+                <div class="picker-desktop furniture-analyze__upload" id="desktopPicker">
+                    <label class="furniture-analyze__upload-zone" for="wallFileInputDesktop">
+                        <span class="furniture-analyze__upload-icon" aria-hidden="true">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="furniture-analyze__upload-title">Choose a photo</span>
+                        <span class="furniture-analyze__upload-hint">JPEG or PNG</span>
+                        <input type="file" id="wallFileInputDesktop" class="furniture-analyze__wallFile-input" accept="image/png,image/jpeg,image/*">
+                    </label>
+                </div>
+            </div>
+
+            <div class="dragDrop-container">
+                <p class="furniture-analyze__label picker-label" id="pickerLabel">Floor Photo</p>
+
+                <div class="picker-desktop furniture-analyze__upload" id="desktopPicker">
+                    <label class="furniture-analyze__upload-zone" for="floorFileInputDesktop">
+                        <span class="furniture-analyze__upload-icon" aria-hidden="true">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="furniture-analyze__upload-title">Choose a photo</span>
+                        <span class="furniture-analyze__upload-hint">JPEG or PNG</span>
+                        <input type="file" id="floorFileInputDesktop" class="furniture-analyze__floorFile-input" accept="image/png,image/jpeg,image/*">
+                    </label>
+                </div>
             </div>
 
             <div class="picker-mobile furniture-analyze__mobile" id="mobilePicker" hidden>
