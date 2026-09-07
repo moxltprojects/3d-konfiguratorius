@@ -1,79 +1,49 @@
 import {
     THREE,
-    OrbitControls,
     GLTFLoader,
-    DragControls,
     BufferGeometryUtils
 } from './three-imports.js';
 
-import { 
+import {
     initTextures,
     ROOM_TYPE_SINGLE_WALL,
     ROOM_TYPE_WITH_CORNER,
-    FURNITURE_TYPE_BOTTOM_CORNER,
     FURNITURE_TYPE_FULL,
     FURNITURE_TYPE_TOP,
     FURNITURE_TYPE_BOTTOM,
-    DIMENSION_TYPE_TOP,
-    DIMENSION_TYPE_FULL,
     DIMENSION_TYPE_HEIGHT,
     DIMENSION_TYPE_DEPTH,
     DIMENSION_TYPE_WIDTH,
-    FLOOR_THICKNESS,
-    WALL_THICKNESS,
-    BOTTOM_DISPLAY_IMAGE,
-    TOP_DISPLAY_IMAGE,
-    FULL_DISPLAY_IMAGE,
-    LIGHT_STATE_DEFAULT,
-    LIGHT_STATE_BRIGHT,
     state,
     roomState,
     changeInputFromRangeValue,
     getTextureSrc,
     generateSmartUVs,
-	updateBgPlane,	
-    getRoomDimensions,
 } from './shared-scripts.js';
 
-import { 
+import {
     initRoomModelSettings,
     renderBasicImage3dContainer,
     initCabinetTypes,
-    removeCornerPseudoModelObjects,
     progressInit,
     initCabinetTabs,
     initAddFurnitureMethod,
     loadMoreProducts,
-    clearModelScene,
-    dragControlsMethod,
-    setZoomSettingsValues,
     changeTotals,
-    getCornerDimensions,
-    appendCornerPseudoModelObjects,
     init3dModel,
-    productActionsInit,
-    modelSettings,
     updateRoomSize,
 } from './new-shared-scripts.js';
 
-import { 
-    changeSingleProductPrice,
-} from './calculate-totals.js';
-
-let 
+let
     container,
     saveDataButtonsContainer,
     configSelector,
-    threeJSRenderedBasicDisplay, 
-    basicDisplayScene, 
-    threeJSCameraBasicDisplay,
-    rootGroupBasicDisplay,
     userId;
 
 
 window.initRoomConfigComponent =  async function initRoomConfigComponent(userConfigId = null, templateData = null) {
     const root = document.querySelector('.display-type-container, .room-config-shortcode');
-    
+
     let {
         content,
         all_products,
@@ -87,7 +57,7 @@ window.initRoomConfigComponent =  async function initRoomConfigComponent(userCon
         ai_textures,
         total,
         currency_symbol,
-        user_id, 
+        user_id,
     } = await getRoomConfigComponentShortcodeContent(userConfigId, templateData);
 
     userId = user_id;
@@ -110,24 +80,24 @@ window.initRoomConfigComponent =  async function initRoomConfigComponent(userCon
     roomState.cornerFurnitureData = corner_furniture_data;
 
     initRoomConfigFunctions(
-        container, 
+        container,
         default_textures,
         all_products,
-        products_list_per_page, 
+        products_list_per_page,
         products_list,
-        total, 
+        total,
         currency_symbol,
         furniture_dimensions.largest_height,
     );
 }
 
 function initRoomConfigFunctions(
-    container, 
+    container,
     textures,
     allProducts,
-    productsListPerPage, 
+    productsListPerPage,
     productList,
-    total, 
+    total,
     currencySymbol,
     largestHeight,
 ) {
@@ -155,15 +125,15 @@ function initRoomConfigFunctions(
 
     setRoomModelData();
 
-    initRoomModelSettings(); //imported
-    initSettingsSave();  
+    initRoomModelSettings();
+    initSettingsSave();
     initSettingsConfigChange();
     initTemplateSelector();
-    progressInit();  //imported
+    progressInit();
     initCabinetTabs(
         '.cabinet-settings .main-settings-sidebar .cabinets .tabs button',
-    ); //imported
-    initCabinetTypes(); //imported
+    );
+    initCabinetTypes();
     renderBasicImage3dContainer();
     initRoomType(true);
     changeRoomType();
@@ -171,8 +141,8 @@ function initRoomConfigFunctions(
     changeInputFromRangeValue(container);
     changeRoomDimensionsValue(container);
 
-    initAddFurnitureMethod(); //imported
-    loadMoreProducts(productsListPerPage, configDataRoom.ajaxurl); //imported
+    initAddFurnitureMethod();
+    loadMoreProducts(productsListPerPage, configDataRoom.ajaxurl);
     initAddToCart();
 
     function setRoomModelData() {
@@ -196,12 +166,12 @@ function initRoomConfigFunctions(
                 ...newObj,
                 roomType: ROOM_TYPE_WITH_CORNER,
             }
-        }; 
+        };
     }
 
     function changeRoomDimensionsValue() {
         const dimensionsItemContainers = container.querySelectorAll('.room-layout .dimension-container');
-        
+
         dimensionsItemContainers.forEach(dimensionsContainer => {
             const type = dimensionsContainer.getAttribute('data-dimension_type');
             const rangeInput = dimensionsContainer.querySelector('.slider-container input[type="range"]');
@@ -210,23 +180,21 @@ function initRoomConfigFunctions(
             rangeInput.addEventListener('change', function(e) {
                 const value = parseInt(e.target.value);
                 rangeNumInput.value = value;
-                
+
                 changeDimensionValueSwitch(type, value);
                 roomState.roomDimensions[type] = value;
 
-                // initRoomType();
                 updateRoomSize(roomState.modelsList[roomState.roomType], roomState.roomDimensions);
             });
 
             rangeNumInput.addEventListener('change', function(e) {
                 const value = parseInt(e.target.value);
                 rangeNumInput.value = value;
-                
+
                 changeDimensionValueSwitch(type, value);
 
                 roomState.roomDimensions[type] = value;
 
-                // initRoomType();
                 updateRoomSize(roomState.modelsList[roomState.roomType], roomState.roomDimensions);
             });
         });
@@ -247,7 +215,7 @@ function initRoomConfigFunctions(
                     roomState.roomDimensions.width = value;
                     break;
                 }
-                
+
                 default: {
                     roomState.roomDimensions.width = value;
                 }
@@ -284,54 +252,10 @@ function initRoomConfigFunctions(
 
         if(!roomType) return;
 
-        // if(!onPageLoad) {
-        //     roomState.modelsList[ROOM_TYPE_SINGLE_WALL].dbChildren = [];
-        //     roomState.modelsList[ROOM_TYPE_WITH_CORNER].dbChildren = [];
-        //     changeTotals()
-
-        //     roomState.dynamicLists.forEach(html => {
-        //         html.innerHTML = '';
-        //     });
-        //     roomState.summaryItemsList.innerHTML = '';
-        // }
-
         roomState.roomType = roomType;
         const currentObj = roomState.modelsList[roomType];
         const roomModelParams = init3dModel(currentObj, state.model3dContainer, roomType, onPageLoad);
         roomState.modelsList[roomType] = {...roomState.modelsList[roomType], ...roomModelParams}
-    }
-
-
-    function highlightCurrentItem(customId) {
-        const currentModel = modelScene.children.find(item => item.userData.customId == customId);
-
-        if(!currentModel) return;
-
-        const rect = threeJSRendered.domElement.getBoundingClientRect();
-        const fakeEvent = new MouseEvent("click", {
-            clientX: rect.left + rect.width / 2,  // center of canvas
-            clientY: rect.top + rect.height / 2,
-        });
-
-        // onClickModel(fakeEvent, currentModel); 
-
-        currentModel.traverse(child => {
-            if (child.isMesh) {
-                child.material.emissive.set(0xffffff);
-                child.material.emissiveIntensity = 0.2;
-            }
-        });
-    }
-
-    function clamp(val, min, max) {
-        return Math.max(min, Math.min(max, val));
-    }
-
-    function calcBasicDisplayXPaddingUnits(parentWidthPx, parentWithUnits) {
-        const basicDisplayXPaddingUnitsPercent = BASIC_DISPLAY_X_PADDING_PX * 100 / parentWidthPx;
-        const units = parentWithUnits * basicDisplayXPaddingUnitsPercent / 100;
-
-        return units;
     }
 
     function initAddToCart(){
@@ -377,7 +301,7 @@ function initRoomConfigFunctions(
 
     async function setShortocodeLoading(userConfigId, templateData = null) {
         container.classList.add('loading');
-            
+
         container.innerHTML += `<div class="config-loader-container">
                     <span class="loader"></span>
                 </div>`;
@@ -399,7 +323,7 @@ function initRoomConfigFunctions(
 
                 const roomTypeValue = roomTypeInput ? roomTypeInput.value : ROOM_TYPE_SINGLE_WALL;
                 roomState.currentConfigId = null;
-                const data = roomTypeInput.getAttribute('disabled') !== null ? 
+                const data = roomTypeInput.getAttribute('disabled') !== null ?
                     null : {
                     post_id: postId,
                     room_type: roomTypeValue,
@@ -408,7 +332,7 @@ function initRoomConfigFunctions(
                 roomState.currentTemplatePostId = postId;
 
                 await setShortocodeLoading(roomState.currentConfigId, data);
-            }); 
+            });
         });
     }
 
@@ -433,27 +357,11 @@ function cancelTemplateConfigSelection() {
         loginRegisterModal.remove();
     }
 
-    let { 
-        bottom_depth, 
-        full_depth, 
-        top_depth, 
-        bottom_height, 
-        top_height,
-        full_height,
-        space_bottom,
-    } = roomState.furnitureDimensions;
-
     await saveUserSettingsAjax(
         saveDataButtonsContainer,
         configSelector,
         buttonHtml,
         roomState.currentConfigId,
-        // state.defaultTextures,
-        // state.defaultComponents,
-        // roomState.roomType,
-        // roomState.roomDimensions,
-        // roomState.furnitureDimensions,
-        // roomState.modelsList[roomState.roomType].dbChildren
     );
 
 }
@@ -565,7 +473,6 @@ function createRegisterHtml() {
 
 
 
-/**************** NEW ******* */
 export async function initTextureSettingsConfigFunctions(container, textureCookieName, productId = null) {
 
         changeTextureContainer();
@@ -587,8 +494,8 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
                 if(initIndex == 1) return;
                 initIndex--;
 
-                renderHeadingSwiperActions(initIndex); 
-                
+                renderHeadingSwiperActions(initIndex);
+
                 if(initIndex < listCount) {
                     buttonNext.removeAttribute('disabled');
                 }
@@ -665,7 +572,7 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
                             changeTextureClassMethod(subcatContainer, buttonParent);
 
                             changeTextureContainerHtml(headingContainer, priceContainer, btnName, regular, discount);
-                            
+
                             textureSubcatMergedSlugs.forEach(mergedSlug => {
                                 setTextureCookie(textureCookieName, mergedSlug, btnId);
                                 state.defaultTextures[mergedSlug] = {
@@ -674,14 +581,14 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
                                 };
                                 setTextureLoader(mergedSlug, btnThumbnail);
                                 const mergedChildren = [...state.productScenesChildren, ...roomState.modelChildren, ...roomState.displayModelChildren];
-                    
+
                                 changeModelChildrenTexture(mergedChildren, mergedSlug, furnitureType, availableFurntitureTypes, productId);
                             });
-    
+
                             if(!productId) {
                                 changeTextureSrc(textureSubcatMergedSlugs, btnId);
                             }
-                            
+
 
                             if(furnitureType === TEXTURE_ALL_SLUG) {
                                 subcatContainersExceptAll.forEach(otherSub => {
@@ -699,7 +606,7 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
 
             function changeTextureClassMethod(textureContainer, buttonParent) {
                 const oldActiveButton = textureContainer.querySelector('.texture-list .list-item.active');
-                            
+
                 if(oldActiveButton) {
                     oldActiveButton.classList.remove('active');
                 }
@@ -710,8 +617,8 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
             function changeTextureContainerHtml(headingContainer, priceContainer, heading, regular, discount) {
                 headingContainer.innerHTML = heading;
 
-                const priceHtml = parseFloat(discount) > 0 ? 
-                    `<span>${discount}</span><del>${regular}</del>` : 
+                const priceHtml = parseFloat(discount) > 0 ?
+                    `<span>${discount}</span><del>${regular}</del>` :
                     `<span>${regular}</span>`;
 
                 priceContainer.innerHTML = priceHtml;
@@ -719,11 +626,11 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
 
             async function changeTextureSrc(mergedSlugs, btnId) {
 				swiper.classList.add('loading');
-				
+
                 const { images, id } = await changeTextureImagesDisplayAjax(btnId);
 
                 if(!images) {
-					swiper.classList.remove('loading'); 
+					swiper.classList.remove('loading');
 					return;
 				}
 
@@ -735,26 +642,26 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
 
                         if(imageData.image_1.url) {
                             const img1 = swiper.querySelector(`.swiper-slide.image-1 img[data-cat_slug="${slug}"]`);
-                            if(img1) 
+                            if(img1)
                                 img1.setAttribute('src', imageData.image_1.url);
                         }
                         if(imageData.image_2.url) {
                             const img2 = swiper.querySelector(`.swiper-slide.image-2 img[data-cat_slug="${slug}"]`);
-                            if(img2) 
+                            if(img2)
                                 img2.setAttribute('src', imageData.image_2.url);
                         }
                         if(imageData.image_3.url) {
                             const img3 = swiper.querySelector(`.swiper-slide.image-3 img[data-cat_slug="${slug}"]`);
-                            
+
                             if(img3)
                                 img3.setAttribute('src', imageData.image_3.url);
                         }
                     }
-             
+
                 });
 				swiper.classList.remove('loading');
             }
-			
+
     }
 
     function changeTextureTermTabs() {
@@ -775,7 +682,7 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
                     if(tab.classList.contains('active')) return;
                     const oldTabActive = tabContainer.querySelector('.texture-list-tabs button.active');
                     const oldContainerActive = tabContainer.querySelector(`.texture-multiple-lists-container.active`);
-                    
+
                     if(oldTabActive) {
                         oldTabActive.classList.remove('active');
                     }
@@ -789,7 +696,7 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
 
             });
         });
-        
+
     }
 }
 
@@ -823,7 +730,7 @@ export function changeComponentsValue(container, componentsCookieName, productId
             });
         });
     });
-    
+
     singleSelectOptions.forEach(single => {
         const options = single.querySelectorAll('input');
 
@@ -858,7 +765,7 @@ export function changeComponentsValue(container, componentsCookieName, productId
 
         if(index > -1) {
             state.defaultComponents.splice(index, 1);
-        } 
+        }
     }
 }
 
@@ -872,7 +779,7 @@ function changeModelChildrenTexture(children, type, furnitureType, availableFurn
     if (type.includes('countertop')) {
         acceptedTexturesArrays = [...countertopNodesDisplay, ...countertopNodesGlbIkea];
     } else if(type.includes('front')) {
-        if(furnitureType !== FURNITURE_TYPE_BOTTOM) { 
+        if(furnitureType !== FURNITURE_TYPE_BOTTOM) {
             acceptedTexturesArrays = [...frontNodesDisplay, ...frontNodesGlbIkea, ...countertopNodesDisplay, ...countertopNodesGlbIkea];
         } else {
             acceptedTexturesArrays = [...frontNodesDisplay, ...frontNodesGlbIkea];
@@ -906,13 +813,6 @@ function changeModelChildrenTexture(children, type, furnitureType, availableFurn
                         node.material.map = currentTexture;
                         node.material.needsUpdate = true;
                     }
-                    // if(acceptedTexturesArrays.length && acceptedTexturesArrays.includes(name)) {
-                    //     node.material.map = currentTexture;
-                    //     node.material.needsUpdate = true;
-                    // } else if(unacceptedTexturesArray.length && !unacceptedTexturesArray.includes(name)) {
-                    //     node.material.map = currentTexture;
-                    //     node.material.needsUpdate = true;
-                    // }
                 }
             });
         }
@@ -926,21 +826,18 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
         const childMeshGroup = childGltf.scene;
 
         const texturesObj = isCategoryPage && categoryState.textures3DSrc[productId] ? categoryState.textures3DSrc[productId] : state.textures3DSrc;
- 
+
         childMeshGroup.traverse(node => {
             if (node.isMesh) {
                 const geo = node.geometry;
-                // ✅ Ensure geometry uses triangles
                 if (geo && geo.attributes.position) {
                     node.geometry = BufferGeometryUtils.mergeVertices(geo) || geo;
                     node.geometry.computeVertexNormals();
                 }
 
-                // ✅ Make sure it’s visible
                 node.material.side = THREE.DoubleSide;
                 node.frustumCulled = false;
 
-                /******* add texture ********/
                 if (!node.geometry.attributes.uv) {
                     generateSmartUVs(node.geometry);
                 }
@@ -950,10 +847,10 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
 
                 node.material = new THREE.MeshStandardMaterial({
                     map: texture,
-                    metalness: 0.1,    // little reflection
-                    roughness: 0.8,    // wood is not glossy
+                    metalness: 0.1,
+                    roughness: 0.8,
                 });
-                
+
                 node.material.needsUpdate = true;
 
                 node.userData.originalMaterial = {
@@ -977,7 +874,7 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
 
         if(isCategoryPage) {
             childMeshGroup.userData.unmodifiable_texture = unmodifiableTexture;
-            const targetDepth  = Math.min(parentWidth, parentHeight); 
+            const targetDepth  = Math.min(parentWidth, parentHeight);
             const scaleX = parentWidth  / childSize.x;
             const scaleY = parentHeight / childSize.y;
             const scaleZ = targetDepth  / childSize.z;
@@ -995,7 +892,6 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
             childMeshGroup.scale.set(scaleX, scaleY, scaleZ);
         }
 
-        // recompute scaled size
         const scaledBox = new THREE.Box3().setFromObject(childMeshGroup);
         const scaledSize = new THREE.Vector3();
         scaledBox.getSize(scaledSize);
@@ -1011,8 +907,6 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
             childMeshGroup.position.y = scaledSize.y / 1.2;
             childMeshGroup.userData.furniture_type = furnitureType;
 
-
-            /******** shadows *********/
             const shadow = state.contactShadow.clone();
 
             shadow.material.opacity = 0.35;
@@ -1020,7 +914,7 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
             shadow.rotation.x = -Math.PI / 2;
             shadow.position.set(
                 0,
-                -scaledSize.y / 2 + 0.002, // ✅ correct space
+                -scaledSize.y / 2 + 0.002,
                 0
             );
             shadow.scale.set(
@@ -1031,12 +925,11 @@ export function renderThumbnailImage(parent, furnitureType, src, parentWidth, pa
 
             childMeshGroup.add(shadow);
             childMeshGroup.userData.shadow = shadow;
-            /******** end shadows *********/
         }
-        
+
         state.productScenesChildren.push(childMeshGroup);
     });
-        
+
 }
 
 export function setTextureLoader(type, src) {
@@ -1066,11 +959,6 @@ export function expandSettingsContainer(buttons, onClickHandler) {
     });
 }
 
-
-/************ END NEW **********/
-
-
-
 async function initSettingsSave(container) {
     const saveBtn = saveDataButtonsContainer.querySelector('button[data-action_type="save-settings"]');
     const createNewBtn = saveDataButtonsContainer.querySelector('button[data-action_type="create-settings"]');
@@ -1097,12 +985,6 @@ async function initSettingsSave(container) {
                 configSelector,
                 button,
                 save ? roomState.currentConfigId : null,
-                // state.defaultTextures,
-                // state.defaultComponents,
-                // roomState.roomType,
-                // roomState.roomDimensions,
-                // roomState.furnitureDimensions,
-                // roomState.modelsList[roomState.roomType].dbChildren
             );
 
         });
@@ -1193,7 +1075,7 @@ async function loginAjax(submit) {
 
         if (!jsonData.success) {
             const errorMessage = jsonData.data?.message || "Login failed.";
-   
+
             if (messageDiv) {
                 messageDiv.innerHTML = `<span style="color:red;">${errorMessage}</span>`;
             }
@@ -1201,7 +1083,6 @@ async function loginAjax(submit) {
             return null;
         }
 
-        // success
         const data = jsonData.data;
 
         if (messageDiv) {
@@ -1255,7 +1136,6 @@ async function registerAjax(submit) {
             return null;
         }
 
-        // success
         const data = jsonData.data;
 
         if (messageDiv) {
@@ -1274,12 +1154,6 @@ async function saveUserSettingsAjax(
     configSelector,
     buttonHtml,
     configId,
-    // textures,
-    // components,
-    // roomType,
-    // roomDimensions,
-    // furnitureDimensions,
-    // productsList
 ) {
     const oldText = buttonHtml.innerHTML;
     buttonHtml.innerHTML = '<div class="loader"></div>';
@@ -1322,7 +1196,7 @@ async function saveUserSettingsAjax(
 
         if (!jsonData.success) {
             const errorMessage = jsonData.data?.message || "Settings save failed.";
-   
+
             if (messageDiv) {
                 messageDiv.innerHTML = `<span style="color:red;">${errorMessage}</span>`;
             }
@@ -1330,7 +1204,6 @@ async function saveUserSettingsAjax(
             return null;
         }
 
-        // success
         const data = jsonData.data;
 
         if (messageDiv) {
@@ -1401,10 +1274,10 @@ async function addItemsToCart(
 
         if(!jsonData.success || !jsonData.data?.cart_count) {
             const errorMessage = jsonData.data?.message || "Failed adding to cart.";
-   
+
             if (messageContainer) {
                 messageContainer.innerHTML = `<span style="color:red;">${errorMessage}</span>`;
-            
+
                  setTimeout(() => {
                     messageContainer.innerHTML = '';
                 }, 1500);
@@ -1436,24 +1309,18 @@ async function addItemsToCart(
         roomState.currentConfigId = config_id;
         roomState.modelsList[roomState.roomType].dbChildren = products;
 
-		 /*******  minicart trigger**********/
-		   jQuery(document.body).trigger('added_to_cart', [
-				data.fragments,
-				data.cart_hash,
-				jQuery(addToCartButton)
-			]);
+        jQuery(document.body).trigger('added_to_cart', [
+            data.fragments,
+            data.cart_hash,
+            jQuery(addToCartButton)
+        ]);
 
-			// Apply fragments manually (safety)
-			Object.keys(data.fragments).forEach(key => {
-				const el = document.querySelector(key);
-				if (el) el.innerHTML = data.fragments[key];
-			});
+        Object.keys(data.fragments).forEach(key => {
+            const el = document.querySelector(key);
+            if (el) el.innerHTML = data.fragments[key];
+        });
 
-			// Refresh Woo
-			jQuery(document.body).trigger('wc_fragment_refresh');
-		   
-		//    const ocId = jQuery('.awb-off-canvas-wrap.cart-item-count-container').data('id');
-		// 	window.awbOffCanvas.open_off_canvas(ocId);
+        jQuery(document.body).trigger('wc_fragment_refresh');
 
         const ocId = jQuery('.awb-off-canvas-wrap.cart-item-count-container').data('id');
 
