@@ -1817,10 +1817,16 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     rightWall.name = "right-wall";
     room3DGroup.add(rightWall);
 
+    let leftSideWallMat = null;
+    let rightSideWallMat = null;
+
     if (roomType === ROOM_TYPE_SINGLE_WALL) {
         const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
 
-        const leftSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+        leftSideWallMat = wallMaterial.clone();
+        leftSideWallMat.transparent = true;
+
+        const leftSideWall = new THREE.Mesh(sideWallGeometry, leftSideWallMat);
         leftSideWall.position.set(
             -modelRoomWidth / 2 - WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -1829,7 +1835,10 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         leftSideWall.name = 'left-side-wall';
         room3DGroup.add(leftSideWall);
 
-        const rightSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+        rightSideWallMat = wallMaterial.clone();
+        rightSideWallMat.transparent = true;
+
+        const rightSideWall = new THREE.Mesh(sideWallGeometry, rightSideWallMat);
         rightSideWall.position.set(
             modelRoomWidth / 2 + WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -1920,22 +1929,19 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
 
         controls.update();
 
-
-        // if(modelSettings.lightsOn) {
-        //     /******* for product shadow *****/
-        //     const angle = controls.getAzimuthalAngle();
-
-        //     dirLight.position.set(
-        //         Math.cos(angle) * 300,
-        //         200,
-        //         Math.sin(angle) * 300
-        //     );
-
-        //     dirLight.target.position.set(0, 0, 0);
-        //     dirLight.target.updateMatrixWorld();
-        //     /******* end for product shadow *****/
-        // }
-
+        if (leftSideWallMat || rightSideWallMat) {
+            const fadeZone = modelRoomWidth * 0.25;
+            if (leftSideWallMat) {
+                leftSideWallMat.opacity = THREE.MathUtils.clamp(
+                    (camera.position.x + halfW + fadeZone) / fadeZone, 0, 1
+                );
+            }
+            if (rightSideWallMat) {
+                rightSideWallMat.opacity = THREE.MathUtils.clamp(
+                    (halfW + fadeZone - camera.position.x) / fadeZone, 0, 1
+                );
+            }
+        }
 
             renderer.render(modelScene, camera);
             // updateZoomSlider(camera, controls);
