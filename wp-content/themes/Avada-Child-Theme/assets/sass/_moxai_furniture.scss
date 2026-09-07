@@ -29,7 +29,7 @@
     --fa-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     --fa-transition: 0.2s ease;
 
-    max-width: 520px;
+    // max-width: 520px;
     padding: 1.25rem;
     border: var(--fa-border);
     border-radius: var(--fa-radius);
@@ -44,8 +44,33 @@
         margin: 0;
     }
 
-    .furniture-analyze__field {
+    .furniture-analyze__fields {
         margin-bottom: 1rem;
+
+        @include mq_md {
+            @include displayFlex;
+            @include justifyContent(center);
+            width: calc(100% + 15px);
+            width: -webkit-calc(100% + 15px);
+            margin: 0 0 3rem -7.5px;
+        }
+    }
+
+    .dragDrop-container {
+        flex-grow: 1;
+
+        &:not(:last-child) {
+            margin: 0 0 15px;
+
+            @include mq_md {
+                margin: 0;
+            }
+        }
+
+        @include mq_md {
+            padding: 0 7.5px;
+        }
+        
     }
 
     .furniture-analyze__label {
@@ -112,7 +137,7 @@
         color: var(--fa-muted);
     }
 
-    .furniture-analyze__file-input {
+    input[type="file"] {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -212,10 +237,12 @@
 
     .furniture-analyze__actions {
         padding-top: 0.25rem;
+        text-align: center;
     }
 
     .furniture-analyze__submit {
         width: 100%;
+        max-width: 480px;
         margin: 0;
 
         &:disabled {
