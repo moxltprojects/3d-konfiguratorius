@@ -2041,6 +2041,29 @@ console.log(selectedSubitemsSlugs)
         rightWall.receiveShadow = true;
         room3DGroup.add(rightWall);
 
+        if (roomType === ROOM_TYPE_SINGLE_WALL) {
+            const sideWallDepth = modelRoomDepth + FLOOR_THICKNESS;
+            const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeightWithFloorThinkness, sideWallDepth);
+
+            const leftSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+            leftSideWall.position.set(
+                -modelRoomWidth / 2 - WALL_THICKNESS / 2,
+                wallHeightWithFloorThinkness / 2 - FLOOR_THICKNESS,
+                -FLOOR_THICKNESS / 2
+            );
+            leftSideWall.receiveShadow = true;
+            room3DGroup.add(leftSideWall);
+
+            const rightSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+            rightSideWall.position.set(
+                modelRoomWidth / 2 + WALL_THICKNESS / 2,
+                wallHeightWithFloorThinkness / 2 - FLOOR_THICKNESS,
+                -FLOOR_THICKNESS / 2
+            );
+            rightSideWall.receiveShadow = true;
+            room3DGroup.add(rightSideWall);
+        }
+
         modelScene.add(room3DGroup);
 
         /******** FIT CAMERA TO ROOM ********/

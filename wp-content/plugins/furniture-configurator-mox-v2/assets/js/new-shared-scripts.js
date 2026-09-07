@@ -1817,6 +1817,28 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     rightWall.name = "right-wall";
     room3DGroup.add(rightWall);
 
+    if (roomType === ROOM_TYPE_SINGLE_WALL) {
+        const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
+
+        const leftSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+        leftSideWall.position.set(
+            -modelRoomWidth / 2 - WALL_THICKNESS / 2,
+            wallHeight / 2 - FLOOR_THICKNESS,
+            -WALL_THICKNESS / 2
+        );
+        leftSideWall.name = 'left-side-wall';
+        room3DGroup.add(leftSideWall);
+
+        const rightSideWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
+        rightSideWall.position.set(
+            modelRoomWidth / 2 + WALL_THICKNESS / 2,
+            wallHeight / 2 - FLOOR_THICKNESS,
+            -WALL_THICKNESS / 2
+        );
+        rightSideWall.name = 'right-side-wall';
+        room3DGroup.add(rightSideWall);
+    }
+
     modelScene.add(room3DGroup);
 
     const box = new THREE.Box3().setFromObject(room3DGroup);
