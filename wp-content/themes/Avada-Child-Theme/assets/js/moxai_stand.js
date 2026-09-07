@@ -180,9 +180,9 @@ const aiStandApp = {
                 }, 2000);
 
                 self.removeActiveTask('scanWebsite');
-                const summaryHtml = await self.autoSetupRenderSummary(taskInfoData);   
+                const summaryHtml = await self.autoSetupRenderSummary(taskInfoData);
                 self.moxAiSummaryResults.innerHTML = summaryHtml;
-                furnitureAnalyzerApp.init();
+                try { furnitureAnalyzerApp.init(); } catch (e) { console.warn('furnitureAnalyzerApp.init failed:', e); }
 
             } catch (error) {
                 // console.error("Error getting task info:", error);
@@ -800,9 +800,9 @@ const aiStandApp = {
             standImageBaseColor = self.pickWeightedColor(taskInfoData.colorScheme);
 
             self.currentData.mainData = taskInfoDataString;
-            const summaryHtml = await self.autoSetupRenderSummary(taskInfoData);   
+            const summaryHtml = await self.autoSetupRenderSummary(taskInfoData);
             self.moxAiSummaryResults.innerHTML = summaryHtml;
-            furnitureAnalyzerApp.init();
+            try { furnitureAnalyzerApp.init(); } catch (e) { console.warn('furnitureAnalyzerApp.init failed:', e); }
         } catch (error) {
             console.error('Error getting task info:', error);
             return null;

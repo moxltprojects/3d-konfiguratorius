@@ -2,46 +2,65 @@ let furnitureAnalyzeData = null;
 
 const furnitureAnalyzerApp = {
     apiUrl: typeof api_vars !== 'undefined' ? `${api_vars.api_base_url}furnitureAnalyzer/` : '',
-    selectedFile: null,
-    previewUrl: null,
     isMobile: false,
+    pickers: [],
+
     init() {
         const form = document.getElementById('furnitureAnalyzeForm');
-        if (!form || form.dataset.furnitureAnalyzerBound) {
-            return;
-        }
+        if (!form || form.dataset.furnitureAnalyzerBound) return;
         form.dataset.furnitureAnalyzerBound = '1';
-        this.bindElements();
-        this.initPickerMode();
-        this.bindEvents();
-    },
 
-    bindElements() {
-        this.form = document.getElementById('furnitureAnalyzeForm');
+        this.form = form;
         this.button = document.getElementById('furnitureAnalyzeButton');
         this.output = document.getElementById('furnitureAnalyzeOutput');
         this.outputWrapper = document.getElementById('furnitureAnalyzeOutputWrapper');
         this.outputToggle = document.getElementById('furnitureAnalyzeOutputToggle');
-        this.desktopPicker = document.getElementById('desktopPicker');
-        this.mobilePicker = document.getElementById('mobilePicker');
-        this.fileInputDesktop = document.getElementById('fileInputDesktop');
-        this.fileInputGallery = document.getElementById('fileInputGallery');
-        this.fileInputCamera = document.getElementById('fileInputCamera');
-        this.btnGallery = document.getElementById('btnGallery');
-        this.btnCamera = document.getElementById('btnCamera');
-        this.previewWrap = document.getElementById('previewWrap');
-        this.previewImage = document.getElementById('previewImage');
-        this.btnClearPreview = document.getElementById('btnClearPreview');
-    },
 
-    bindEvents() {
-        this.bindFileInput(this.fileInputDesktop);
-        this.bindFileInput(this.fileInputGallery);
-        this.bindFileInput(this.fileInputCamera);
+        this.isMobile = this.isMobileDevice();
+        document.body.classList.toggle('is-mobile', this.isMobile);
 
-        this.btnGallery.addEventListener('click', () => this.openFilePicker(this.fileInputGallery));
-        this.btnCamera.addEventListener('click', () => this.openFilePicker(this.fileInputCamera));
-        this.btnClearPreview.addEventListener('click', () => this.clearSelection());
+        this.pickers = [
+            this.createPicker({
+                desktopPicker:  'furnitureDesktopPicker',
+                mobilePicker:   'furnitureMobilePicker',
+                previewWrap:    'furniturePreviewWrap',
+                previewImage:   'furniturePreviewImage',
+                btnClearPreview:'furnitureBtnClearPreview',
+                fileInputDesktop:'fileInputDesktop',
+                fileInputGallery:'fileInputGallery',
+                fileInputCamera: 'fileInputCamera',
+                btnGallery:     'furnitureBtnGallery',
+                btnCamera:      'furnitureBtnCamera',
+                fieldName:      'file',
+            }),
+            this.createPicker({
+                desktopPicker:  'wallDesktopPicker',
+                mobilePicker:   'wallMobilePicker',
+                previewWrap:    'wallPreviewWrap',
+                previewImage:   'wallPreviewImage',
+                btnClearPreview:'wallBtnClearPreview',
+                fileInputDesktop:'wallFileInputDesktop',
+                fileInputGallery:'wallFileInputGallery',
+                fileInputCamera: 'wallFileInputCamera',
+                btnGallery:     'wallBtnGallery',
+                btnCamera:      'wallBtnCamera',
+                fieldName:      'wallFile',
+            }),
+            this.createPicker({
+                desktopPicker:  'floorDesktopPicker',
+                mobilePicker:   'floorMobilePicker',
+                previewWrap:    'floorPreviewWrap',
+                previewImage:   'floorPreviewImage',
+                btnClearPreview:'floorBtnClearPreview',
+                fileInputDesktop:'floorFileInputDesktop',
+                fileInputGallery:'floorFileInputGallery',
+                fileInputCamera: 'floorFileInputCamera',
+                btnGallery:     'floorBtnGallery',
+                btnCamera:      'floorBtnCamera',
+                fieldName:      'floorFile',
+            }),
+        ];
+
         this.form.addEventListener('submit', (e) => e.preventDefault());
         if (this.button) {
             this.button.addEventListener('click', (e) => this.handleAnalyze(e));
@@ -49,6 +68,129 @@ const furnitureAnalyzerApp = {
         if (this.outputToggle) {
             this.outputToggle.addEventListener('click', () => this.toggleOutputPanel());
         }
+    },
+
+    createPicker(ids) {
+        const app = this;
+        const picker = {
+            selectedFile: null,
+            previewUrl: null,
+            fieldName: ids.fieldName,
+            desktopPicker:   document.getElementById(ids.desktopPicker),
+            mobilePicker:    document.getElementById(ids.mobilePicker),
+            previewWrap:     document.getElementById(ids.previewWrap),
+            previewImage:    document.getElementById(ids.previewImage),
+            btnClearPreview: document.getElementById(ids.btnClearPreview),
+            fileInputDesktop:document.getElementById(ids.fileInputDesktop),
+            fileInputGallery:document.getElementById(ids.fileInputGallery),
+            fileInputCamera: document.getElementById(ids.fileInputCamera),
+            btnGallery:      document.getElementById(ids.btnGallery),
+            btnCamera:       document.getElementById(ids.btnCamera),
+
+            updatePickerVisibility() {
+                const hasPreview = Boolean(this.selectedFile);
+                if (this.previewWrap) this.previewWrap.hidden = !hasPreview;
+                if (hasPreview) {
+                    if (this.desktopPicker) this.desktopPicker.hidden = true;
+                    if (this.mobilePicker)  this.mobilePicker.hidden  = true;
+                    return;
+                }
+                if (this.desktopPicker) this.desktopPicker.hidden = app.isMobile;
+                if (this.mobilePicker)  this.mobilePicker.hidden  = !app.isMobile;
+            },
+
+            revokePreviewUrl() {
+                if (this.previewUrl) {
+                    URL.revokeObjectURL(this.previewUrl);
+                    this.previewUrl = null;
+                }
+                if (this.previewImage) this.previewImage.removeAttribute('src');
+            },
+
+            clearOtherInputs(activeInput) {
+                for (const input of [this.fileInputDesktop, this.fileInputGallery, this.fileInputCamera]) {
+                    if (input && input !== activeInput) input.value = '';
+                }
+            },
+
+            clearSelection() {
+                this.selectedFile = null;
+                this.revokePreviewUrl();
+                for (const input of [this.fileInputDesktop, this.fileInputGallery, this.fileInputCamera]) {
+                    if (input) input.value = '';
+                }
+                this.updatePickerVisibility();
+            },
+
+            showPreviewFromFile(file) {
+                this.revokePreviewUrl();
+                this.previewUrl = URL.createObjectURL(file);
+                if (!this.previewImage) return;
+                this.previewImage.onerror = () => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        this.previewImage.onerror = null;
+                        this.previewImage.src = reader.result;
+                    };
+                    reader.onerror = () => {
+                        app.showOutput('Could not display image preview.', true);
+                    };
+                    reader.readAsDataURL(file);
+                };
+                this.previewImage.onload = () => {
+                    this.previewImage.onerror = null;
+                };
+                this.previewImage.src = this.previewUrl;
+            },
+
+            setSelectedFile(file, activeInput) {
+                if (!app.isImageFile(file)) {
+                    app.showOutput('Unsupported file. Use a photo (JPEG/PNG).', true);
+                    return;
+                }
+                this.selectedFile = file;
+                this.clearOtherInputs(activeInput);
+                this.showPreviewFromFile(file);
+                this.updatePickerVisibility();
+            },
+
+            handleFileInput(input) {
+                const file = input.files?.[0];
+                if (!file) return;
+                this.setSelectedFile(file, input);
+            },
+
+            bindEvents() {
+                const bindInput = (input) => {
+                    if (!input) return;
+                    const onPick = () => this.handleFileInput(input);
+                    input.addEventListener('change', onPick);
+                    input.addEventListener('input', onPick);
+                };
+                bindInput(this.fileInputDesktop);
+                bindInput(this.fileInputGallery);
+                bindInput(this.fileInputCamera);
+
+                if (this.btnGallery) {
+                    this.btnGallery.addEventListener('click', () => {
+                        if (this.fileInputGallery) { this.fileInputGallery.value = ''; this.fileInputGallery.click(); }
+                    });
+                }
+                if (this.btnCamera) {
+                    this.btnCamera.addEventListener('click', () => {
+                        if (this.fileInputCamera) { this.fileInputCamera.value = ''; this.fileInputCamera.click(); }
+                    });
+                }
+                if (this.btnClearPreview) {
+                    this.btnClearPreview.addEventListener('click', () => this.clearSelection());
+                }
+
+                this.updatePickerVisibility();
+            },
+        };
+
+        picker.bindEvents();
+        return picker;
     },
 
     isMobileDevice() {
@@ -60,7 +202,6 @@ const furnitureAnalyzerApp = {
         return mobileUa || touchNarrow;
     },
 
-    /** Camera/gallery on mobile often returns empty file.type — still a valid image */
     isImageFile(file) {
         if (!file || file.size <= 0) return false;
         if (file.type && file.type.startsWith('image/')) return true;
@@ -69,112 +210,14 @@ const furnitureAnalyzerApp = {
         return !file.type || file.type === 'application/octet-stream';
     },
 
-    initPickerMode() {
-        this.isMobile = this.isMobileDevice();
-        document.body.classList.toggle('is-mobile', this.isMobile);
-        this.updatePickerVisibility();
-    },
-
-    updatePickerVisibility() {
-        const hasPreview = Boolean(this.selectedFile);
-        this.previewWrap.hidden = !hasPreview;
-        if (hasPreview) {
-            this.desktopPicker.hidden = true;
-            this.mobilePicker.hidden = true;
-            return;
-        }
-        this.desktopPicker.hidden = this.isMobile;
-        this.mobilePicker.hidden = !this.isMobile;
-    },
-
-    revokePreviewUrl() {
-        if (this.previewUrl) {
-            URL.revokeObjectURL(this.previewUrl);
-            this.previewUrl = null;
-        }
-        this.previewImage.removeAttribute('src');
-    },
-
-    clearOtherInputs(activeInput) {
-        const inputs = [this.fileInputDesktop, this.fileInputGallery, this.fileInputCamera];
-        for (const input of inputs) {
-            if (input && input !== activeInput) {
-                input.value = '';
-            }
-        }
-    },
-
-    clearSelection() {
-        this.selectedFile = null;
-        this.revokePreviewUrl();
-        for (const input of [this.fileInputDesktop, this.fileInputGallery, this.fileInputCamera]) {
-            if (input) input.value = '';
-        }
-        this.updatePickerVisibility();
-    },
-
-    showPreviewFromFile(file) {
-        this.revokePreviewUrl();
-        this.previewUrl = URL.createObjectURL(file);
-        this.previewImage.onerror = () => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.previewImage.onerror = null;
-                this.previewImage.src = reader.result;
-            };
-            reader.onerror = () => {
-                this.showOutput('Could not display image preview.', true);
-            };
-            reader.readAsDataURL(file);
-        };
-        this.previewImage.onload = () => {
-            this.previewImage.onerror = null;
-        };
-        this.previewImage.src = this.previewUrl;
-    },
-
-    setSelectedFile(file, activeInput) {
-        if (!this.isImageFile(file)) {
-            this.showOutput('Unsupported file. Use a photo (JPEG/PNG).', true);
-            return;
-        }
-        this.selectedFile = file;
-        this.clearOtherInputs(activeInput);
-        this.showPreviewFromFile(file);
-        this.updatePickerVisibility();
-    },
-
-    handleFileInput(input) {
-        const file = input.files?.[0];
-        if (!file) return;
-        this.setSelectedFile(file, input);
-    },
-
-    bindFileInput(input) {
-        const onPick = () => this.handleFileInput(input);
-        input.addEventListener('change', onPick);
-        input.addEventListener('input', onPick);
-    },
-
-    openFilePicker(input) {
-        input.value = '';
-        input.click();
-    },
-
     showOutputWrapper() {
-        if (this.outputWrapper) {
-            this.outputWrapper.hidden = false;
-        }
+        if (this.outputWrapper) this.outputWrapper.hidden = false;
     },
 
     hideOutputWrapper() {
-        if (this.outputWrapper) {
-            this.outputWrapper.hidden = true;
-        }
+        if (this.outputWrapper) this.outputWrapper.hidden = true;
         this.setOutputPanelOpen(false);
-        if (this.output) {
-            this.output.innerHTML = '';
-        }
+        if (this.output) this.output.innerHTML = '';
     },
 
     setOutputPanelOpen(open) {
@@ -216,9 +259,7 @@ const furnitureAnalyzerApp = {
             alert(text);
             return;
         }
-        if (!this.output) {
-            return;
-        }
+        if (!this.output) return;
         const pre = document.createElement('pre');
         pre.textContent = text;
         if (isError) pre.style.color = '#a00';
@@ -233,7 +274,8 @@ const furnitureAnalyzerApp = {
     async handleAnalyze(e) {
         e.preventDefault();
 
-        if (!this.selectedFile) {
+        const furniturePicker = this.pickers[0];
+        if (!furniturePicker?.selectedFile) {
             this.showOutput('Select or take a photo first.', true);
             return;
         }
@@ -251,14 +293,15 @@ const furnitureAnalyzerApp = {
             }
         };
 
-        if (button) {
-            this.buttonLoader(button, true, '', originalHtml);
-        }
-
+        if (button) this.buttonLoader(button, true, '', originalHtml);
         this.hideOutputWrapper();
 
         const formData = new FormData();
-        formData.append('file', this.selectedFile, this.selectedFile.name || 'photo.jpg');
+        for (const picker of this.pickers) {
+            if (picker.selectedFile) {
+                formData.append(picker.fieldName, picker.selectedFile, picker.selectedFile.name || 'photo.jpg');
+            }
+        }
 
         try {
             const response = await fetch(this.apiUrl, {
@@ -277,9 +320,7 @@ const furnitureAnalyzerApp = {
             }
 
             const isError = !response.ok;
-            if (!isError) {
-                this.storeAnalyzeData(data);
-            }
+            if (!isError) this.storeAnalyzeData(data);
             this.showOutput(JSON.stringify(data, null, 2), isError, true);
             finishButton(isError ? 'Error' : 'Done');
         } catch (err) {
