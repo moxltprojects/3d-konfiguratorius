@@ -1442,11 +1442,24 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     const containerWidth = model3dContainer.clientWidth;
     const containerHeight = model3dContainer.clientHeight;
 
-    const wallTextureSrc = assetsUrl + '/images/room/brick-wall.jpg';
-    const leftWallTextureSrc = assetsUrl + '/images/room/left-bottom-wall.png';
-    const floorTextureSrc = assetsUrl + '/images/room/floor-with-wall.png';
-    // const wallTextureSrc = assetsUrl + '/images/room/brick-wall.jpg';
-    // const floorTextureSrc = assetsUrl + '/images/room/floor-limestone.jpg';
+    let wallTextureSrc = assetsUrl + '/images/room/brick-wall.jpg';
+    let floorTextureSrc = assetsUrl + '/images/room/floor-with-wall.png';
+
+    const toDataUrl = (b64) => {
+        if (!b64) return null;
+        if (b64.startsWith('data:')) return b64;
+        const mime = b64.startsWith('/9j/') ? 'image/jpeg' : 'image/png';
+        return `data:${mime};base64,${b64}`;
+    };
+
+    if (typeof furnitureAnalyzeData !== 'undefined' && furnitureAnalyzeData) {
+        if (furnitureAnalyzeData['wall']?.base64) {
+            wallTextureSrc = toDataUrl(furnitureAnalyzeData['wall'].base64);
+        }
+        if (furnitureAnalyzeData['floor']?.base64) {
+            floorTextureSrc = toDataUrl(furnitureAnalyzeData['floor'].base64);
+        }
+    }
 
     clearModelScene(modelObj, onPageLoad);
 
@@ -1606,16 +1619,20 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         // ---------------------------
         // BASE FLOOR (real geometry)
         // ---------------------------
+        const floorTopMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#C8C2C6"),
+            roughness: 0.6,
+        });
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(roomW, FLOOR_THICKNESS, roomD),
-            new THREE.MeshStandardMaterial({
-                color: new THREE.Color("#C8C2C6"),
-                roughness: 0.6
-                // map: texture,
-                // color: 0xffffff,   // multiplies texture
-                // roughness: 0.5,
-                // metalness: 0
-            })
+            [
+                exteriorMat, // +x side
+                exteriorMat, // -x side
+                floorTopMat, // +y top (inside, under the floor plane)
+                exteriorMat, // -y bottom (external)
+                exteriorMat, // +z side
+                exteriorMat, // -z side
+            ]
         );
 
         base.position.set(0, -FLOOR_THICKNESS / 2, 0);
@@ -1711,16 +1728,23 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
             wallDepth
         );
 
+        const leftWallInnerMat = new THREE.MeshStandardMaterial({
+            map: texture,
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0,
+        });
+
         const leftWallBase = new THREE.Mesh(
             leftWallGeometry,
-            new THREE.MeshStandardMaterial({
-                // color: new THREE.Color("#ffffff"),
-                // roughness: 0.6
-                map: texture,
-                color: 0xffffff,   // multiplies texture
-                roughness: 0.5,
-                metalness: 0
-            })
+            [
+                leftWallInnerMat, // +x — inner face (toward room)
+                exteriorMat,      // -x — outer face
+                exteriorMat,      // +y — top
+                exteriorMat,      // -y — bottom
+                exteriorMat,      // +z — front edge
+                exteriorMat,      // -z — back edge
+            ]
         );
 
         leftWallBase.position.set(
@@ -1792,16 +1816,29 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         color: 0xffffff,
         metalness: 0,
         roughness: 1,
-        side: THREE.DoubleSide
     });
 
+    const exteriorMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color('#C8C2C6'),
+        roughness: 0.9,
+        metalness: 0,
+    });
+
+    // Back wall: inner face is +z (index 4), outer face is -z (index 5)
     const rightWallGeometry = new THREE.BoxGeometry(
         modelRoomWidth,
         wallHeight,
         WALL_THICKNESS
     );
 
-    const rightWall = new THREE.Mesh(rightWallGeometry, wallMaterial);
+    const rightWall = new THREE.Mesh(rightWallGeometry, [
+        exteriorMat,  // +x — right edge
+        exteriorMat,  // -x — left edge
+        exteriorMat,  // +y — top
+        exteriorMat,  // -y — bottom
+        wallMaterial, // +z — inner face (toward room)
+        exteriorMat,  // -z — outer face
+    ]);
 
     rightWall.position.set(
         0,
@@ -1809,11 +1846,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         -modelRoomDepth / 2 - WALL_THICKNESS / 2
     );
 
-    /******* for product shadow *****/
     rightWall.castShadow = false;
     rightWall.receiveShadow = true;
-    /******* end for product shadow *****/
-
     rightWall.name = "right-wall";
     room3DGroup.add(rightWall);
 
@@ -1823,10 +1857,18 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     if (roomType === ROOM_TYPE_SINGLE_WALL) {
         const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
 
+        // Left wall: inner face is +x (BoxGeometry face index 0)
         leftSideWallMat = wallMaterial.clone();
         leftSideWallMat.transparent = true;
 
-        const leftSideWall = new THREE.Mesh(sideWallGeometry, leftSideWallMat);
+        const leftSideWall = new THREE.Mesh(sideWallGeometry, [
+            leftSideWallMat, // +x — inner face (toward room)
+            exteriorMat,     // -x — outer face
+            exteriorMat,     // +y — top
+            exteriorMat,     // -y — bottom
+            exteriorMat,     // +z — front edge
+            exteriorMat,     // -z — back edge
+        ]);
         leftSideWall.position.set(
             -modelRoomWidth / 2 - WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -1835,10 +1877,18 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         leftSideWall.name = 'left-side-wall';
         room3DGroup.add(leftSideWall);
 
+        // Right wall: inner face is -x (BoxGeometry face index 1)
         rightSideWallMat = wallMaterial.clone();
         rightSideWallMat.transparent = true;
 
-        const rightSideWall = new THREE.Mesh(sideWallGeometry, rightSideWallMat);
+        const rightSideWall = new THREE.Mesh(sideWallGeometry, [
+            exteriorMat,     // +x — outer face
+            rightSideWallMat,// -x — inner face (toward room)
+            exteriorMat,     // +y — top
+            exteriorMat,     // -y — bottom
+            exteriorMat,     // +z — front edge
+            exteriorMat,     // -z — back edge
+        ]);
         rightSideWall.position.set(
             modelRoomWidth / 2 + WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -5200,186 +5250,6 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
         modelObj.dbChildren[itemIndex] = item;
     }
 }   
-
-    
-// function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
-//     const children = roomState.modelsList[roomState.roomType].scene.children;
-
-//     const pos = currentObj.position.clone();
-//     const scaledSize = currentObj.userData.scaledSize;
-//     const size = getFootprintSize(scaledSize, currentObj.rotation.y);
-
-//     let isFitting = true;
-
-//     for (let childObj of children) {
-//         if (childObj.id === currentObj.id) continue;
-//         if (excludeObjId && childObj.id === excludeObjId) continue;
-
-//         const childData = childObj.userData;
-//         if (!childData || (!childData.productId && !childData.pseudoType)) continue;
-
-//         const childPos = childObj.position;
-//         const childScaledSize = childData.scaledSize;
-//         const childSize = getFootprintSize(childScaledSize, childObj.rotation.y);
-
-//         // Axis-Aligned Bounding Box overlap check (local space)
-//         const overlapX = Math.abs(pos.x - childPos.x) < (size.x / 2 + childSize.x / 2);
-//         const overlapY = Math.abs(pos.y - childPos.y) < (size.y / 2 + childSize.y / 2);
-//         const overlapZ = Math.abs(pos.z - childPos.z) < (size.z / 2 + childSize.z / 2);
-    
-//         if (overlapX && overlapY && overlapZ) {
-//             isFitting = false;
-//             break;
-//         }
-//     }
-
-//     return isFitting;
-// }
-
-
-// function addWrapperDebugBox(wrapper, color = 0xff0000) {
-//     const size = wrapper.userData.collisionSize || wrapper.userData.scaledSize;
-//     if (!size) return;
-
-//     const oldDebug = wrapper.getObjectByName('debug-wrapper-box');
-//     if (oldDebug) wrapper.remove(oldDebug);
-
-//     const debugGroup = new THREE.Group();
-//     debugGroup.name = 'debug-wrapper-box';
-
-//     const h = 2; // thin footprint height
-
-//     const geometry = new THREE.BoxGeometry(size.x, h, size.z);
-
-//     const fill = new THREE.Mesh(
-//         geometry,
-//         new THREE.MeshBasicMaterial({
-//             color,
-//             transparent: true,
-//             opacity: 0.18,
-//             depthTest: false,
-//             depthWrite: false,
-//         })
-//     );
-
-//     const outline = new THREE.LineSegments(
-//         new THREE.EdgesGeometry(geometry),
-//         new THREE.LineBasicMaterial({
-//             color: 0x000000,
-//             depthTest: false,
-//         })
-//     );
-
-//     fill.renderOrder = 999;
-//     outline.renderOrder = 1000;
-
-//     debugGroup.add(fill);
-//     debugGroup.add(outline);
-
-//     // cancel parent scale
-//     debugGroup.scale.set(
-//         1 / wrapper.scale.x,
-//         1 / wrapper.scale.y,
-//         1 / wrapper.scale.z
-//     );
-
-//     // keep just above floor
-//     debugGroup.position.set(0, h / 2, 0);
-
-//     wrapper.add(debugGroup);
-// }
-
-// function getCollisionBoxFromUserData(obj) {
-//     const pos = obj.position;
-
-//     const size = getFootprintSize(
-//         obj.userData.scaledSize,
-//         obj.rotation.y
-//     );
-
-//     return {
-//         minX: pos.x - size.x / 2,
-//         maxX: pos.x + size.x / 2,
-
-//         // assumes obj.position.y is bottom of item
-//         minY: pos.y,
-//         maxY: pos.y + size.y,
-
-//         minZ: pos.z - size.z / 2,
-//         maxZ: pos.z + size.z / 2,
-//     };
-// }
-
-// function collisionBoxesOverlap(a, b, tolerance = 1) {
-//     const overlapX = a.minX < b.maxX - tolerance && a.maxX > b.minX + tolerance;
-//     const overlapY = a.minY < b.maxY - tolerance && a.maxY > b.minY + tolerance;
-//     const overlapZ = a.minZ < b.maxZ - tolerance && a.maxZ > b.minZ + tolerance;
-
-//     return overlapX && overlapY && overlapZ;
-// }
-
-// function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
-//     const children = roomState.modelsList[roomState.roomType].scene.children;
-
-//     if (!currentObj.userData.scaledSize) {
-//         return true;
-//     }
-
-//     const currentBox = getCollisionBoxFromUserData(currentObj);
-
-//     for (const childObj of children) {
-//         if (childObj.id === currentObj.id) continue;
-//         if (excludeObjId && childObj.id === excludeObjId) continue;
-
-//         const childData = childObj.userData;
-//         if (!childData || (!childData.productId && !childData.pseudoType)) continue;
-//         if (!childData.scaledSize) continue;
-
-//         const childBox = getCollisionBoxFromUserData(childObj);
-
-//         if (collisionBoxesOverlap(currentBox, childBox, 1)) {
-//             console.log('COLLISION', {
-//                 currentObj,
-//                 childObj,
-//                 currentBox,
-//                 childBox,
-//             });
-
-//             return false;
-//         }
-//     }
-
-//     return true;
-// }
-
-// function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
-//     const children = roomState.modelsList[roomState.roomType].scene.children;
-
-//     currentObj.updateMatrixWorld(true);
-
-//     const currentBox = new THREE.Box3().setFromObject(currentObj);
-//     currentBox.expandByScalar(-0.001); // tolerance, avoids false collisions on touching edges
-
-//     for (const childObj of children) {
-//         if (childObj.id === currentObj.id) continue;
-//         if (excludeObjId && childObj.id === excludeObjId) continue;
-
-//         const childData = childObj.userData;
-//         if (!childData || (!childData.productId && !childData.pseudoType)) continue;
-
-//         childObj.updateMatrixWorld(true);
-
-//         const childBox = new THREE.Box3().setFromObject(childObj);
-//         childBox.expandByScalar(-0.001);
-
-//         if (currentBox.intersectsBox(childBox)) {
-//             return false;
-//         }
-
-//     }
-
-//     return true;
-// }
 
 function isProbablyCircle(obj) {
     const furnitureType = obj.userData.furnitureType;
