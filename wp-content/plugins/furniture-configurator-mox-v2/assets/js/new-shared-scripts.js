@@ -1640,18 +1640,13 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     if (roomType === ROOM_TYPE_SINGLE_WALL) {
         const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
 
-        // Left wall: inner face is +x (BoxGeometry face index 0)
+        // Single material per wall so the whole mesh fades together.
+        // depthWrite=false is required for correct transparency in Three.js.
         leftSideWallMat = wallMaterial.clone();
         leftSideWallMat.transparent = true;
+        leftSideWallMat.depthWrite = false;
 
-        const leftSideWall = new THREE.Mesh(sideWallGeometry, [
-            leftSideWallMat, // +x — inner face (toward room)
-            exteriorMat,     // -x — outer face
-            exteriorMat,     // +y — top
-            exteriorMat,     // -y — bottom
-            exteriorMat,     // +z — front edge
-            exteriorMat,     // -z — back edge
-        ]);
+        const leftSideWall = new THREE.Mesh(sideWallGeometry, leftSideWallMat);
         leftSideWall.position.set(
             -modelRoomWidth / 2 - WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -1660,18 +1655,11 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         leftSideWall.name = 'left-side-wall';
         room3DGroup.add(leftSideWall);
 
-        // Right wall: inner face is -x (BoxGeometry face index 1)
         rightSideWallMat = wallMaterial.clone();
         rightSideWallMat.transparent = true;
+        rightSideWallMat.depthWrite = false;
 
-        const rightSideWall = new THREE.Mesh(sideWallGeometry, [
-            exteriorMat,     // +x — outer face
-            rightSideWallMat,// -x — inner face (toward room)
-            exteriorMat,     // +y — top
-            exteriorMat,     // -y — bottom
-            exteriorMat,     // +z — front edge
-            exteriorMat,     // -z — back edge
-        ]);
+        const rightSideWall = new THREE.Mesh(sideWallGeometry, rightSideWallMat);
         rightSideWall.position.set(
             modelRoomWidth / 2 + WALL_THICKNESS / 2,
             wallHeight / 2 - FLOOR_THICKNESS,
@@ -1763,15 +1751,24 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         controls.update();
 
         if (leftSideWallMat || rightSideWallMat) {
-            const fadeZone = modelRoomWidth * 0.25;
+            const dx = camera.position.x - controls.target.x;
+            const dz = camera.position.z - controls.target.z;
+            // angle: 0=directly in front, +PI/2=camera to right, -PI/2=camera to left
+            const angle = Math.atan2(dx, dz);
+
+            const fadeStart = Math.PI / 6;  // 30° — begin fading
+            const fadeEnd   = Math.PI / 3;  // 60° — fully transparent
+
             if (leftSideWallMat) {
-                leftSideWallMat.opacity = THREE.MathUtils.clamp(
-                    (camera.position.x + halfW + fadeZone) / fadeZone, 0, 1
+                const a = Math.max(0, -angle); // grows when camera swings left
+                leftSideWallMat.opacity = 1 - THREE.MathUtils.clamp(
+                    (a - fadeStart) / (fadeEnd - fadeStart), 0, 1
                 );
             }
             if (rightSideWallMat) {
-                rightSideWallMat.opacity = THREE.MathUtils.clamp(
-                    (halfW + fadeZone - camera.position.x) / fadeZone, 0, 1
+                const a = Math.max(0, angle); // grows when camera swings right
+                rightSideWallMat.opacity = 1 - THREE.MathUtils.clamp(
+                    (a - fadeStart) / (fadeEnd - fadeStart), 0, 1
                 );
             }
         }
@@ -1986,6 +1983,38 @@ export function updateRoomSize(modelObj) {
             wallHeight / 2 - FLOOR_THICKNESS,
             -halfD + WALL_THICKNESS / 2
         );
+    }
+
+    // -------------------------
+    // SIDE WALLS (SINGLE_WALL)
+    // -------------------------
+    if (modelObj.roomType === ROOM_TYPE_SINGLE_WALL) {
+        const leftSideWall  = room3DGroup.getObjectByName("left-side-wall");
+        const rightSideWall = room3DGroup.getObjectByName("right-side-wall");
+
+        if (leftSideWall) {
+            leftSideWall.geometry.dispose();
+            leftSideWall.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
+            leftSideWall.position.set(
+                -widthPx / 2 - WALL_THICKNESS / 2,
+                wallHeight / 2 - FLOOR_THICKNESS,
+                -WALL_THICKNESS / 2
+            );
+            leftSideWall.updateMatrix();
+            leftSideWall.updateMatrixWorld(true);
+        }
+
+        if (rightSideWall) {
+            rightSideWall.geometry.dispose();
+            rightSideWall.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
+            rightSideWall.position.set(
+                widthPx / 2 + WALL_THICKNESS / 2,
+                wallHeight / 2 - FLOOR_THICKNESS,
+                -WALL_THICKNESS / 2
+            );
+            rightSideWall.updateMatrix();
+            rightSideWall.updateMatrixWorld(true);
+        }
     }
 
     // -------------------------
