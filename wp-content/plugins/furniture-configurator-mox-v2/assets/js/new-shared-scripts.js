@@ -33,7 +33,6 @@ import {
     BOTTOM_DISPLAY_IMAGE,
     TOP_DISPLAY_IMAGE,
     FULL_DISPLAY_IMAGE,
-    categoryState,
     getTextureSrc,
     renderMeshList,
     colorToDefault,
@@ -58,7 +57,6 @@ import {
 import { 
     changeProductsPrices,
     changeSingleProductPrice,
-    getDisplayPrice,
 } from './calculate-totals.js';
 
 export let 
