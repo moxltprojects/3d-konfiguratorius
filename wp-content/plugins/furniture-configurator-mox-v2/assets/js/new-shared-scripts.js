@@ -3,7 +3,6 @@ import {
     OrbitControls,
     GLTFLoader,
     DragControls,
-    DecalGeometry,
     BufferGeometryUtils,
 } from './three-imports.js';
 
@@ -16,7 +15,6 @@ import {
     ROOM_TYPE_WITH_CORNER,
     FURNITURE_TYPE_BOTTOM,
     FURNITURE_TYPE_BOTTOM_CORNER,
-    FURNITURE_TYPE_WALL,
     FURNITURE_TYPE_FULL,
 	THUMB_TYPE_SLOGAN,
     DIMENSION_TYPE_BOTTOM,
@@ -25,12 +23,10 @@ import {
     DIMENSION_TYPE_TOP_CORNER,
     DIMENSION_TYPE_FULL,
     DIMENSION_TYPE_FULL_CORNER,
-    DEFAULT_BRAND_TEXTURE,
     SPACE_BOTTOM,
     FLOOR_THICKNESS,
     WALL_THICKNESS,
     LIGHT_STATE_DEFAULT,
-    LIGHT_STATE_BRIGHT,
     HARDCODED_COLOR_MESHES,
     BRAND_COLOR_MESHES,
     BASIC_DISPLAY_X_PADDING_PX,
@@ -42,7 +38,6 @@ import {
     renderMeshList,
     colorToDefault,
     colorToRed,
-    // generateSmartUVs,
     uniqLong,
     addBgImageToFront,
     updateBgPlane,
@@ -51,15 +46,10 @@ import {
     getIsRotatedItem,
     getRotatedSize,
     getFurnitureDimensionsFromMmtoPx,
-    get3DItemDimensionWidth,
-    // calculateTopSpaceIn3dModel,
-    getTopFurnitureYPositionIn3dRoom,
     getCurrentModelAllProducts,
     calculateRotationInDegrees,
     getRoomDimensions,
     getContainerBaseScale,
-    getAIColors,
-    getItemSpaceBottomPx,
     calculateTopSpaceIn3dModel,
     getTopFurnitureYPositionMm,
     getFreshWrapperBoundingBox,
@@ -509,55 +499,6 @@ export function getCornerDimensions() {
 
 /************ end export functions **********/
 
-// function setZoomForAll(distance, singleCamera = null, singleControls = null) {
-
-//     if(singleCamera) {
-//         save(singleCamera, singleControls);
-//         return;
-//     }
-//     Object.values(roomState.modelsList).forEach(model => {
-//         if (!model.camera) return;
-
-//         const camera = model.camera;
-//         const controls = model.controls;
-//         save(camera, controls);
-//     });
-
-//     function save(camera, controls) {
-//         const direction = new THREE.Vector3()
-//             .subVectors(camera.position, controls.target)
-//             .normalize();
-
-//         camera.position.copy(
-//             controls.target.clone().add(direction.multiplyScalar(distance))
-//         );
-
-//         controls.update();
-//     }
-// }
-
-// function setZoomForAll(distance) {
-//     if(!zoomSlider) return;
-
-//     Object.values(roomState.modelsList).forEach(model => {
-
-//         if (!model.camera || !model.controls) return;
-
-//         const camera = model.camera;
-//         const controls = model.controls;
-
-//         const direction = new THREE.Vector3()
-//             .subVectors(camera.position, controls.target)
-//             .normalize();
-
-//         camera.position.copy(
-//             controls.target.clone().add(direction.multiplyScalar(distance))
-//         );
-
-//         controls.update();
-//     });
-// }
-
 export function setZoomForAll(distance) {
 
     Object.values(roomState.modelsList).forEach(model => {
@@ -599,18 +540,6 @@ export function setZoomForAll(distance) {
         controls.update();
     });
 }
-
-// export function updateZoomSlider(camera, controls) {
-
-//     const distance = camera.position.distanceTo(controls.target);
-
-//     const currentValue = parseFloat(zoomSlider.value);
-
-
-//     if (Math.abs(currentValue - distance) > 0.5) {
-//         zoomSlider.value = distance.toString();
-//     }
-// }
 
 export function progressInit() {
     const prevButton = container.querySelector('.actions-container .prev-step');
@@ -707,11 +636,6 @@ function furnitureTypeAddInit(
     itemObj = null, 
     editContainer = null,
 ) {
-        
-    // if(!myItemsList) {
-    //     myItemsList = container.querySelector('.tab-item.current .cabinets .cabinets-inner .my-cabinets-list-inner');
-    //     summaryItemsList = container.querySelector('.tab-item.current .summary .summary-inner .summary-content');
-    // }
 
     addBtn.addEventListener('click', async function() {
         let { myItemsList, summaryItemsList } = roomState;
@@ -720,13 +644,8 @@ function furnitureTypeAddInit(
         const {
             furniture_type,
             min_width,
-            max_width,
             min_height,
-            max_height,
             min_depth,
-            max_depth,
-            min_space_bottom,
-            max_space_bottom,
             attachment_url,
             db_data,
         } = foundItem;
@@ -737,55 +656,6 @@ function furnitureTypeAddInit(
         }
 
         const customId = uniqLong();
-        
-        // if(furniture_type.includes('corner')) {
-        //     const { 
-        //         bottom: bottomCornerData, 
-        //         top: topCornerData, 
-        //         full: fullCornerData, 
-        //     } = roomState.cornerFurnitureData;
-
-        //     let { 
-        //         id: cornerBottomFurnitureId, 
-        //         width: cornerBottomWidth, 
-        //         depth: cornerBottomDepth,
-        //     } = bottomCornerData;
-        //     let { 
-        //         id: cornerTopFurnitureId, 
-        //         width: cornerTopWidth, 
-        //         depth: cornerTopDepth,
-        //     } = topCornerData;
-        //     let { 
-        //         id: cornerFullFurnitureId, 
-        //         width: cornerFullWidth, 
-        //         depth: cornerFullDepth,
-        //     } = fullCornerData;
-        //     if(roomState.roomType === ROOM_TYPE_SINGLE_WALL) {
-        //         return;
-        //     }
-        //     if(furniture_type === DIMENSION_TYPE_FULL_CORNER) {
-        //         if(cornerBottomFurnitureId || cornerTopFurnitureId || cornerFullFurnitureId) {
-        //             alert(`Full Corner Furniture already added.`);
-        //             return;
-        //         } else {
-        //             cornerFullFurnitureId = productId;
-        //         }
-        //     } else if(furniture_type === FURNITURE_TYPE_BOTTOM_CORNER) {
-        //         if(cornerBottomFurnitureId || cornerFullFurnitureId) {
-        //             alert(`Bottom Corner Furniture already added.`);
-        //             return;
-        //         } else {
-        //             cornerBottomFurnitureId = productId;
-        //         }
-        //     } else {
-        //         if(cornerTopFurnitureId || cornerFullFurnitureId) {
-        //             alert(`Top Corner Furniture already added.`);
-        //             return;
-        //         } else {
-        //             cornerTopFurnitureId = productId;
-        //         }
-        //     }
-        // }
         
         const itemTotal = changeSingleProductPrice(
             furniture_type,
@@ -803,8 +673,6 @@ function furnitureTypeAddInit(
 
         changeTotalPrice(itemTotal);
 
-        const mergedPrices = {...prices, ...itemTotal}
-
         const {my_item_html, summary_item_html, new_object} = await addFurnitureItem(
             customId, 
             foundItem,
@@ -816,24 +684,17 @@ function furnitureTypeAddInit(
 
         const rotation = roomState.roomType === ROOM_TYPE_SINGLE_WALL ? null : 0 + parseFloat(Math.PI / 2);
 
-        const {itemPositionMm} = await addGLBModel(
+        await addGLBModel(
             object_src,
             attachment_type, 
             attachment_url,
             furniture_type, 
             productId, 
             customId, 
-            mergedPrices, 
             height,
             depth, 
             width, 
             space_bottom, 
-            min_height, 
-            max_height, 
-            min_depth, 
-            max_depth, 
-            min_width,
-            max_width,
             has_brand_texture,
             rotation,
         );
@@ -857,7 +718,6 @@ function furnitureTypeAddInit(
             const furnitureItem = myItemsList.querySelector(`.my-cabinet-item[data-custom_id="${customId}"]`);
             
             if(furnitureItem) {
-                const furnitureSummaryItem = container.querySelector(`.room-config-summary-item[data-custom_id="${customId}"]`);
                 editItemButtonTrigger(new_object, customId); 
                 removeItemButtonTrigger(furnitureItem, customId, furniture_type);
                 duplicateFurnitureTrigger(furnitureItem, customId);
@@ -1040,14 +900,7 @@ export async function renderBasicImage3dContainer() {
     const mmToUnits = 0.001; 
     const zoomOut = 1.45;
 
-    const { bottom, top, full, largest_height } = roomState.furnitureDimensions;
-    // const bottomHeightUnits = bottom.height * mmToUnits;
-    // const topHeightUnits = top.height * mmToUnits;
-    // const fullHeightUnits = full.height * mmToUnits;
-    // const bottomDepthUnits = bottom.depth * mmToUnits;
-    // const fullDepthUnits = full.depth * mmToUnits;
-    // const topDepthUnits = top.depth * mmToUnits;
-    // const bottomYUnits = getTopFurnitureYPositionMm() * 10 * mmToUnits;
+    const { largest_height } = roomState.furnitureDimensions;
 
     const threeJSRenderedBasicDisplay = new THREE.WebGLRenderer({ 
         antialias: true, 
@@ -1134,7 +987,6 @@ export async function renderBasicImage3dContainer() {
         }
     }
 
-    // changeBaseImageDimensions();
 }
 
 function changeFurnitureDimensionsValue() {
@@ -1145,7 +997,6 @@ function changeFurnitureDimensionsValue() {
         const furnitureType = dimensionsContainer.getAttribute('data-furniture_type');
         const rangeInput = dimensionsContainer.querySelector('.slider-container input[type="range"]');
         const rangeNumInput = dimensionsContainer.querySelector('.input-container input[type="number"]');
-        const addProductHtmls = container.querySelectorAll(`.furniture-types-list-container .furniture-types-list .furniture-type[data-slug="${furnitureType}"] .cabinet-item`);
 
         rangeInput.addEventListener('change', function(e) {
             const value = parseInt(e.target.value);
@@ -1159,8 +1010,6 @@ function changeFurnitureDimensionsValue() {
             
             changeBaseImageDimensions();
             changeModelChildrenDimensions(value, furnitureType, dimensionType);
-            // changeAddItemsHtmls(addProductHtmls, dimensionType, value);
-            // changeExistinItemsHtmls(furnitureType, dimensionType, value);
         });
 
         rangeNumInput.addEventListener('change', function(e) {
@@ -1177,22 +1026,6 @@ function changeFurnitureDimensionsValue() {
             changeModelChildrenDimensions(value, furnitureType, dimensionType);
         });
     });
-
-    // function changeAddItemsHtmls(items, attribute, value) {
-    //     items.forEach(item => {
-    //         item.setAttribute(`data-item_${attribute}`, value);
-    //     });
-    // }
-
-    // function changeExistinItemsHtmls(furnitureType, attribute, value) {
-    //     const existingItems = container.querySelectorAll(
-    //         `.cabinet-settings .my-cabinets-list .my-cabinet-item[data-item_data*='"furniture_type":"${furnitureType}"']`
-    //     );            
-
-    //     existingItems.forEach(item => {
-    //         item.setAttribute(`data-item_${attribute}`, value);
-    //     });
-    // }
 
     function changeModelChildrenDimensions(value, currentType, dimensionType) {
         const modelObj = roomState.modelsList[roomState.roomType];
@@ -1293,26 +1126,7 @@ function renderBaseImage(rootGroupBasicDisplay, urlSrc, furnitureType, widthUnit
                 childMeshGroup.userData.furnitureType = furnitureType;
 
                 sizeAndPlaceDisplayImage(childMeshGroup, furnitureType, widthUnits, basicDisplayXPaddingUnits);
-                // // scale object to match desired dimensions in scene units
-                // const scaleX = itemWidth / childSize.x * 1.3;
-                // const scaleY = itemHeight / childSize.y * 1.3;
-                // const scaleZ = itemDepth / childSize.z * 1.3;
-                // childMeshGroup.scale.set(scaleX, scaleY, scaleZ);
 
-                // // recompute scaled size
-                // const scaledBox = new THREE.Box3().setFromObject(childMeshGroup);
-                // const scaledSize = new THREE.Vector3();
-                // scaledBox.getSize(scaledSize);
-
-                // childMeshGroup.userData.scaledSize = scaledSize.clone();
-
-                // // position object: bottom aligned, optional x offset
-                // let leftAdditional = furnitureType === DIMENSION_TYPE_FULL ? 0 : scaledSize.x;
-                // const posX = basicDisplayXPaddingUnits + leftAdditional - itemWidth / 2; // adjust as needed
-                // const posY = bottomYUnits + 0.18; // bottom aligned
-                // const posZ = 0; // adjust depth if needed
-
-                // childMeshGroup.position.set(posX, posY, posZ);
                 roomState.displayModelChildren.push(childMeshGroup);
 
                 resolve(childMeshGroup);
@@ -1327,7 +1141,7 @@ function renderBaseImage(rootGroupBasicDisplay, urlSrc, furnitureType, widthUnit
 
 function changeBaseImageDimensions() {
     const mmToUnits = 0.001; 
-    const { bottom, top, full, space_bottom } = roomState.furnitureDimensions;
+    const { bottom, top, full } = roomState.furnitureDimensions;
     const { bottom: bottomObj, top: topObj, full: fullObj } = roomBasicDisplayData.models;
 
     const itemHeightBottomUnits = bottom.height * mmToUnits;
@@ -1385,7 +1199,7 @@ function sizeAndPlaceDisplayImage(object, furnitureType, itemWidth, basicDisplay
     const mmToUnits = 0.001; 
     const furnitureDimensions = roomState.furnitureDimensions;
     const itemDimensions = furnitureDimensions[furnitureType];
-    // const itemWidth = itemDimensions.width * mmToUnits;
+
     const itemHeight = itemDimensions.height * mmToUnits;
     const itemDepth = itemDimensions.depth * mmToUnits;
 
@@ -1478,7 +1292,7 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         scaleX,
         scaleY,
         scaleZ
-    } = getRoomDimensions(model3dContainer, modelObj);
+    } = getRoomDimensions();
 
     const modelRoomWidth = widthPx;
     const modelRoomHeight = heightPx;
@@ -1510,12 +1324,6 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
 
     renderer.setSize(containerWidth, containerHeight);
 
-    /******* for product shadow *****/
-    // renderer.shadowMap.enabled = true;
-    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    // renderer.outputColorSpace = THREE.SRGBColorSpace;
-    /******* end for product shadow *****/
-
     model3dContainer.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -1534,28 +1342,6 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     const ambientLight = new THREE.AmbientLight(0xffffff, LIGHT_STATE_DEFAULT.ambient);
 
     dirLight.position.set(100, 200, 100);
-
-    // /******* for product shadow *****/
-    // dirLight.castShadow = true;
-    // dirLight.shadow.mapSize.width = 2048;
-    // dirLight.shadow.mapSize.height = 2048;
-
-    // dirLight.shadow.camera.near = 1;
-    // dirLight.shadow.camera.far = 1000;
-
-    // const shadowSize = Math.max(modelRoomWidth, modelRoomHeight, modelRoomDepth) * 1.5;
-
-    // dirLight.shadow.camera.left = -shadowSize;
-    // dirLight.shadow.camera.right = shadowSize;
-    // dirLight.shadow.camera.top = shadowSize;
-    // dirLight.shadow.camera.bottom = -shadowSize;
-
-    // dirLight.shadow.bias = -0.0005;
-    // dirLight.shadow.normalBias = 0.02;
-    // dirLight.shadow.radius = 4;
-
-    // const lightDistance = 300;  
-    // /******* end for product shadow *****/
 
     baseLights.add(hemiLight);
     baseLights.add(dirLight);
@@ -1786,7 +1572,6 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         );
 
         leftWall.rotation.y = Math.PI / 2;
-        // leftWall.position.set(0, 0.001, 0);
         leftWall.position.set(
             -roomW / 2 + 0.001,  // push to left side
             roomH / 2,           // center vertically
@@ -1994,7 +1779,6 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         }
 
             renderer.render(modelScene, camera);
-            // updateZoomSlider(camera, controls);
         }
 
     renderer.domElement.addEventListener('wheel', (e) => {
@@ -2048,21 +1832,16 @@ function handle3dResize() {
     });
 }
 
-export function updateRoomSize(modelObj, dimensions) {
+export function updateRoomSize(modelObj) {
     const model3dContainer = modelObj.htmlContainer;
     const room3DGroup = modelObj.room3DGroup;
-    const containerWidth = model3dContainer.clientWidth;
-    const containerHeight = model3dContainer.clientHeight;
     const { scene, renderer, dirLight, box } = modelObj;
 
     const {
         heightPx,
         depthPx,
         widthPx,
-        scaleX,
-        scaleY,
-        scaleZ
-    } = getRoomDimensions(model3dContainer, modelObj);
+    } = getRoomDimensions();
 
     roomState.modelRoomDimensions = {
         width: widthPx,
@@ -2078,7 +1857,6 @@ export function updateRoomSize(modelObj, dimensions) {
     const wallHeight = heightPx + FLOOR_THICKNESS
     const wallDepth = depthPx + WALL_THICKNESS;
 
-    const halfW = widthPx / 2;
     const halfD = depthPx / 2 + WALL_THICKNESS;
 
     // -------------------------
@@ -2106,13 +1884,11 @@ export function updateRoomSize(modelObj, dimensions) {
         if (texture) {
 
             // FIX #3: prevent texture drift accumulation
-            // texture.center.set(0.5, 0.5);
             texture.rotation = 0;
 
             texture.repeat.set(repeatX, repeatY);
 
             // IMPORTANT FIX: DO NOT USE OFFSET HERE
-            // texture.offset.set(0, 0);
             texture.offset.set(1 - repeatX, 0);
 
             texture.needsUpdate = true;
@@ -2132,16 +1908,6 @@ export function updateRoomSize(modelObj, dimensions) {
         floorBase.position.set(0, -FLOOR_THICKNESS / 2, 0);
         floorBase.updateMatrix();
         floorBase.updateMatrixWorld(true);
-
-        // floorBase.geometry.dispose();
-        // floorBase.geometry =
-        //     new THREE.BoxGeometry(widthPx, wallHeight, depthPx);
-
-        // floorBase.position.set(
-        //     0, 
-        //     -FLOOR_THICKNESS / 2, 
-        //     0
-        // );
     }
 
     // -------------------------
@@ -2149,18 +1915,6 @@ export function updateRoomSize(modelObj, dimensions) {
     // -------------------------
 
     if (modelObj.roomType === ROOM_TYPE_WITH_CORNER) {
-        // const leftWallMesh = room3DGroup.getObjectByName("left-wall");
-        // if(leftWallMesh) {
-        //     leftWallMesh.geometry.dispose();
-        //     leftWallMesh.geometry =
-        //         new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, depthPx);
-
-        //     leftWallMesh.position.set(
-        //         -halfW + WALL_THICKNESS / 2,
-        //         wallHeight / 2 - FLOOR_THICKNESS,
-        //         0
-        //     );
-        // }
         const leftWallMesh = room3DGroup.getObjectByName("left-wall-mesh");
         const leftWallBase = room3DGroup.getObjectByName("left-wall-base");
 
@@ -2169,14 +1923,6 @@ export function updateRoomSize(modelObj, dimensions) {
             const roomAspect = depthPx / heightPx;
             const imgAspect = leftWallMesh.userData.imgAspect;
 
-            // let repeatX = 1;
-            // let repeatY = 1;
-
-            // if (imgAspect > roomAspect) {
-            //     repeatX = roomAspect / imgAspect;
-            // } else {
-            //     repeatY = imgAspect / roomAspect;
-            // }
             const repeatY = 1;
             const repeatX = imgAspect / roomAspect;
 
@@ -2196,7 +1942,6 @@ export function updateRoomSize(modelObj, dimensions) {
             leftWallMesh.geometry.dispose();
 
             const imageH = heightPx;
-		    // const imageW = imageH * imgAspect;
             const imageW = Math.min(imageH * imgAspect, depthPx);
 
             leftWallMesh.geometry = new THREE.PlaneGeometry(imageW, imageH);
@@ -2204,7 +1949,6 @@ export function updateRoomSize(modelObj, dimensions) {
             leftWallMesh.position.set(
                 -widthPx / 2 + 0.001,  // push to left side
                 heightPx / 2,           // center vertically
-                // 0   
                 depthPx / 2 - imageW / 2 
             );
 
@@ -2266,7 +2010,6 @@ export function updateRoomSize(modelObj, dimensions) {
             );
 
             const spaceBottomPx = calculateTopSpaceIn3dModel(furnitureType, userData.spaceMm, box);
-            // const spaceBottomPx = getTopFurnitureYPositionIn3dRoom(userData.spaceMm, box);
 
             const placeResult = placeFurnitureInRoom(
                 furnitureType,
@@ -2288,9 +2031,6 @@ export function updateRoomSize(modelObj, dimensions) {
             updateBgPlane(child);
         }
     });
-
-    // optional: refit camera
-    // fitCameraToRoom();
 }
 
 
@@ -2363,8 +2103,6 @@ function addExistingGLBModel(
     hasBrandTexture,
     gltfLoader
 ) {
-    const texturesObj = categoryState.textures3DSrc[productId] ? categoryState.textures3DSrc[productId] : state.textures3DSrc;
-
     let brandMeshName = null;
     const harcodedColorObj = HARDCODED_COLOR_MESHES.find(mesh => mesh.productId === parseInt(productId));
 
@@ -2377,7 +2115,7 @@ function addExistingGLBModel(
         urlSrc,
         async function (childGltf) {
             const childMeshGroup = childGltf.scene;
-            const childMeshList = await renderMeshList(childMeshGroup, furnitureType, thumbType, texturesObj, hasBrandTexture, harcodedColorObj, brandMeshName);
+            const childMeshList = await renderMeshList(childMeshGroup, furnitureType, thumbType, hasBrandTexture);
 
             const wrapper = new THREE.Group();
             wrapper.position.set(0, 0, 0);
@@ -2472,13 +2210,6 @@ function addExistingGLBModel(
 
             if (!isFitting) {
                 colorToRed(wrapper);
-                // wrapper.traverse(child => {
-                //     if (child.isMesh) {
-                //         child.material.color.set(0xff0000);
-                //         child.material.transparent = true;
-                //         child.material.opacity = 0.5;
-                //     }
-                // });
             }
 
             initRoomDragging(furnitureType, wrapper, modelRoomType);
@@ -2499,32 +2230,20 @@ function addGLBModel(
     furnitureType, 
     productId, 
     customId, 
-    prices,
     itemHeight, 
     itemDepth, 
     itemWidth,
     itemSpaceBottom,
-    itemHeightMin, 
-    itemHeightMax, 
-    itemDepthMin, 
-    itemDepthMax,
-    itemWidthMin, 
-    itemWidthMax, 
     hasBrandTexture,
     rotation,
     dupItemPosition = null
 ) {
 
     return new Promise((resolve, reject) => {
-        // const itemModelWidth = getItemWidthPx(itemWidth);
-        // const itemModelHeight = getItemHeightPx(itemHeight);
-        // const itemModelDepth = getItemDepthPx(itemDepth);
         const { modelWidth, modelHeight, modelDepth } = getFurnitureDimensionsFromMmtoPx(itemWidth, itemHeight, itemDepth);
         const itemModelSpaceBottom = calculateTopSpaceIn3dModel(furnitureType, itemSpaceBottom);
-        // const itemModelSpaceBottom = getTopFurnitureYPositionIn3dRoom(itemSpaceBottom);
+        
         const loader = new GLTFLoader();
-
-        const texturesObj = categoryState.textures3DSrc[productId] ? categoryState.textures3DSrc[productId] : state.textures3DSrc;
         
         let brandMeshName = null;
         const harcodedColorObj = HARDCODED_COLOR_MESHES.find(mesh => mesh.productId === parseInt(productId));
@@ -2538,7 +2257,7 @@ function addGLBModel(
             urlSrc,
             async function (childGltf) {
                 let childMeshGroup = childGltf.scene || childGltf.scenes[0];
-                const childMeshList = await renderMeshList(childMeshGroup, furnitureType, thumbType, texturesObj, hasBrandTexture, harcodedColorObj, brandMeshName);
+                const childMeshList = await renderMeshList(childMeshGroup, furnitureType, thumbType, hasBrandTexture);
 
                 const wrapper = new THREE.Group();
 
@@ -2591,7 +2310,6 @@ function addGLBModel(
                 wrapper.userData.originalBox = originalBox.clone();
 
                 wrapper.userData.productId = productId;
-                // wrapper.userData.initCustomId = customId;
                 wrapper.userData.customId = customId;
                 wrapper.userData.furnitureType = furnitureType;
                 wrapper.userData.thumbType = thumbType;
@@ -2638,9 +2356,7 @@ function addGLBModel(
                 /******* enable dragging *********/
 
                 const isFittingItem = initModelDragging(wrapper, furnitureType);
-                
-                // const newRotation = wrapper.rotation.y;
-    
+                    
                 const itemPositionMm = dupItemPosition ?? getItemPosition(
                     furnitureType, 
                     placedWorldPos.clone(), 
@@ -2907,12 +2623,6 @@ function placeFurnitureInRoom(
 
         const rotatedSize = getRotatedSize(scaledSize, rotation);
 
-        // const roomWidthCm = roomState.roomDimensions.width * 10;
-        // const roomDepthCm = roomState.roomDimensions.depth  * 10;
-
-        // x = -roomHalfWidth + (pos.left / roomWidthCm) * width + rotatedSize.x / 2;
-        // z = -roomHalfDepth + (pos.back / roomDepthCm) * depth + rotatedSize.z / 2;
-
         const { x: roomScaleX, z: roomScaleZ, y: roomScaleY } = roomState.modelRoomScale;
         // x = -roomHalfWidth + pos.left * roomScaleX + rotatedSize.x / 2;
         // z = -roomHalfDepth + pos.back * roomScaleZ + rotatedSize.z / 2;         
@@ -2926,21 +2636,6 @@ function placeFurnitureInRoom(
             z = -roomHalfDepth + pos.back * roomScaleZ + rotatedSize.z / 2;
         }
 
-        // if (isLeftWall) {
-        //     x = -roomHalfWidth + rotatedSize.x / 2;
-        //     z = -roomHalfDepth + pos.left * roomScaleZ + rotatedSize.z / 2;
-        // } else {
-        //     x = -roomHalfWidth + pos.left * roomScaleX + rotatedSize.x / 2;
-        //     z = -roomHalfDepth + pos.back * roomScaleZ + rotatedSize.z / 2;
-        // }
-
-        // Y (origin is now bottom)
-        // if (furnitureType.includes(DIMENSION_TYPE_TOP)) {
-        //     y = pos.bottom * roomScaleY;
-        // } else {
-        //     y = 0;
-        // }
-
         if (spaceBottomPx) {
 			
             y = spaceBottomPx;
@@ -2953,11 +2648,8 @@ function placeFurnitureInRoom(
     } else {
         const footprintSize = getFootprintSize(scaledSize, rotation);
 
-        const leftAdditionalUnit =
-            (roomState.roomType === ROOM_TYPE_WITH_CORNER ? WALL_THICKNESS : 0);
 
-        // // X
-        // x = modelObj.box.min.x + footprintSize.x / 2 + leftAdditionalUnit;
+        // X
         const usableMinX = -roomHalfWidth;
         x = usableMinX + footprintSize.x / 2;
 
@@ -2992,15 +2684,7 @@ function placeFurnitureInRoom(
 
     return {
         scaledChildSize: unrotatedScaledSize.clone()
-    };
-    // const finalBox = new THREE.Box3().setFromObject(wrapper);
-    // const finalSize = finalBox.getSize(new THREE.Vector3());
-
-    // wrapper.userData.scaledSize = finalSize.clone();
-
-    // return {
-    //     scaledChildSize: finalSize.clone()
-    // };
+    }
 }
 
 function resaveObjPosition(position, rotation, customId, itemPositionMm, isFitting) {
@@ -3051,10 +2735,8 @@ function initModelDragging(wrapper, furnitureType) {
     wrapper.userData.boundingBox = scaledChildBox; // or scaledChildBox if better
 
     // register for dragging (GLOBAL system)
-    // if (!furnitureType.includes('corner')) {
     const obj = roomState.modelsList[roomState.roomType];
     obj.draggableObjects.push(wrapper);
-    // }
 
     // return fitting state if needed
     return checkIfAbleToDragChildToPosition(wrapper);
@@ -3177,147 +2859,6 @@ function rotateExistingItem(obj, objSize, furnitureType, keepPosition = false) {
     obj.updateMatrixWorld(true);
 }
 
-function rotateExistingItem2(obj, scaledChildSize, furnitureType, keepPosition) {
-    // if(roomType !== ROOM_TYPE_WITH_CORNER) return;
-
-    const roomObj = roomState.modelsList[roomState.roomType];
-    const roomModelBox = roomObj.box
-
-    // Ensure matrices are fresh
-    obj.updateMatrixWorld(true);
-    roomObj.room3DGroup.updateMatrixWorld(true);
-
-    /* -------------------------------------------------- */
-    /* 2️⃣ Get object world position + size               */
-    /* -------------------------------------------------- */
-    const worldPos = obj.getWorldPosition(new THREE.Vector3());
-
-    const objSize = obj.userData.scaledSize;
-
-    const objWidth = objSize.x;
-
-    /* -------------------------------------------------- */
-    /* 3️⃣ Determine corner threshold width               */
-    /* -------------------------------------------------- */
-
-    const {
-        bottomCorner: cornerBottomWidth3d,
-        fullCorner: cornerFullWidth3d,
-        topCorner: cornerTopWidth3d
-    } = roomState.worldItemsDimensions.width;
-
-    let cornerThresholder = objWidth - 0.01;
-
-    switch (furnitureType) {
-
-        case FURNITURE_TYPE_BOTTOM_CORNER:
-            if (cornerBottomWidth3d > 0) {
-                cornerThresholder = cornerBottomWidth3d;
-            } else if (cornerFullWidth3d > 0) {
-                cornerThresholder = cornerFullWidth3d;
-            } else if (cornerTopWidth3d > 0) {
-                cornerThresholder = cornerTopWidth3d;
-            }
-            break;
-
-        case FURNITURE_TYPE_BOTTOM:
-            if (cornerBottomWidth3d > 0) {
-                cornerThresholder = cornerBottomWidth3d;
-            } else if (cornerFullWidth3d > 0) {
-                cornerThresholder = cornerFullWidth3d;
-            } else if (cornerTopWidth3d > 0) {
-                cornerThresholder = cornerTopWidth3d;
-            }
-            break;
-
-        case DIMENSION_TYPE_TOP:
-            if (cornerTopWidth3d > 0) {
-                cornerThresholder = cornerTopWidth3d;
-            } else if (cornerFullWidth3d > 0) {
-                cornerThresholder = cornerFullWidth3d;
-            } else if (cornerBottomWidth3d > 0) {
-                cornerThresholder = cornerBottomWidth3d;
-            }
-            break;
-
-        case DIMENSION_TYPE_FULL:
-            if (cornerFullWidth3d > 0) {
-                cornerThresholder = cornerFullWidth3d;
-            } else if (cornerTopWidth3d > 0) {
-                cornerThresholder = cornerTopWidth3d;
-            } else if (cornerBottomWidth3d > 0) {
-                cornerThresholder = cornerBottomWidth3d;
-            }
-            break;
-
-        default:
-            cornerThresholder = objWidth - 0.01;
-    }
-
-    cornerThresholder = 0;
-
-        /* -------------------------------------------------- */
-    /* 4️⃣ Compute world-space threshold                  */
-    /* -------------------------------------------------- */
-    const forwardThreshold =
-        roomModelBox.min.x + cornerThresholder;
-
-    const isCorner = worldPos.x < forwardThreshold;
-
-    const yRotation = isCorner && !obj.userData.rotation ? 
-        Math.PI / 2 :
-        obj.userData.rotation ?? 0;
-
-    obj.rotation.y = yRotation;
-    obj.userData.rotation = yRotation;
-    obj.userData.rotationInDegrees = calculateRotationInDegrees(yRotation);
-
-    if(!keepPosition && getIsRotatedItem(yRotation)) {
-        worldPos.x =
-            roomModelBox.min.x +
-            objSize.z / 2 +
-            WALL_THICKNESS;
-
-        worldPos.z =
-            roomModelBox.min.z +
-            objSize.x / 2 +
-            WALL_THICKNESS;
-
-        const itemIndex = roomObj.dbChildren.findIndex(item => item.db_data?.custom_id == obj.userData.customId);
-
-        if(itemIndex > -1) {
-            const oldItem = {...roomObj.dbChildren[itemIndex]};
-            oldItem.db_data.rotation = yRotation;
-            roomObj.dbChildren[itemIndex] = {...oldItem};
-        }
-
-        const localPos = obj.parent.worldToLocal(worldPos);
-        obj.position.copy(localPos);
-        obj.updateMatrixWorld(true);
-    } 
-
-    /* -------------------------------------------------- */
-    /* 6️⃣ Save final world position                      */
-    /* -------------------------------------------------- */
-    const finalWorldPos = obj.getWorldPosition(new THREE.Vector3());
-
-    obj.userData.savedPosition = finalWorldPos.clone();
-
-    const itemPositionMm = getItemPosition(
-        furnitureType,
-        finalWorldPos.clone(),
-        scaledChildSize,
-        yRotation,
-        obj.userData.savedPosition.y,
-        obj.userData.customId,
-    );
-
-    obj.userData.positionMm = itemPositionMm;
-
-    const boundingBox = new THREE.Box3().setFromObject(obj);
-    obj.userData.boundingBox = boundingBox.clone(); // changes performance    
-}
-
 function removeAllFurnitureControls() {
     const modelScene = roomState.modelsList[roomState.roomType].scene;
 
@@ -3376,20 +2917,11 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
     const { 
         product_id, 
         furniture_type, 
-        min_height, 
-        max_height, 
-        min_depth, 
-        max_depth, 
-        min_width,
-        max_width,
-        min_space_bottom,
-        max_space_bottom, 
         attachment_url,
         db_data,
     } = itemObj;
     const { height, depth, width, space_bottom, rotation, prices, object_src, furniture_position_mm, attachment_type, hasBrandTexture } = db_data;
 
-    // changeTotalPrice(prices);
     const {my_item_html, summary_item_html, new_object} = await addFurnitureItem(
         customId, 
         itemObj,
@@ -3398,24 +2930,17 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
     );
 
     roomState.modelsList[roomState.roomType].dbChildren.push(new_object);
-        const {itemPositionMm} = await addGLBModel(
+        await addGLBModel(
         object_src, 
         attachment_type,
         attachment_url,
         furniture_type, 
         product_id, 
         customId, 
-        prices, 
         height, 
         depth, 
         width, 
         space_bottom,
-        min_height, 
-        max_height,
-        min_depth, 
-        max_depth, 
-        min_width, 
-        max_width, 
         hasBrandTexture,
         rotation,
         furniture_position_mm
@@ -3629,13 +3154,9 @@ export function appendCornerPseudoModelObjects(modelScene, roomModelBox) {
     const { 
         cornerBottomWidth3d,
         cornerBottomHeight3d,
-        cornerBottomSpace3d,
         cornerBottomDepth3d,
-        cornerTopWidth3d,
         cornerTopHeight3d,
         cornerTopDepth3d,
-        cornerFullWidth3d,
-        cornerFullDepth3d,
     } = roomState.corner3DDimensions;
 
     if(!cornerBottomFurnitureId && !cornerFullFurnitureId) {
@@ -3699,7 +3220,6 @@ export function appendCornerPseudoModelObjects(modelScene, roomModelBox) {
 
         const xPosition = roomModelBox.min.x + objSize.x / 2 + WALL_THICKNESS;
         const yPosition = calculateTopSpaceIn3dModel(FURNITURE_TYPE_FULL, 0, roomModelBox) + cornerTopHeight3d / 2;
-        // const yPosition = getTopFurnitureYPositionIn3dRoom(null, roomModelBox);
         const zPosition = roomModelBox.min.z + (objSize.z / 2) + WALL_THICKNESS;
         pseudoTopCornerFurniture.position.set(xPosition, yPosition, zPosition);
 
@@ -3869,7 +3389,6 @@ function unhighlightGLBModels() {
 
 function setSingleWallChilderDragging(obj) {
     const modelObj = roomState.modelsList[roomState.roomType];
-    const roomModelBox = modelObj.box;
 
     obj.updateMatrixWorld(true); 
 
@@ -3886,66 +3405,6 @@ function setSingleWallChilderDragging(obj) {
 
     const yRotation = obj.rotation.y;
 
-    // if(getIsRotatedItem(yRotation)) {
-    //     const roomWidth = roomState.modelRoomDimensions.width;
-    //     const roomDepth = roomState.modelRoomDimensions.depth;
-
-    //     if(obj.userData.furnitureType.includes(FURNITURE_TYPE_BOTTOM)) {
-    //         // const roomDepth = roomState.modelRoomDimensions.depth;
-    //         // const minZ = -roomDepth / 2 + objDepth / 2;
-    //         // const maxZ = roomDepth / 2 - objDepth / 2;
-
-    //         // pos.z = Math.max(
-    //         //     minZ,
-    //         //     Math.min(maxZ, pos.z)
-    //         // );
-    //         const minX = -roomWidth / 2 + objDepth / 2;
-    //         const maxX = roomWidth / 2 - objDepth / 2;
-
-    //         pos.x = Math.max(
-    //             minX,
-    //             Math.min(maxX, pos.x)
-    //         );
-    //     } else {
-    //         pos.x = -roomWidth / 2 + objDepth / 2;
-    //         // pos.z = roomModelBox.min.z + (objDepth / 2) + WALL_THICKNESS; 
-    //     }
-
-    //     const minZ = -roomDepth / 2 + objWidth / 2;
-    //     const maxZ = roomDepth / 2 - objWidth / 2;
-
-    //     pos.z = Math.max(
-    //         minZ,
-    //         Math.min(maxZ, pos.z)
-    //     );
-    //     // pos.x = Math.max(
-    //     //     roomModelBox.min.x + objWidth / 2,
-    //     //     Math.min(roomModelBox.max.x - objWidth / 2, pos.x)
-    //     // );
-    // } else {
-    //     const roomWidth = roomState.modelRoomDimensions.width;
-    //     const roomDepth = roomState.modelRoomDimensions.depth;
-
-    //     if(obj.userData.furnitureType.includes(FURNITURE_TYPE_BOTTOM)) {
-    //         const minZ = -roomDepth / 2 + objDepth / 2;
-    //         const maxZ = roomDepth / 2 - objDepth / 2;
-
-    //         pos.z = Math.max(
-    //             minZ,
-    //             Math.min(maxZ, pos.z)
-    //         );
-    //     } else {
-    //         pos.z = -roomDepth / 2 + objDepth / 2;
-    //     }
-
-    //     const minX = -roomWidth / 2 + objWidth / 2;
-    //     const maxX = roomWidth / 2 - objWidth / 2;
-
-    //     pos.x = Math.max(
-    //         minX,
-    //         Math.min(maxX, pos.x)
-    //     );
-    // }
     const newPos = getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos.clone());
 
     if (obj?.parent) {
@@ -3954,213 +3413,7 @@ function setSingleWallChilderDragging(obj) {
         // fallback if no parent
         obj.position.copy(newPos);
     }
-    
-
-    // const isFitting = checkIfAbleToDragChildToPosition(obj);
-
-    // return isFitting;
 }
-
-function setCornerChildenDragging(obj) {
-    const modelObj = roomState.modelsList[roomState.roomType];
-    // const roomModelBox = modelObj.box;
-
-    const objSize = obj.userData.scaledSize;
-    const furnitureType = obj.userData.furnitureType;
-
-    const objWidth =  objSize.x;
-    const objDepth =  objSize.z
-    const pos = obj.getWorldPosition(new THREE.Vector3());
-
-    // ---------- CORNER DIMENSIONS ----------
-    const getDimension = (type, dim) => {
-        const d = roomState.worldItemsDimensions[dim];
-
-        if (type === DIMENSION_TYPE_BOTTOM)
-            return d.bottomCorner || d.fullCorner || d.topCorner || 0;
-
-        if (type === DIMENSION_TYPE_TOP)
-            return d.topCorner || d.fullCorner || d.bottomCorner || 0;
-
-        if (type === DIMENSION_TYPE_FULL)
-            return d.fullCorner || d.topCorner || d.bottomCorner || 0;
-
-        return 0;
-    };
-
-    let cornerWidth = getDimension(furnitureType, "width");
-    let cornerDepth = getDimension(furnitureType, "depth");
-    cornerWidth = 0;
-    cornerDepth = 0;
-
-    // ---------- CORNER THRESHOLD ----------
-    const roomLeftX = -roomState.modelRoomDimensions.width / 2;
-    const threshold = cornerWidth > 0 ? cornerWidth : objWidth - 0.01;
-    const forwardThreshold = roomLeftX + threshold;
-
-    const isCorner = pos.x < forwardThreshold;
-
-    pos.y = obj.userData.savedPosition.y;
-
-    const yRotation = isCorner && !obj.userData.rotatedManually ||
-        isCorner && obj.userData.rotatedManuallyOld ? 
-        Math.PI / 2 :
-        obj.userData.rotatedManually && !obj.userData.rotatedManuallyOld ? 
-        obj.userData.rotation : 
-        0;
-
-    obj.rotation.y = yRotation;
-    obj.userData.rotation = yRotation;
-    obj.userData.rotationInDegrees = calculateRotationInDegrees(yRotation);
-
-    const newPos = getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos.clone(), furnitureType);
-
-    if(obj.parent) {
-        obj.position.copy(obj.parent.worldToLocal(newPos));
-    }
-   
-
-    // // const isFitting = checkIfAbleToDragChildToPosition(obj);
-    // const isFitting = null;
-
-    // return isFitting;
-
-}
-
-
-// function getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos, furnitureType = null) {
-//     if(getIsRotatedItem(yRotation)) {
-
-//         let zDimension = 0;
-//         if(furnitureType) {
-//             const { 
-//                 bottom: bottomCornerData, 
-//                 top: topCornerData, 
-//                 full: fullCornerData, 
-//             } = roomState.cornerFurnitureData;
-
-//             let { 
-//                 width: cornerBottomWidth, 
-//                 depth: cornerBottomDepth,
-//             } = bottomCornerData;
-//             let { 
-//                 width: cornerTopWidth, 
-//                 depth: cornerTopDepth,
-//             } = topCornerData;
-//             let { 
-//                 width: cornerFullWidth, 
-//                 depth: cornerFullDepth,
-//             } = fullCornerData;
-
-//             const {
-//                 cornerBottomWidth3d,
-//                 cornerBottomHeight3d,
-//                 cornerBottomSpace3d,
-//                 cornerBottomDepth3d,
-//                 cornerTopWidth3d,
-//                 cornerTopHeight3d,
-//                 cornerTopDepth3d,
-//                 cornerFullWidth3d,
-//                 cornerFullDepth3d
-//             } = roomState.corner3DDimensions;
-
-//             switch(furnitureType) {
-//                 case FURNITURE_TYPE_BOTTOM: {
-//                     if(cornerBottomDepth && cornerBottomDepth > 0) {
-//                         zDimension = cornerBottomDepth3d; 
-//                     } else if(cornerFullDepth && cornerFullDepth > 0) {
-//                         zDimension = cornerFullDepth3d; 
-//                     } else if(cornerTopDepth && cornerTopDepth > 0) {
-//                         zDimension = cornerTopDepth3d; 
-//                     }
-//                     break;
-//                 }
-//                 case DIMENSION_TYPE_TOP: {
-//                     if(cornerTopDepth && cornerTopDepth > 0) {
-//                         zDimension = cornerTopDepth3d; 
-//                     } else if(cornerFullDepth && cornerFullDepth > 0) {
-//                         zDimension = cornerFullDepth3d; 
-//                     } else if(cornerBottomDepth && cornerBottomDepth > 0) {
-//                         zDimension = cornerBottomDepth3d; 
-//                     }
-//                 }
-//                 case DIMENSION_TYPE_FULL: {
-//                     if(cornerFullDepth && cornerFullDepth > 0) {
-//                         zDimension = cornerFullDepth3d; 
-//                     } else if(cornerTopDepth && cornerTopDepth > 0) {
-//                         zDimension = cornerTopDepth3d; 
-//                     } else if(cornerBottomDepth && cornerBottomDepth > 0) {
-//                         zDimension = cornerBottomDepth3d; 
-//                     }
-//                 }
-//             }
-
-//             zDimension = 0;
-//         }
-       
-
-//         const roomWidth = roomState.modelRoomDimensions.width;
-//         const roomDepth = roomState.modelRoomDimensions.depth;
-
-//         if(obj.userData.furnitureType.includes(FURNITURE_TYPE_BOTTOM)) {
-//             // const roomDepth = roomState.modelRoomDimensions.depth;
-//             // const minZ = -roomDepth / 2 + objDepth / 2;
-//             // const maxZ = roomDepth / 2 - objDepth / 2;
-
-//             // pos.z = Math.max(
-//             //     minZ,
-//             //     Math.min(maxZ, pos.z)
-//             // );
-//             const minX = -roomWidth / 2 + objDepth / 2;
-//             const maxX = roomWidth / 2 - objDepth / 2;
-
-//             pos.x = Math.max(
-//                 minX,
-//                 Math.min(maxX, pos.x)
-//             );
-//         } else {
-//             pos.x = -roomWidth / 2 + objDepth / 2;
-//             // pos.z = roomModelBox.min.z + (objDepth / 2) + WALL_THICKNESS; 
-//         }
-
-//         const minZ = -roomDepth / 2 + objWidth / 2;
-//         const maxZ = roomDepth / 2 - objWidth / 2;
-
-//         pos.z = Math.max(
-//             minZ,
-//             Math.min(maxZ, pos.z)
-//         );
-//         // pos.x = Math.max(
-//         //     roomModelBox.min.x + objWidth / 2,
-//         //     Math.min(roomModelBox.max.x - objWidth / 2, pos.x)
-//         // );
-//     } else {
-//         const roomWidth = roomState.modelRoomDimensions.width;
-//         const roomDepth = roomState.modelRoomDimensions.depth;
-
-//         if(obj.userData.furnitureType.includes(FURNITURE_TYPE_BOTTOM)) {
-//             const minZ = -roomDepth / 2 + objDepth / 2;
-//             const maxZ = roomDepth / 2 - objDepth / 2;
-
-//             pos.z = Math.max(
-//                 minZ,
-//                 Math.min(maxZ, pos.z)
-//             );
-//         } else {
-//             pos.z = -roomDepth / 2 + objDepth / 2;
-//         }
-
-//         const minX = -roomWidth / 2 + objWidth / 2;
-//         const maxX = roomWidth / 2 - objWidth / 2;
-
-//         pos.x = Math.max(
-//             minX,
-//             Math.min(maxX, pos.x)
-//         );
-//     }
-
-//     return pos;
-// }
 
 function getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos, furnitureType = null) {
     const roomWidth = roomState.modelRoomDimensions.width;
@@ -4477,11 +3730,7 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
             return;
         }
 
-        // if(roomType == ROOM_TYPE_WITH_CORNER) {
-        //     setCornerChildenDragging(obj)
-        // } else {
-            setSingleWallChilderDragging(obj);
-        // }
+        setSingleWallChilderDragging(obj);
 				
 		if(obj.userData.thumbType === THUMB_TYPE_SLOGAN) {
 				updateBgPlane(obj);
@@ -4528,31 +3777,6 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
             colorToDefault(obj);
         } else {
             colorToRed(obj);
-            // obj.traverse(child => {
-            //     if (!child.isMesh || !child.material) return;
-
-            //     const materials = Array.isArray(child.material)
-            //         ? child.material
-            //         : [child.material];
-
-            //     materials.forEach(mat => {
-            //         if (mat.color) {
-            //             mat.color.set(0xff0000);
-            //         }
-
-            //         // makes red visible even if texture/map hides color
-            //         if (mat.emissive) {
-            //             mat.emissive.set(0xff0000);
-            //             mat.emissiveIntensity = 0.5;
-            //         }
-
-            //         mat.transparent = true;
-            //         mat.opacity = 0.5;
-            //         mat.depthWrite = false;
-
-            //         mat.needsUpdate = true;
-            //     });
-            // });
         }
 
         const rotation = obj.userData.rotatedManually || obj.rotation.y != 0 ? obj.rotation.y : null;
@@ -4566,10 +3790,6 @@ export function setZoomSettingsValues(threeJSCamera, threeJSControls) {
     zoomSlider.min = threeJSControls.minDistance;
     zoomSlider.max = threeJSControls.maxDistance;
     zoomSlider.value = currentDistance;
-    // zoomSlider.value = Math.min(
-    //     threeJSControls.maxDistance,
-    //     Math.max(threeJSControls.minDistance, currentDistance)
-    // );
 }
 
 function changeTotalPrice(itemTotal) {
@@ -4801,10 +4021,6 @@ function removeItemButtonTrigger(furnitureItem, customId, furnitureType) {
 
 function openEditModal(userData, customId, actionTypeAdd = true) {
     const currentModel = roomState.modelsList[roomState.roomType];
-    const width = userData.widthMm;
-    const height = userData.heightMm;
-    const depth = userData.depthMm;
-    const spaceBottom = userData.spaceMm;
 
     const furnitureItem = currentModel.dbChildren.find(item => item.custom_id == customId);
 
@@ -4836,7 +4052,7 @@ function createEditModal(
     actionTypeAdd = true
 ) {
     const { min_width, max_width, min_height, max_height, min_depth, max_depth, min_space_bottom, max_space_bottom, db_data } = itemObj;
-    const { width, height, depth, space_bottom, prices, custom_id, hasBrandTexture } = db_data;
+    const { width, height, depth, space_bottom, custom_id } = db_data;
 
     highlightCurrentItem(custom_id);
 
@@ -5124,14 +4340,6 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
     const childWorldPos = new THREE.Vector3();
     childObj.getWorldPosition(childWorldPos);
 
-    // resaveObjPosition(
-    //     childWorldPos.clone(), 
-    //     childObj.rotation.y, 
-    //     customId, 
-    //     itemPositionMm, 
-    //     isFitting
-    // );
-
     // ---------- VISUAL ERROR ----------
     if (!isFitting) {
         colorToRed(childObj);        
@@ -5286,72 +4494,6 @@ function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
     return true;
 }
 
-// function getItemPosition(furnitureType, currentPosition, currentSize, rotation, spaceBottomPx, id = null) {
-//     const { width, depth, height } = roomState.modelRoomDimensions;
-//     const { width: mmWidth, height: mmHeight, depth: mmDepth } = roomState.roomDimensions;
-//     // const mmWidth = cmWidth * 10;
-//     // const mmHeight = cmWidth * 10;
-//     // const mmDepth = cmWidth * 10;
-
-//     const halfRoomWidth = width / 2;
-//     const halfRoomDepth = depth / 2;
-
-//     const rotatedSize = getFootprintSize(currentSize, rotation);
-
-//     const itemWidth  = rotatedSize.x;
-//     const itemHeight = rotatedSize.y;
-//     const itemDepth  = rotatedSize.z;
-
-//     const centerX = currentPosition.x;
-//     const centerY = currentPosition.y;
-//     const centerZ = currentPosition.z;
-
-//     // ------------------ WORLD POSITIONS ------------------
-
-//     const left  = centerX + halfRoomWidth - itemWidth / 2;
-//     const right = width - (left + itemWidth);
-
-//     const back  = centerZ + halfRoomDepth - itemDepth / 2;
-//     const front = depth - (back + itemDepth);
-
-//     let bottom, top;
-
-//     if (furnitureType.includes(DIMENSION_TYPE_TOP)) {
-//         bottom = spaceBottomPx;
-//         top = bottom + itemHeight;
-
-//     } else {
-
-//         bottom = centerY;
-//         top = height - (bottom + itemHeight);
-
-//     }
-
-//     // ------------------ WORLD → MM CONVERSION ------------------
-
-//     const pxToMmX = mmWidth  / width;
-//     const pxToMmY = mmHeight / height;
-//     const pxToMmZ = mmDepth  / depth;
-
-//     const toMmX = v => v * pxToMmX;
-//     const toMmY = v => v * pxToMmY;
-//     const toMmZ = v => v * pxToMmZ;
-
-//     // ------------------ CLAMP ------------------
-
-//     const clamp = (v, max) => Math.max(0, Math.min(v, max));
-
-//     const newPosition = {
-//         left:   clamp(toMmX(left), mmWidth),
-//         right:  clamp(toMmX(right), mmWidth),
-//         bottom: clamp(toMmY(bottom), mmHeight),
-//         top:    clamp(toMmY(top), mmHeight),
-//         back:   clamp(toMmZ(back), mmDepth),
-//         front:  clamp(toMmZ(front), mmDepth),
-//     };
-
-//     return newPosition;
-// }
 function getItemPosition(furnitureType, currentPosition, currentSize, rotation, spaceBottomPx, id = null) {
     const { width, depth, height } = roomState.modelRoomDimensions;
     const { width: mmWidth, height: mmHeight, depth: mmDepth } = roomState.roomDimensions;
@@ -5580,60 +4722,7 @@ function addCeilingLamps(scene, width, height, depth) {
 
     scene.add(ceilingLampsGroup);
 }
-// function addCeilingLamps2(scene, width, height, depth) {
-//     removeCeilingLamps(scene);
 
-//     const ceilingLampsGroup = new THREE.Group();
-//     ceilingLampsGroup.name = 'ceiling-lamps';
-
-//     const y = height - 2;
-
-//     function createLamp(x, z) {
-//         const light = new THREE.SpotLight(
-//             0xffffff,
-//             550,
-//             height * 2.2,
-//             Math.PI / 4,
-//             0.75,
-//             1.5
-//         );
-
-//         light.position.set(x, y, z);
-
-//         light.target.position.set(x, 0, z);
-
-//         // Shadows now come from the visible ceiling lamps
-//         light.castShadow = true;
-
-//         light.shadow.mapSize.width = 1024;
-//         light.shadow.mapSize.height = 1024;
-
-//         light.shadow.camera.near = 1;
-//         light.shadow.camera.far = height * 2.5;
-
-//         light.shadow.bias = -0.0002;
-//         light.shadow.normalBias = 0.01;
-//         light.shadow.radius = 2;
-
-//         ceilingLampsGroup.add(light);
-//         ceilingLampsGroup.add(light.target);
-//     }
-
-//     // Back wall lamps
-//     const wallZ = -depth / 2 + WALL_THICKNESS / 2;
-
-//     createLamp(-width * 0.25, wallZ);
-//     createLamp(width * 0.25, wallZ);
-
-//     if (roomState.roomType === ROOM_TYPE_WITH_CORNER) {
-//         const wallX = -width / 2 + WALL_THICKNESS / 2;
-
-//         createLamp(wallX, -depth * 0.25);
-//         createLamp(wallX, depth * 0.25);
-//     }
-
-//     scene.add(ceilingLampsGroup);
-// }
 function removeCeilingLamps(scene) {
     const ceilingLampsGroup = scene.getObjectByName('ceiling-lamps');
 
@@ -5649,10 +4738,6 @@ function removeCeilingLamps(scene) {
     ceilingLampsGroup.clear();
 }
 function addCeilingLamps2(scene, width, height, depth) {
-    // remove previous lamps if needed (optional safeguard)
-    // const old = scene.getObjectByName('ceiling-lamps');
-    // if (old) scene.remove(old);
-
     const  ceilingLampsGroup = new THREE.Group();
     ceilingLampsGroup.name = 'ceiling-lamps';
 
@@ -5724,9 +4809,6 @@ function switchBaseLightsIntensity(scene, renderer, state = LIGHT_STATE_DEFAULT)
 }
 
 function renderLights(scene, renderer) {
-    // remove previous
-    // const oldShadeGroup = scene.getObjectByName('shade-lamps');
-    // if (oldShadeGroup) scene.remove(oldShadeGroup);
 
     const { width: roomWidth, height: roomHeight, depth: roomDepth } = roomState.roomDimensions;
     const { width: modelRoomWidth, height: modelRoomHeight, depth: modelRoomDepth } = roomState.modelRoomDimensions;

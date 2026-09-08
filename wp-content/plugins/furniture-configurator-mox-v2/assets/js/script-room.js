@@ -103,21 +103,12 @@ function initRoomConfigFunctions(
 ) {
     initTextures(textures);
 
-    const assetsUrl = configDataRoom.assetsUrl;
-
-    let basicDisplayObj = {
-        bottom: null,
-        top: null,
-        full: null,
-    }
-
     const modelContainer = container.querySelector('.model-display-container .room-model-container-inner');
     state.model3dContainer = modelContainer;
 
     configSelector = container.querySelector('.configurator-selector select');
     saveDataButtonsContainer = container.querySelector('.save-data-container .buttons-list');
 
-    const roomConfigSummary = container.querySelector('.room-config-summary');
     roomState.summaryItemsList = container.querySelector('.summary-cabinets-list-inner');
     roomState.myItemsList = container.querySelector('.my-cabinets-list .my-cabinets-list-inner');
 
@@ -184,7 +175,7 @@ function initRoomConfigFunctions(
                 changeDimensionValueSwitch(type, value);
                 roomState.roomDimensions[type] = value;
 
-                updateRoomSize(roomState.modelsList[roomState.roomType], roomState.roomDimensions);
+                updateRoomSize(roomState.modelsList[roomState.roomType]);
             });
 
             rangeNumInput.addEventListener('change', function(e) {
@@ -195,7 +186,7 @@ function initRoomConfigFunctions(
 
                 roomState.roomDimensions[type] = value;
 
-                updateRoomSize(roomState.modelsList[roomState.roomType], roomState.roomDimensions);
+                updateRoomSize(roomState.modelsList[roomState.roomType]);
             });
         });
 
@@ -627,7 +618,7 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
             async function changeTextureSrc(mergedSlugs, btnId) {
 				swiper.classList.add('loading');
 
-                const { images, id } = await changeTextureImagesDisplayAjax(btnId);
+                const { images } = await changeTextureImagesDisplayAjax(btnId);
 
                 if(!images) {
 					swiper.classList.remove('loading');
