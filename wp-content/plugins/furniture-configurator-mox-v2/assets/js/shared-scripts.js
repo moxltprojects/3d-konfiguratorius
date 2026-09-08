@@ -488,7 +488,6 @@ export async function initTextureSettingsConfigFunctions(container, textureCooki
             const swiper = container.querySelector('.settings-gallery');
 
             textureContainers.forEach(textureContainer => {
-                const textureCatType = textureContainer.getAttribute('data-slug');
                 const headingContainer = textureContainer.querySelector('.heading-container .heading');
                 const priceContainer = textureContainer.querySelector('.texture-price-block .price .number');
                 const subcatContainers = textureContainer.querySelectorAll('.texture-multiple-lists-container');
