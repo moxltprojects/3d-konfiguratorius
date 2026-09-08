@@ -1,7 +1,6 @@
 import {
     THREE,
     GLTFLoader,
-    DragControls,
     BufferGeometryUtils
 } from './three-imports.js';
 
@@ -277,10 +276,6 @@ const createModelStructure = () => ({
 });
 
 export const LIGHT_STATE_DEFAULT = {
-    // hemi: 0.6,
-    // dir: 0.3,
-    // ambient: 0.25,
-    // exposure: 1.4,
     hemi: 0.9,
     dir: 0.45,
     ambient: 0.54,
@@ -986,39 +981,10 @@ export function generateSmartUVs(geometry) {
 }
 
 export function getContainerBaseScale(model3dContainer) {
-    // // const { width_max, height_max, depth_max } = roomState.roomDimensions;
-    // // const modelContainerWidth = model3dContainer.clientWidth;
-    // // const modelContainerHeight = model3dContainer.clientHeight;
-
-    // // const maxModelContainerDimension = modelContainerWidth > modelContainerHeight ? modelContainerWidth : modelContainerHeight;
-
-    // // const baseMax = Math.max(width_max, height_max, depth_max);
-
-    // // const baseScale = maxModelContainerDimension / baseMax;
-
-    // // return baseScale;
-    // const { width_max, height_max, depth_max } = roomState.roomDimensions;
-
-    // const containerWidth = model3dContainer.clientWidth;
-    // const containerHeight = model3dContainer.clientHeight;
-
-    // const roomMaxHorizontal = Math.max(width_max, depth_max);
-    // const roomMaxVertical = height_max;
-
-    // const scaleByWidth = containerWidth / roomMaxHorizontal;
-    // const scaleByHeight = containerHeight / roomMaxVertical;
-
-    // return Math.min(scaleByWidth, scaleByHeight);
-    //
     const { width_max, height_max, depth_max } = roomState.roomDimensions;
     const modelContainerWidth = model3dContainer.clientWidth;
     const modelContainerHeight = model3dContainer.clientHeight;
 
-    // const maxModelContainerDimension = modelContainerWidth > modelContainerHeight ? modelContainerWidth : modelContainerHeight;
-
-    // const baseMax = Math.max(width_max, height_max, depth_max);
-
-    // const baseScale = maxModelContainerDimension / baseMax;
     const scaleX = modelContainerWidth / width_max;
     const scaleY = modelContainerHeight / height_max;
 
@@ -1027,16 +993,13 @@ export function getContainerBaseScale(model3dContainer) {
     return baseScale;
 }
 
-export function getRoomDimensions(model3dContainer, modelObj) {
+export function getRoomDimensions() {
     const { width, height, depth } = roomState.roomDimensions;
     const scale = roomState.baseScale;
 
     const heightPx = height * scale;
     const widthPx = width * scale;
     const depthPx = depth * scale;
-    // const heightPx = (height / 10) * scale;
-    // const widthPx  = (width  / 10) * scale;
-    // const depthPx  = (depth  / 10) * scale;
 
     roomState.modelRoomDimensions = {
         width: widthPx,
@@ -1056,13 +1019,6 @@ export function getRoomDimensions(model3dContainer, modelObj) {
         scaleX: scale,
         scaleY: scale,
         scaleZ: scale
-
-        // heightPx: modelHeightPx,
-        // depthPx: modelDepthPx,
-        // widthPx: modelWidthPx,
-        // scaleX: modelWidthPx / width,
-        // scaleY: modelHeightPx / height,
-        // scaleZ: modelDepthPx / depth
     };
 }
 
@@ -1167,7 +1123,6 @@ export async function recalculateTotals(
         formData.append("textures", JSON.stringify(textures));
         formData.append("dimensions", JSON.stringify(dimensions));
         formData.append("components", JSON.stringify(components));
-        // formData.append("product_components", JSON.stringify(productComponents));
   
         const response = await fetch(configData.ajaxurl, {
             method: "POST",
@@ -1383,9 +1338,6 @@ export function uniqLong() {
 
 export function mmToWorld(mm, roomPx, roomMm) {
     const mmToPx = roomPx / roomMm;
-        // const mmToPxX = modelRoomWidth / roomWidthMm;
-    // const mmToPxZ = modelRoomDepth / roomDepthMm;
-    // return axis === "x" ? mm * mmToPxX : mm * mmToPxZ;
 
     return mm * mmToPx;
 }
@@ -1423,7 +1375,6 @@ export function getItemSpaceBottomPx(spaceBottom, furnitureType) {
         bottom = (spaceBottom / 10 + bottomHeight / 10) * scale;
     } else {
         bottom = 0;
-        // bottom = spaceBottom / 10 * scale;
     }
 
     return bottom;
@@ -1451,8 +1402,6 @@ export function getFreshWrapperBoundingBox(wrapper) {
     const box = new THREE.Box3().setFromObject(wrapper);
 
     wrapper.userData.boundingBox = box;
-    // wrapper.userData.size = box.getSize(new THREE.Vector3());
-    // wrapper.userData.center = box.getCenter(new THREE.Vector3());
 
     return box;
 }
@@ -1575,7 +1524,6 @@ export async function addBgImageToFront(wrapper, modelScene, attachmentUrl, thum
 		);
 
         plane.userData.parentWrapper = wrapper;
-        let yPosition = POSITION_CENTER; 
 
         if(thumbType === FURNITURE_TYPE_WALL) {
             plane.userData.yTop = POSITION_TOP;
@@ -1601,101 +1549,6 @@ async function urlExists(url) {
     return false;
   }
 }
-
-// export function renderMeshList(childMeshGroup, furnitureType, thumbType, texturesObj, hasBrandTexture, harcodedColorObj, brandMeshName, isCategoryPage = true) {
-//     const childMeshList = [];
-
-//     childMeshGroup.traverse(node => {
-//         if (node.isMesh) {
-//             const name = (node.name || "").toLowerCase();
-  
-//             const geo = node.geometry;
-//             // ✅ Ensure geometry uses triangles
-//             if (geo && geo.attributes.position && !geo.attributes.normal) {
-//                 node.geometry = BufferGeometryUtils.mergeVertices(geo) || geo;
-//                 node.geometry.computeVertexNormals();
-//             }
-
-//             // ✅ Make sure it’s visible
-//             node.material.side = THREE.DoubleSide;
-
-//             /******* add texture ********/
-//             if (!node.geometry.attributes.uv) {
-//                 generateSmartUVs(node.geometry);
-//             }
-
-//             if(hasBrandTexture) {
-//                 console.log(roomState.aiTextures)
-//                 const brandTextureSrc = roomState.aiTextures?.brand?.base64 ?? 
-//                     roomState.aiTextures?.brand?.color ??  
-//                     DEFAULT_BRAND_TEXTURE;
-//                     // typeof standImageData !== "undefined" && standImageData && standImageData['base']
-//                     //     ? `data:image/png;base64,${standImageData['base']?.base64}`
-//                     //     : BRAND_TEXTURE;
-
-//                 const brandMap = new THREE.TextureLoader().load(brandTextureSrc);
-
-//                 brandMap.flipY = false; // important for GLTF
-//                 brandMap.colorSpace = THREE.SRGBColorSpace;
-//                 brandMap.needsUpdate = true;
-
-//                 if (Array.isArray(node.material)) {
-//                     node.material = node.material.map(mat => {
-//                         const newMat = mat.clone();
-
-//                         newMat.map = brandMap;
-//                         newMat.color.set(0xffffff);
-//                         newMat.needsUpdate = true;
-
-//                         return newMat;
-//                     });
-//                 } else {
-//                     node.material = node.material.clone();
-
-//                     node.material.map = brandMap;
-//                     node.material.color.set(0xffffff);
-//                     node.material.needsUpdate = true;
-//                 }
-//             } else if (!thumbType) {
-//                 const texture = getTextureSrc(furnitureType, name, state.textures3DSrc);
-
-//                 node.material = new THREE.MeshStandardMaterial({
-//                     map: texture,
-//                     metalness: 0.1,    // little reflection
-//                     roughness: 0.8,    // wood is not glossy
-//                 });
-//             } 
-
-//             /******* for product shadow *****/
-//             node.castShadow = true;
-//             node.receiveShadow = true;
-//             node.frustumCulled = false;
-
-//            const materials = Array.isArray(node.material)
-//                 ? node.material
-//                 : [node.material];
-
-//             node.userData.originalMaterial = materials.map(mat => ({
-//                 color: mat?.color ? mat.color.clone() : null,
-//                 emissive: mat?.emissive ? mat.emissive.clone() : null,
-//                 emissiveIntensity: mat?.emissiveIntensity ?? 0,
-//                 opacity: mat?.opacity ?? 1,
-//                 transparent: mat?.transparent ?? false,
-//                 depthWrite: mat?.depthWrite ?? true,
-//                 depthTest: mat?.depthTest ?? true
-//             }));
-
-//             materials.forEach(mat => {
-//                 if (mat) mat.needsUpdate = true;
-//             });
-//             /******* end for product shadow *****/
-
-//             childMeshList.push(node);
-//         }
-//     });
-
-//     return childMeshList;
-// }
 
 async function loadOptimizedTexture(src) {
     if (!src || typeof src !== "string") return null;
@@ -1734,11 +1587,7 @@ export async function renderMeshList(
     childMeshGroup,
     furnitureType,
     thumbType,
-    texturesObj,
     hasBrandTexture,
-    harcodedColorObj,
-    brandMeshName,
-    isCategoryPage = true
 ) {
     const childMeshList = [];
 
@@ -1762,7 +1611,7 @@ export async function renderMeshList(
 
         const name = (node.name || "").toLowerCase();
         let geo = node.geometry;
-console.log(name)
+
         if (geo && geo.attributes.position && !geo.attributes.normal) {
             geo = BufferGeometryUtils.mergeVertices(geo) || geo;
             geo.computeVertexNormals();
@@ -1852,26 +1701,6 @@ export function colorToDefault(obj) {
             ? child.userData.originalMaterial
             : [child.userData.originalMaterial];
 
-        // materials.forEach((mat, index) => {
-        //     const original = originals[index] || originals[0];
-        //     if (!original) return;
-
-        //     if (mat.color && original.color) {
-        //         mat.color.copy(original.color);
-        //     }
-
-        //     if (mat.emissive && original.emissive) {
-        //         mat.emissive.copy(original.emissive);
-        //         mat.emissiveIntensity = original.emissiveIntensity ?? 0;
-        //     }
-
-        //     mat.opacity = 1;
-        //     mat.transparent = false;
-        //     mat.depthWrite = original.depthWrite ?? true;
-        //     mat.depthTest = original.depthTest ?? true;
-
-        //     mat.needsUpdate = true;
-        // });
         materials.forEach((mat, index) => {
             const original = originals[index] || originals[0];
             if (!original) return;
@@ -1949,20 +1778,11 @@ export function updateBgPlane(wrapper) {
 
     if (!plane) return;
 
-    // const Y_FRAME = 11;
-    // const X_FRAME = 11;
     const Y_FRAME = 0;
     const X_FRAME = 0;
     const Y_FRAME_WALL = 40;
     let frameOffsetWorldY = 0;
     let frameOffsetWorldX = 0;
-
-    // if (userData.furnitureType !== FURNITURE_TYPE_WALL) {
-    //     frameOffsetWorldY = getItemRationInARoom(Y_FRAME);
-    //     frameOffsetWorldX = getItemRationInARoom(X_FRAME);
-    // } else {
-        // frameOffsetWorldY = getItemRationInARoom(Y_FRAME_WALL);
-    // }
 
     wrapper.updateMatrixWorld(true);
 
@@ -1992,8 +1812,6 @@ export function updateBgPlane(wrapper) {
     const innerHeight = wrapperOriginalSize.y - frameWorldY * 2;
 
     let depth = wrapperOriginalSize.z;
-    // let width  = innerWidth;
-    // let height = width / aspect;
     const maxWidth  = wrapperOriginalSize.x - frameWorldX * 2;
     const maxHeight = wrapperOriginalSize.y - frameWorldY * 2;
 
@@ -2027,17 +1845,7 @@ export function updateBgPlane(wrapper) {
     // -------------------------------------------------
     // ROTATION
     // -------------------------------------------------
-    // plane.quaternion.copy(quat);
-    // const rotationY = wrapper.rotation.y;
-    // if(plane.userData.tilt) {
-    //     copyParentYRotationTilt();
-    // } else {
-        copyParentYRotationSimple();
-    // }
-    
-
-    // rotateXPosition();
-
+    copyParentYRotationSimple();
 
     function copyParentYRotationSimple() {
         const rotationY = wrapper.rotation.y;
@@ -2090,7 +1898,6 @@ export function updateBgPlane(wrapper) {
         wrapper.getWorldQuaternion(worldQuat);
 
         const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(worldQuat);
-        const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(worldQuat);
         const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(worldQuat);
 
         // -------------------------------------------------
@@ -2124,17 +1931,6 @@ export function updateBgPlane(wrapper) {
         // -------------------------------------------------
         plane.quaternion.copy(worldQuat);
     }
-
-    // function rotateXPosition() {
-    //     // apply tilt AFTER
-    //     if (plane.userData.tilt) {
-    //         const tiltQ = new THREE.Quaternion().setFromEuler(
-    //             new THREE.Euler(plane.userData.tilt, 0, 0)
-    //         );
-
-    //         plane.quaternion.multiply(tiltQ);
-    //     }
-    // }
 }
 
 export function getFootprintSize(baseSize, rotationY) {
@@ -2154,7 +1950,6 @@ export function getFootprintSize(baseSize, rotationY) {
 
 export function getIsRotatedItem(rotationY) {
     const step = Math.round(rotationY / (Math.PI / 2)) % 2;
-    // const step = Math.round(y / (Math.PI / 2)) % 4;
     return step !== 0;
 }
 
@@ -2177,9 +1972,6 @@ export function calculateRotationInDegrees(radRotation) {
 
     // 2. normalize to 0–360
     deg = (deg % 360 + 360) % 360;
-
-    // // 3. snap to nearest 45°
-    // const snapped = Math.round(deg / 45) * 45 % 360;
 
     return deg;
 
