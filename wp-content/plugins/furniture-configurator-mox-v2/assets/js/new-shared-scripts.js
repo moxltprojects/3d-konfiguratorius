@@ -738,54 +738,54 @@ function furnitureTypeAddInit(
 
         const customId = uniqLong();
         
-        if(furniture_type.includes('corner')) {
-            const { 
-                bottom: bottomCornerData, 
-                top: topCornerData, 
-                full: fullCornerData, 
-            } = roomState.cornerFurnitureData;
+        // if(furniture_type.includes('corner')) {
+        //     const { 
+        //         bottom: bottomCornerData, 
+        //         top: topCornerData, 
+        //         full: fullCornerData, 
+        //     } = roomState.cornerFurnitureData;
 
-            let { 
-                id: cornerBottomFurnitureId, 
-                width: cornerBottomWidth, 
-                depth: cornerBottomDepth,
-            } = bottomCornerData;
-            let { 
-                id: cornerTopFurnitureId, 
-                width: cornerTopWidth, 
-                depth: cornerTopDepth,
-            } = topCornerData;
-            let { 
-                id: cornerFullFurnitureId, 
-                width: cornerFullWidth, 
-                depth: cornerFullDepth,
-            } = fullCornerData;
-            if(roomType === ROOM_TYPE_SINGLE_WALL) {
-                return;
-            }
-            if(furniture_type === DIMENSION_TYPE_FULL_CORNER) {
-                if(cornerBottomFurnitureId || cornerTopFurnitureId || cornerFullFurnitureId) {
-                    alert(`Full Corner Furniture already added.`);
-                    return;
-                } else {
-                    cornerFullFurnitureId = productId;
-                }
-            } else if(furniture_type === FURNITURE_TYPE_BOTTOM_CORNER) {
-                if(cornerBottomFurnitureId || cornerFullFurnitureId) {
-                    alert(`Bottom Corner Furniture already added.`);
-                    return;
-                } else {
-                    cornerBottomFurnitureId = productId;
-                }
-            } else {
-                if(cornerTopFurnitureId || cornerFullFurnitureId) {
-                    alert(`Top Corner Furniture already added.`);
-                    return;
-                } else {
-                    cornerTopFurnitureId = productId;
-                }
-            }
-        }
+        //     let { 
+        //         id: cornerBottomFurnitureId, 
+        //         width: cornerBottomWidth, 
+        //         depth: cornerBottomDepth,
+        //     } = bottomCornerData;
+        //     let { 
+        //         id: cornerTopFurnitureId, 
+        //         width: cornerTopWidth, 
+        //         depth: cornerTopDepth,
+        //     } = topCornerData;
+        //     let { 
+        //         id: cornerFullFurnitureId, 
+        //         width: cornerFullWidth, 
+        //         depth: cornerFullDepth,
+        //     } = fullCornerData;
+        //     if(roomState.roomType === ROOM_TYPE_SINGLE_WALL) {
+        //         return;
+        //     }
+        //     if(furniture_type === DIMENSION_TYPE_FULL_CORNER) {
+        //         if(cornerBottomFurnitureId || cornerTopFurnitureId || cornerFullFurnitureId) {
+        //             alert(`Full Corner Furniture already added.`);
+        //             return;
+        //         } else {
+        //             cornerFullFurnitureId = productId;
+        //         }
+        //     } else if(furniture_type === FURNITURE_TYPE_BOTTOM_CORNER) {
+        //         if(cornerBottomFurnitureId || cornerFullFurnitureId) {
+        //             alert(`Bottom Corner Furniture already added.`);
+        //             return;
+        //         } else {
+        //             cornerBottomFurnitureId = productId;
+        //         }
+        //     } else {
+        //         if(cornerTopFurnitureId || cornerFullFurnitureId) {
+        //             alert(`Top Corner Furniture already added.`);
+        //             return;
+        //         } else {
+        //             cornerTopFurnitureId = productId;
+        //         }
+        //     }
+        // }
         
         const itemTotal = changeSingleProductPrice(
             furniture_type,
@@ -2540,98 +2540,6 @@ function addGLBModel(
                 let childMeshGroup = childGltf.scene || childGltf.scenes[0];
                 const childMeshList = await renderMeshList(childMeshGroup, furnitureType, thumbType, texturesObj, hasBrandTexture, harcodedColorObj, brandMeshName);
 
-                // childMesh.traverse(node => {
-                //     if (node.isMesh) {
-                //         const name = (node.name || "").toLowerCase();
-
-                //         const geo = node.geometry;
-                //         // ✅ Ensure geometry uses triangles
-                //         if (geo && geo.attributes.position && !geo.attributes.normal) {
-                //             node.geometry = BufferGeometryUtils.mergeVertices(geo) || geo;
-                //             node.geometry.computeVertexNormals();
-                //         }
-
-                //         // ✅ Make sure it’s visible
-                //         node.material.side = THREE.DoubleSide;
-                //         // node.frustumCulled = false;
-
-                //         /******* add texture ********/
-                //         if (!node.geometry.attributes.uv) {
-                //             generateSmartUVs(node.geometry);
-                //         }
-                    
-                //         if(hardcodedMeshData) {
-                //             if(hardcodedMeshData.singleColor) {
-                //                 if (Array.isArray(node.material)) {
-                //                     node.material = node.material.map(mat => {
-                //                         const newMat = mat.clone();
-                //                         newMat.map = null;
-                //                         newMat.color.set(hardcodedMeshData.singleColor);
-                //                         newMat.needsUpdate = true;
-                //                         return newMat;
-                //                     });
-                //                 } else {
-                //                     node.material = node.material.clone();
-                //                     node.material.map = null; // important: texture can hide color
-                //                     node.material.color.set(hardcodedMeshColor);
-                //                     node.material.needsUpdate = true;
-                //                 }
-                //             } else {
-                //                 const colorObj = hardcodedMeshData.meshesData.find(meshD => meshD.name === name);
-
-                //                 if(colorObj) {
-                //                     if (Array.isArray(node.material)) {
-                //                         node.material = node.material.map(mat => {
-                //                             const newMat = mat.clone();
-                //                             newMat.map = null;
-                //                             newMat.color.set(colorObj.color);
-                //                             newMat.needsUpdate = true;
-                //                             return newMat;
-                //                         });
-                //                     } else {
-                //                         node.material = node.material.clone();
-                //                         node.material.map = null; // important: texture can hide color
-                //                         node.material.color.set(colorObj.color);
-                //                         node.material.needsUpdate = true;
-                //                     }
-                //                 }
-                //             }
-                            
-
-                //         } else if(brandMeshName) {
-                //             const color = getAIColors(brandMeshName, name);
-
-                //             if(color) {
-                //                 node.material.color.set(color);
-                //             }
-                //         } else if(hasBrandTexture) {
-                //             if(name == 'mesh_0002') {
-                //             	node.material.color.set('#ffffff');
-                //             } else {
-				// 				const texture = getTextureSrc(furnitureType, name, texturesObj)
-
-				// 				node.material = new THREE.MeshStandardMaterial({
-				// 					map: texture,
-				// 					metalness: 0.5,    // little reflection
-				// 					roughness: 0.5,    // wood is not glossy
-				// 				});
-
-				// 				node.material.needsUpdate = true;
-                //             }
-                //         }
-
-                //         node.userData.originalMaterial = {
-                //             color: node.material.color.clone(),
-                //             opacity: node.material.opacity,
-                //             transparent: node.material.transparent
-                //         };
-
-                //         node.castShadow = true;
-
-                //         childMeshList.push(node);
-                //     }
-                // });
-
                 const wrapper = new THREE.Group();
 
                 childMeshList.forEach(mesh => {
@@ -3143,10 +3051,10 @@ function initModelDragging(wrapper, furnitureType) {
     wrapper.userData.boundingBox = scaledChildBox; // or scaledChildBox if better
 
     // register for dragging (GLOBAL system)
-    if (!furnitureType.includes('corner')) {
-        const obj = roomState.modelsList[roomState.roomType];
-        obj.draggableObjects.push(wrapper);
-    }
+    // if (!furnitureType.includes('corner')) {
+    const obj = roomState.modelsList[roomState.roomType];
+    obj.draggableObjects.push(wrapper);
+    // }
 
     // return fitting state if needed
     return checkIfAbleToDragChildToPosition(wrapper);
@@ -4569,11 +4477,11 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
             return;
         }
 
-        if(roomType == ROOM_TYPE_WITH_CORNER) {
-            setCornerChildenDragging(obj)
-        } else {
+        // if(roomType == ROOM_TYPE_WITH_CORNER) {
+        //     setCornerChildenDragging(obj)
+        // } else {
             setSingleWallChilderDragging(obj);
-        }
+        // }
 				
 		if(obj.userData.thumbType === THUMB_TYPE_SLOGAN) {
 				updateBgPlane(obj);

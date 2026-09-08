@@ -221,8 +221,15 @@ export const frontNodesDisplay = [
     'node73',
 ];
 
+export const frontCornerFurniture = [
+    'carcass',
+    'mesh_2',
+    'mesh_3',
+    'mesh_4',
+];
+
 const COUNTER_TEXTURES = [...countertopNodesDisplay, ...countertopNodesGlbIkea];
-export const FRONT_TEXTURES = [...frontNodesDisplay, ...frontNodesGlbIkea];
+export const FRONT_TEXTURES = [...frontNodesDisplay, ...frontNodesGlbIkea, ...frontCornerFurniture];
 const BASE_TEXTURES = [...baseNodesDisplay, ...baseNodesGlbIkea];
 
 export const state = {
@@ -1755,7 +1762,7 @@ export async function renderMeshList(
 
         const name = (node.name || "").toLowerCase();
         let geo = node.geometry;
-
+console.log(name)
         if (geo && geo.attributes.position && !geo.attributes.normal) {
             geo = BufferGeometryUtils.mergeVertices(geo) || geo;
             geo.computeVertexNormals();
