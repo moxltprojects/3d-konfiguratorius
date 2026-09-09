@@ -1274,7 +1274,7 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         if (furnitureAnalyzeData['floor']?.base64) {
             floorTextureSrc = toDataUrl(furnitureAnalyzeData['floor'].base64);
         } else if(furnitureAnalyzeData['floor']?.url) {
-            wallTextureSrc = furnitureAnalyzeData['floor']?.url;
+            floorTextureSrc = furnitureAnalyzeData['floor']?.url;
         }
     }
 
