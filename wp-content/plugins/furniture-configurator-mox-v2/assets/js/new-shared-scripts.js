@@ -1330,6 +1330,7 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     model3dContainer.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.maxPolarAngle = Math.PI * 0.6; // ~108° — slight dip below horizon allowed, not full bottom view
 
     modelObj.zoomSystem = createZoomSystem(camera, controls);
 
@@ -1410,7 +1411,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         // ---------------------------
         const floorTopMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color("#C8C2C6"),
-            roughness: 0.6,
+            roughness: 0.25,
+            metalness: 0.35,
         });
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(roomW, FLOOR_THICKNESS, roomD),
@@ -1461,8 +1463,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
             new THREE.PlaneGeometry(roomW, roomD),
             new THREE.MeshStandardMaterial({
                 map: texture,
-                roughness: 0.5,
-                metalness: 0
+                roughness: 0.3,
+                metalness: 0.25,
             })
         );
 
@@ -4610,7 +4612,7 @@ function setupRendererForShadows(renderer) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 0.9;
 
     if ('physicallyCorrectLights' in renderer) {
         renderer.physicallyCorrectLights = true;
@@ -4741,6 +4743,20 @@ function addCeilingLamps(scene, width, height, depth) {
         createLamp(wallX, -depth * 0.25);
         createLamp(wallX, depth * 0.25);
     }
+
+    // Back-wall fill — no shadow, angled from in front to brighten the back wall
+    function createWallFill(x) {
+        const light = new THREE.SpotLight(0xffffff, 900, height * 5, Math.PI / 4, 0.9, 1);
+        light.position.set(x, height * 0.75, depth * 0.25);
+        light.target.position.set(x, height * 0.45, wallZ);
+        light.castShadow = false;
+        ceilingLampsGroup.add(light);
+        ceilingLampsGroup.add(light.target);
+        light.target.updateMatrixWorld();
+    }
+
+    createWallFill(-width * 0.25);
+    createWallFill(width * 0.25);
 
     scene.add(ceilingLampsGroup);
 }
