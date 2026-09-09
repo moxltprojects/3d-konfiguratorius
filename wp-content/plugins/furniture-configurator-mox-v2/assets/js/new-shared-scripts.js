@@ -1267,9 +1267,14 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     if (typeof furnitureAnalyzeData !== 'undefined' && furnitureAnalyzeData) {
         if (furnitureAnalyzeData['wall']?.base64) {
             wallTextureSrc = toDataUrl(furnitureAnalyzeData['wall'].base64);
+        } else if(furnitureAnalyzeData['wall']?.url) {
+            wallTextureSrc = furnitureAnalyzeData['wall']?.url;
         }
+
         if (furnitureAnalyzeData['floor']?.base64) {
             floorTextureSrc = toDataUrl(furnitureAnalyzeData['floor'].base64);
+        } else if(furnitureAnalyzeData['floor']?.url) {
+            wallTextureSrc = furnitureAnalyzeData['floor']?.url;
         }
     }
 
