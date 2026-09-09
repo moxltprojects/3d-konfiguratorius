@@ -2550,18 +2550,8 @@ function checkIfItemsAreFitting(modelRoomType, currentObj, currentBox) {
 
     // restore materials
     notFittingObjs.forEach(obj => {
-
         obj.userData.isFitting = true;
-
-        obj.traverse(child => {
-            if (child.isMesh && child.userData.originalMaterial) {
-
-                child.material.color.copy(child.userData.originalMaterial.color);
-                child.material.opacity = child.userData.originalMaterial.opacity;
-                child.material.transparent = child.userData.originalMaterial.transparent;
-
-            }
-        });
+        colorToDefault(obj);
     });
 }
 
