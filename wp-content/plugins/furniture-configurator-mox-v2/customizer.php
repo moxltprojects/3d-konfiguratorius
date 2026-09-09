@@ -185,116 +185,42 @@ function furniture_config_room_furniture_customizer_settings($wp_customize) {
         'priority' => 30,
     ));
 
-//     /*************** Width full setting   ***********/
-//     $wp_customize->add_setting('furniture_width_full_default', array(
-//         'default'           => '500',
-//         'sanitize_callback' => 'absint', 
-//     ));
+    /*************** Height full setting   ***********/
+    $wp_customize->add_setting('furniture_full_default_id', array(
+        'default'           => '0',
+        'sanitize_callback' => 'absint', 
+    ));
 
-//     $wp_customize->add_control('furniture_width_full_default_control', array(
-//         'label'    => __('FULL width default (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_full_default',
-//         'type'     => 'number',
-//     ));
+    $wp_customize->add_control('furniture_full_default_id_control', array(
+        'label'    => __('Display Full Furniture ID', 'furniture-config'),
+        'section'  => $section_id,
+        'settings' => 'furniture_full_default_id',
+        'type'     => 'number',
+    ));
 
-//    $wp_customize->add_setting('furniture_width_full_min', array(
-//         'default'           => '400',
-//         'sanitize_callback' => 'absint', 
-//     ));
+    $wp_customize->add_setting('furniture_bottom_default_id', array(
+        'default'           => '0',
+        'sanitize_callback' => 'absint', 
+    ));
 
-//     $wp_customize->add_control('furniture_width_full_min_control', array(
-//         'label'    => __('FULL width MIN (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_full_min',
-//         'type'     => 'number',
-//     ));
+    $wp_customize->add_control('furniture_bottom_default_id_control', array(
+        'label'    => __('Display Bottom Furniture ID', 'furniture-config'),
+        'section'  => $section_id,
+        'settings' => 'furniture_bottom_default_id',
+        'type'     => 'number',
+    ));
 
-//     $wp_customize->add_setting('furniture_width_full_max', array(
-//         'default'           => '900',
-//         'sanitize_callback' => 'absint', 
-//     ));
+    $wp_customize->add_setting('furniture_top_default_id', array(
+        'default'           => '0',
+        'sanitize_callback' => 'absint', 
+    ));
 
-//     $wp_customize->add_control('furniture_width_full_max_control', array(
-//         'label'    => __('FULL width MAX (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_full_max',
-//         'type'     => 'number',
-//     ));
-
-//     /*************** Width bottom setting   ***********/
-//     $wp_customize->add_setting('furniture_width_bottom_default', array(
-//         'default'           => '500',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_bottom_default_control', array(
-//         'label'    => __('BOTTOM width default (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_default',
-//         'type'     => 'number',
-//     ));
-
-//    $wp_customize->add_setting('furniture_width_bottom_min', array(
-//         'default'           => '400',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_bottom_min_control', array(
-//         'label'    => __('BOTTOM width MIN (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_bottom_min',
-//         'type'     => 'number',
-//     ));
-
-//     $wp_customize->add_setting('furniture_width_bottom_max', array(
-//         'default'           => '900',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_bottom_max_control', array(
-//         'label'    => __('BOTTOM width MAX (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_bottom_max',
-//         'type'     => 'number',
-//     ));
-
-//     /*************** Width top setting   ***********/
-//     $wp_customize->add_setting('furniture_width_top_default', array(
-//         'default'           => '500',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_top_default_control', array(
-//         'label'    => __('TOP width default (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_default',
-//         'type'     => 'number',
-//     ));
-
-//    $wp_customize->add_setting('furniture_width_top_min', array(
-//         'default'           => '400',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_top_min_control', array(
-//         'label'    => __('TOP width MIN (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_top_min',
-//         'type'     => 'number',
-//     ));
-
-//     $wp_customize->add_setting('furniture_width_top_max', array(
-//         'default'           => '900',
-//         'sanitize_callback' => 'absint', 
-//     ));
-
-//     $wp_customize->add_control('furniture_width_top_max_control', array(
-//         'label'    => __('TOP width MAX (mm)', 'furniture-config'),
-//         'section'  => $section_id,
-//         'settings' => 'furniture_width_top_max',
-//         'type'     => 'number',
-//     ));
+    $wp_customize->add_control('furniture_top_default_id_control', array(
+        'label'    => __('Display Top Furniture ID', 'furniture-config'),
+        'section'  => $section_id,
+        'settings' => 'furniture_top_default_id',
+        'type'     => 'number',
+    ));
 
     /*************** Height full setting   ***********/
     $wp_customize->add_setting('furniture_height_full_default', array(

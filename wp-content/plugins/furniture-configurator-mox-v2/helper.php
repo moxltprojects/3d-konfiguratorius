@@ -751,7 +751,7 @@ function create_texture_slug($catSlug, $subcatSlug, $allTerms) {
 }
 
 
-function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12, $skipTaxonomySlug = false) {
+function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12, $productId = false) {
     $taxonomies = [];  
 
     $args = array(  
@@ -771,11 +771,8 @@ function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12
         );
     }
 
-    if ($skipTaxonomySlug) {
-        $taxonomies[] = [
-            'taxonomy' => 'config-thumbnail-type',
-            'operator' => 'NOT EXISTS',
-        ];
+    if ($productId) {
+        $args['p'] = $productId;
     }
 
     if(!empty($taxonomies)) {

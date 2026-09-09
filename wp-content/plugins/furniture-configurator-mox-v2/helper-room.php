@@ -110,31 +110,23 @@ function getAiSettingsProducts($products, $furnitureDimensions)
         $FURNITURE_TYPE_FULL,
         $FURNITURE_TYPE_TOP;
 
-    $bottomQuery = get_products_query([$FURNITURE_TYPE_BASE], 1, 1, true);
+    $productFullId = (int) get_theme_mod('furniture_full_default_id', 0);
+    $productBottomId = (int) get_theme_mod('furniture_bottom_default_id', 0);
+    $productTopId = (int) get_theme_mod('furniture_top_default_id', 0);
+
+    $bottomQuery = get_products_query(null, 1, 1, $productBottomId);
     $bottomFurniture = $bottomQuery->posts[0] ?? null;
 
-    $topQuery = get_products_query([$FURNITURE_TYPE_TOP], 1, 1, true);
+    $topQuery = get_products_query(null, 1, 1, $productTopId);
     $topFurniture = $topQuery->posts[0] ?? null;
 
-    $fullQuery = get_products_query([$FURNITURE_TYPE_FULL], 1, 1, true);
+    $fullQuery = get_products_query(null, 1, 1, $productFullId);
     $fullFurniture = $fullQuery->posts[0] ?? null;
 
     $furnitureMap = [
         $FURNITURE_TYPE_BASE => $bottomFurniture,
         $FURNITURE_TYPE_TOP => $topFurniture,
         $FURNITURE_TYPE_FULL => $fullFurniture,
-    ];
-
-    $newList = [
-        // $FURNITURE_TYPE_BASE => [
-        //     'list' => [],
-        // ],
-        // $FURNITURE_TYPE_TOP => [
-        //     'list' => [],
-        // ],
-        // $FURNITURE_TYPE_FULL => [
-        //     'list' => [],
-        // ],
     ];
 
     $bottomHeight = $furnitureDimensions['bottom_height'];
@@ -145,39 +137,6 @@ function getAiSettingsProducts($products, $furnitureDimensions)
     $fullDepth = $furnitureDimensions['full_depth'];
     $spaceBottom = $furnitureDimensions['space_bottom'];
 
-    // $modifiedArray = [];
-
-    // $fullProductId = $fullFurniture->ID;
-    // $width_full_obj = get_field('width', $fullProductId) ?? 0;
-    // $fullItemWidth = (int) $width_full_obj['default'];
-
-    // $fullAiFurniture = $products[$FURNITURE_TYPE_FULL] ? $products[$FURNITURE_TYPE_FULL]->items : [];
-    // $fullAiFurnitureCount = count($fullAiFurniture);
-    // $fullFurniture = $furnitureMap[$FURNITURE_TYPE_FULL] ?? null;
-
-    // $bottomAiFurniture = $products[$FURNITURE_TYPE_BASE] ?? null;
-    // $bottomFurniture = $furnitureMap[$FURNITURE_TYPE_BASE] ?? null;
-    // $modifiedArray = getFurnitureLeftTotal(
-    //     $modifiedArray, 
-    //     $bottomAiFurniture, 
-    //     $bottomFurniture, 
-    //     $FURNITURE_TYPE_BASE, 
-    //     $fullFurniture, 
-    //     $fullAiFurnitureCount, 
-    //     $fullItemWidth
-    // );
-
-    // $topAiFurniture = $products[$FURNITURE_TYPE_TOP] ?? null;
-    // $topFurniture = $furnitureMap[$FURNITURE_TYPE_TOP] ?? null;
-    // $modifiedArray = getFurnitureLeftTotal(
-    //     $modifiedArray, 
-    //     $topAiFurniture, 
-    //     $topFurniture, 
-    //     $FURNITURE_TYPE_TOP, 
-    //     $fullFurniture, 
-    //     $fullAiFurnitureCount, 
-    //     $fullItemWidth
-    // );
 
     $productsLeftData = getFurnitureLeftTotal2(
         $fullFurniture, 
@@ -189,6 +148,7 @@ function getAiSettingsProducts($products, $furnitureDimensions)
     );
 
     $leftsArray = $productsLeftData['lefts_array'];
+
     $topFurnitureSpace = getTopFurnitureYPosition($bottomHeight, $spaceBottom);
 
     foreach($leftsArray as $furnitureType => $aiProductData) {
@@ -255,81 +215,6 @@ function getAiSettingsProducts($products, $furnitureDimensions)
             ];
         }
     }
-
-    // foreach($products as $furnitureType => $aiProduct) {
-    //     // $count = (int) $aiProduct->count;
-
-    //     // if($count === 0) {
-    //     //     continue;
-    //     // }
-
-    //     $productItem = $furnitureMap[$furnitureType] ?? null;
-    //     // $totalWidth = 0;
-
-    //     // if(!$productItem) {
-    //     //     continue;
-    //     // }
-
-    //     $list = $aiProduct->items;
-    //     $productId = $productItem->ID;
-    //     $productTitle = get_the_title($productId);
-    //     $width_obj = get_field('width', $productId);
-    //     $itemWidth = $width_obj['default'];
-    //     // $height_obj = get_field('height', $productId);
-    //     // $itemHeight = $height_obj['default'];
-    //     // $depth_obj = get_field('depth', $productId);
-    //     // $itemDepth = $depth_obj['default'];
-    //     // $space_bottom_obj = get_field('space_bottom', $productId);
-    //     // $itemSpaceBottom = $space_bottom_obj['default'];
-    //     $itemHeight = 0;
-    //     $itemDepth = 0;
-    //     $itemSpaceBottom = 0;
-    //     switch($furnitureType) {
-    //         case $FURNITURE_TYPE_TOP: {
-    //             $itemHeight = $topHeight;
-    //             $itemDepth = $topDepth;
-    //             $itemSpaceBottom = $bottomFurnitureSpace;
-    //             break;
-    //         }
-    //         case $FURNITURE_TYPE_BASE: {
-    //             $itemHeight = $bottomHeight;
-    //             $itemDepth = $bottomDepth;
-    //             break;
-    //         }
-    //         default: {
-    //             $itemHeight = $fullHeight;
-    //             $itemDepth = $fullDepth;
-    //             break;
-    //         }
-    //     }
-
-    //     $furniturePositionStr = '{"back":0,"bottom":'. $itemSpaceBottom;
-    //     // $furniturePositionMm = '{}';
-    //     $rotation = null;
-    //     $isFitting = 1;
-
-    //     foreach($list as $listItem) {
-    //         $bottomLeft = $listItem->bottom_left;
-
-    //         $furniturePositionStr .= ',"left":'. $itemSpaceBottom .'}';
-    //     }
-
-    //     // for($i = 0; $i < $count; $i++) {
-    //     //     $customId = round(microtime(true) * 1000);
-
-    //     //     $newList[] = (object) [
-    //     //         'custom_id' => $customId,
-    //     //         'product_id' => $productId,
-    //     //         'width' => $itemWidth,
-    //     //         'height' => $itemHeight,
-    //     //         'depth' => $itemDepth,
-    //     //         'space_bottom' => $itemSpaceBottom,
-    //     //         'furniture_position_mm' => $furniturePositionMm,
-    //     //         'rotation' => null,
-    //     //         'is_fitting' => $isFitting,
-    //     //     ];
-    //     // }
-    // }
 
     return [
         'new_list' => $newList,
@@ -2025,6 +1910,8 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
 
     if($fListCount > 0) {
         $leftCurrent = 0;
+        $bListOriginal = $bList;
+        $tListOriginal = $tList;
         for($i = 0; $i < $fListCount; $i++) {
             $fListObj = $fList[$i];
             $left = $fListObj->bottom_left[0] ?? 0;
@@ -2068,13 +1955,15 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
             $leftCurrent = $fLeftMm + $fItemWidth;
         }
 
-        $bListMod = $bList;
-        $bListModCount = count($bList);
+        $bListMod = $bListOriginal;
+        $bListModCount = count($bListOriginal);
         $bData = topBottomXData($xPositionArr, $bItemWidth, $bListMod, $bListModCount, $FURNITURE_TYPE_BASE, $leftCurrent);
+        $xPositionArr = $bData['mod_array'];
 
-        $tListMod = $tList;
-        $tListModCount = count($tList);
+        $tListMod = $tListOriginal;
+        $tListModCount = count($tListOriginal);
         $tData = topBottomXData($xPositionArr, $tItemWidth, $tListMod, $tListModCount, $FURNITURE_TYPE_TOP, $leftCurrent);
+        $xPositionArr = $tData['mod_array'];
 
     } else {
         $bListCount = count($bList);
