@@ -254,6 +254,61 @@ const furnitureAnalyzerApp = {
         furnitureAnalyzeData = data ?? null;
     },
 
+    async uploadImageToWp({ base64, generationId, imageType }) {
+        if (!base64) return null;
+        if (typeof theme_vars === 'undefined' || !theme_vars.ajax_url) {
+            throw new Error('WordPress upload is not available.');
+        }
+
+        const formData = new FormData();
+        formData.append('action', 'mox_ai_stand_upload_image');
+        formData.append('nonce', theme_vars.nonce);
+        formData.append('image_base64', base64);
+        formData.append('generationId', generationId || '');
+        formData.append('imageType', imageType || '');
+
+        const response = await fetch(theme_vars.ajax_url, {
+            method: 'POST',
+            body: formData,
+        });
+
+        const json = await response.json().catch(() => null);
+        if (!response.ok || !json || !json.success) {
+            const msg = (json && json.data) ? json.data : 'Upload failed';
+            throw new Error(msg);
+        }
+
+        return json.data;
+    },
+
+    async persistAnalyzeTextures(data) {
+        if (!data || typeof data !== 'object') return data;
+
+        const generationId = data.generationId || '';
+        const types = ['wall', 'floor'];
+
+        await Promise.all(types.map(async (type) => {
+            const texture = data[type];
+            if (!texture || typeof texture !== 'object' || !texture.base64) {
+                return;
+            }
+
+            const uploaded = await this.uploadImageToWp({
+                base64: texture.base64,
+                generationId,
+                imageType: type,
+            });
+
+            data[type] = {
+                url: uploaded.url,
+                attachmentId: uploaded.attachmentId,
+                path: texture.path || null,
+            };
+        }));
+
+        return data;
+    },
+
     showOutput(text, isError, revealWrapper = false) {
         if (isError && !revealWrapper) {
             alert(text);
@@ -303,6 +358,7 @@ const furnitureAnalyzerApp = {
             }
         }
 
+
         try {
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
@@ -320,7 +376,24 @@ const furnitureAnalyzerApp = {
             }
 
             const isError = !response.ok;
-            if (!isError) this.storeAnalyzeData(data);
+            if (!isError) {
+                try {
+                    data = await this.persistAnalyzeTextures(data);
+                } catch (uploadErr) {
+                    ['wall', 'floor'].forEach((type) => {
+                        if (data[type] && typeof data[type] === 'object') {
+                            const { base64, ...rest } = data[type];
+                            data[type] = { ...rest, error: uploadErr.message };
+                        }
+                    });
+                    this.storeAnalyzeData(data);
+                    this.showOutput(`Upload failed: ${uploadErr.message}\n\n${JSON.stringify(data, null, 2)}`, true, true);
+                    finishButton('Error');
+                    return;
+                }
+                this.storeAnalyzeData(data);
+            }
+
             this.showOutput(JSON.stringify(data, null, 2), isError, true);
             finishButton(isError ? 'Error' : 'Done');
         } catch (err) {

@@ -23,9 +23,9 @@ $attachmentType = $thumbnailData['attachmentType'] ?? null;
 $hasBrandTexture = get_field('has_brand_texture', $productId);
 
 $width_obj = get_field('width', $productId);
-$itemWidth = $width_obj['default'];
-$itemWidthMin = $width_obj['min'];
-$itemWidthMax = $width_obj['max'];
+$itemWidth = intval($width_obj['default'] ?? 0);
+$itemWidthMin = intval($width_obj['min'] ?? 0);
+$itemWidthMax = intval($width_obj['max'] ?? 0);
 
 if($itemWidth < $itemWidthMin || $itemWidth > $itemWidthMax) {
     $itemWidth = $itemWidthMin;
@@ -34,16 +34,16 @@ if($itemWidth < $itemWidthMin || $itemWidth > $itemWidthMax) {
 $dimensions = $furnitureDimensionsSortedByType[$furnitureTypeSlug] ?? null;
 
 $height_obj = get_field('height', $productId);
-$itemHeight = intval($height_obj['default']);
+$itemHeight = intval($height_obj['default'] ?? 0);
 $itemHeightMin = 0;
 $itemHeightMax = 0;
 if(!$dimensions || $itemHeight && $itemHeight > 0) {
-    $itemHeightMin = $height_obj['min'];
-    $itemHeightMax = $height_obj['max'];
+    $itemHeightMin = intval($height_obj['min'] ?? 0);
+    $itemHeightMax = intval($height_obj['max'] ?? 0);
 } else {
-    $itemHeight = $dimensions['height'];
-    $itemHeightMin = $dimensions['min_height'];
-    $itemHeightMax = $dimensions['max_height'];
+    $itemHeight = intval($dimensions['height'] ?? 0);
+    $itemHeightMin = intval($dimensions['min_height'] ?? 0);
+    $itemHeightMax = intval($dimensions['max_height'] ?? 0);
 }
 
 if($itemHeight < $itemHeightMin || $itemHeight > $itemHeightMax) {
@@ -51,16 +51,16 @@ if($itemHeight < $itemHeightMin || $itemHeight > $itemHeightMax) {
 }
 
 $depth_obj = get_field('depth', $productId);
-$itemDepth = intval($depth_obj['default']);
+$itemDepth = intval($depth_obj['default'] ?? 0);
 $itemDepthMin = 0;
 $itemDepthMax = 0;
 if($itemDepth && $itemDepth > 0) {
-    $itemDepthMin = $depth_obj['min'];
-    $itemDepthMax = $depth_obj['max'];
+    $itemDepthMin = intval($depth_obj['min'] ?? 0);
+    $itemDepthMax = intval($depth_obj['max'] ?? 0);
 } else {
-    $itemDepth = $dimensions['depth'];
-    $itemDepthMin = $dimensions['min_depth'];
-    $itemDepthMax = $dimensions['max_depth'];
+    $itemDepth = intval($dimensions['depth'] ?? 0);
+    $itemDepthMin = intval($dimensions['min_depth'] ?? 0);
+    $itemDepthMax = intval($dimensions['max_depth'] ?? 0);
 }
 
 if($itemDepth < $itemDepthMin || $itemDepth > $itemDepthMax) {
@@ -72,12 +72,12 @@ $itemSpaceBottom = isset($space_bottom_obj['default']) ? intval($space_bottom_ob
 $itemSpaceBottomMin = 0;
 $itemSpaceBottomMax = 0;
 if($itemSpaceBottom && $itemSpaceBottom > 0) {
-    $itemSpaceBottomMin = $space_bottom_obj['min'];
-    $itemSpaceBottomMax = $space_bottom_obj['max'];
+    $itemSpaceBottomMin = intval($space_bottom_obj['min'] ?? 0);
+    $itemSpaceBottomMax = intval($space_bottom_obj['max'] ?? 0);
 } else {
-    $itemSpaceBottom = $dimensions['space_bottom'];
-    $itemSpaceBottomMin = $dimensions['min_space_bottom'];
-    $itemSpaceBottomMax = $dimensions['max_space_bottom'];
+    $itemSpaceBottom = intval($dimensions['space_bottom'] ?? 0);
+    $itemSpaceBottomMin = intval($dimensions['min_space_bottom'] ?? 0);
+    $itemSpaceBottomMax = intval($dimensions['max_space_bottom'] ?? 0);
 }
 
 if($itemSpaceBottom < $itemSpaceBottomMin || $itemSpaceBottom > $itemSpaceBottomMax) {
