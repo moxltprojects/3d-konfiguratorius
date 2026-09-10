@@ -170,9 +170,17 @@ export function initRoomModelSettings() {
         if(modelSettings.visibleDimensionsArrows) {
             btnShowDimensions.classList.add('active');
             addDimensionArrows();
+            // Disable dragging on all room models while dimensions are shown
+            Object.values(roomState.modelsList).forEach(m => {
+                if (m.dragControls) m.dragControls.enabled = false;
+            });
         } else {
             btnShowDimensions.classList.remove('active');
             removeDimensionArrows();
+            // Re-enable dragging
+            Object.values(roomState.modelsList).forEach(m => {
+                if (m.dragControls) m.dragControls.enabled = true;
+            });
         }
     });
 
@@ -307,18 +315,12 @@ export function updateZoomFromCamera(camera, controls) {
 }
 
 function addDimensionArrows() {
-
     Object.entries(roomState.modelsList).forEach(([key, value]) => {
-        const children = value.scene ? [...value.scene.children] : [];
-
-        for(let i = 0; i < children.length; i++) {
-            const childObj = children[i];
-            const userData = childObj.userData;
-
-            if(!userData.productId) {
-                continue;
-            }
-
+        if (!value.scene) return;
+        addRoomDimensionLines(value.scene);
+        const children = [...value.scene.children];
+        for (const childObj of children) {
+            if (!childObj.userData.productId) continue;
             createFurnitureDimensionArrows(childObj, value.scene, value.box);
         }
     });
@@ -326,21 +328,126 @@ function addDimensionArrows() {
 
 function removeDimensionArrows() {
     Object.entries(roomState.modelsList).forEach(([key, value]) => {
-        const children = value.scene ? [...value.scene.children] : [];
+        if (!value.scene) return;
 
-        children.forEach(child => {
+        // Remove room dimension lines
+        const roomDimGroup = value.scene.getObjectByName('room-dimensions');
+        if (roomDimGroup) {
+            roomDimGroup.traverse(o => {
+                if (o.geometry) o.geometry.dispose();
+                if (o.material) o.material.dispose();
+            });
+            value.scene.remove(roomDimGroup);
+        }
+
+        // Remove furniture dimension objects
+        [...value.scene.children].forEach(child => {
             if (child.userData && child.userData.dimensions) {
-                // Remove each arrow/label from the scene
                 child.userData.dimensions.forEach(obj => {
                     if (obj.geometry) obj.geometry.dispose();
                     if (obj.material) obj.material.dispose();
                     value.scene.remove(obj);
                 });
-                // Clear the reference
                 child.userData.dimensions = [];
             }
         });
     });
+}
+
+function addRoomDimensionLines(scene) {
+    const existing = scene.getObjectByName('room-dimensions');
+    if (existing) {
+        existing.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+        scene.remove(existing);
+    }
+
+    const { width: W, depth: D, height: H } = roomState.modelRoomDimensions;
+    const { width: mmW, depth: mmD } = roomState.roomDimensions;
+
+    // Lines sit just above the top of the walls
+    const Y   = H + 2;
+    const OFF = Math.max(W, D) * 0.05;
+
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x222222, depthTest: false });
+    lineMat.renderOrder = 998;
+
+    const group = new THREE.Group();
+    group.name = 'room-dimensions';
+
+    function makeLine(p1, p2) {
+        const geo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+        const line = new THREE.Line(geo, lineMat);
+        line.renderOrder = 998;
+        return line;
+    }
+
+    function tickMark(cx, cy, cz, axis) {
+        const s = OFF * 0.35;
+        const p1 = axis === 'x'
+            ? new THREE.Vector3(cx, cy, cz - s)
+            : new THREE.Vector3(cx - s, cy, cz);
+        const p2 = axis === 'x'
+            ? new THREE.Vector3(cx, cy, cz + s)
+            : new THREE.Vector3(cx + s, cy, cz);
+        return makeLine(p1, p2);
+    }
+
+    function dimLabel(text, x, y, z) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const fs = 80;
+        ctx.font = `${fs}px Arial`;
+        const tw = ctx.measureText(text).width;
+        canvas.width = tw + 20;
+        canvas.height = fs + 10;
+        ctx.font = `${fs}px Arial`;
+        ctx.fillStyle = '#111111';
+        ctx.textBaseline = 'top';
+        ctx.fillText(text, 10, 5);
+        const tex = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+        const sprite = new THREE.Sprite(mat);
+        sprite.renderOrder = 999;
+        sprite.position.set(x, y, z);
+        sprite.userData.isDimLabel = true;
+        sprite.userData.labelAspect = canvas.width / canvas.height;
+        // Initial scale — will be overridden each frame
+        const sf = Math.max(W, D) * 0.18 / canvas.width;
+        sprite.scale.set(canvas.width * sf, canvas.height * sf, 1);
+        sprite.onBeforeRender = (r) => r.getContext().disable(r.getContext().DEPTH_TEST);
+        sprite.onAfterRender  = (r) => r.getContext().enable(r.getContext().DEPTH_TEST);
+        return sprite;
+    }
+
+    const x0 = -W/2, x1 = W/2, z0 = -D/2, z1 = D/2;
+
+    // ── Width lines at top ──
+    // Back edge (z = -D/2)
+    group.add(makeLine(new THREE.Vector3(x0, Y, z0), new THREE.Vector3(x1, Y, z0)));
+    group.add(tickMark(x0, Y, z0, 'x'));
+    group.add(tickMark(x1, Y, z0, 'x'));
+    group.add(dimLabel(`${Math.round(mmW)} mm`, 0, Y + OFF * 0.6, z0));
+
+    // Front edge (z = +D/2)
+    group.add(makeLine(new THREE.Vector3(x0, Y, z1), new THREE.Vector3(x1, Y, z1)));
+    group.add(tickMark(x0, Y, z1, 'x'));
+    group.add(tickMark(x1, Y, z1, 'x'));
+    group.add(dimLabel(`${Math.round(mmW)} mm`, 0, Y + OFF * 0.6, z1));
+
+    // ── Depth lines at top ──
+    // Left edge (x = -W/2)
+    group.add(makeLine(new THREE.Vector3(x0, Y, z0), new THREE.Vector3(x0, Y, z1)));
+    group.add(tickMark(x0, Y, z0, 'z'));
+    group.add(tickMark(x0, Y, z1, 'z'));
+    group.add(dimLabel(`${Math.round(mmD)} mm`, x0 - OFF * 0.2, Y + OFF * 0.6, 0));
+
+    // Right edge (x = +W/2)
+    group.add(makeLine(new THREE.Vector3(x1, Y, z0), new THREE.Vector3(x1, Y, z1)));
+    group.add(tickMark(x1, Y, z0, 'z'));
+    group.add(tickMark(x1, Y, z1, 'z'));
+    group.add(dimLabel(`${Math.round(mmD)} mm`, x1 + OFF * 0.2, Y + OFF * 0.6, 0));
+
+    scene.add(group);
 }
 
 export function initCabinetTabs(tabsSelector) {
@@ -731,8 +838,6 @@ function furnitureTypeAddInit(
 
 export function onClickModel(e, threeJSRendered, threeJSCamera) {
 
-    removeAllFurnitureControls();
-    removeAllFurnitureButtons();
     if(isSummaryStep) {
         return;
     }
@@ -760,16 +865,23 @@ export function onClickModel(e, threeJSRendered, threeJSCamera) {
         return null;
     }
 
-    // Check for UI button hits first
+    // Check for UI button hits BEFORE removing buttons from scene
     const buttonHit = intersects.find(hit => hit.object.userData.isUIButton);
     if (buttonHit) {
         const obj = buttonHit.object;
         const action = obj.userData.actionType;
         const customId = obj.userData.customId;
+        editContainerRemove();
+        removeAllFurnitureControls();
+        removeAllFurnitureButtons();
         if (action === 'delete') initFurnitureRemoveData(customId);
         else if (action === 'duplicate') initFurnitureDuplicateData(customId);
         return;
     }
+
+    // No button hit — safe to clear controls now
+    removeAllFurnitureControls();
+    removeAllFurnitureButtons();
 
     // Find furniture wrapper from any hit mesh
     let wrapper = null;
@@ -818,21 +930,45 @@ function createFurnitureItemControls(childMeshGroup, customId) {
         canvas.height = canvasSize;
         const ctx = canvas.getContext('2d');
 
-        ctx.fillStyle = 'rgba(255,255,255,1)';
+        const bgColor = actionType === 'delete' ? '#e53935' : '#1565c0';
+
+        // Solid circle
+        ctx.fillStyle = bgColor;
         ctx.beginPath();
-        ctx.arc(canvasSize/2, canvasSize/2, canvasSize*0.45, 0, Math.PI*2);
+        ctx.arc(canvasSize/2, canvasSize/2, canvasSize*0.46, 0, Math.PI*2);
         ctx.fill();
 
+        const texture = new THREE.CanvasTexture(canvas);
         const img = new Image();
         img.src = `${assetsUrl}/images/room/${iconUrl}`;
-        const texture = new THREE.CanvasTexture(canvas);
         img.onload = () => {
-            const iconSize = canvasSize*0.5;
-            ctx.drawImage(img, (canvasSize-iconSize)/2, (canvasSize-iconSize)/2, iconSize, iconSize);
+            // Redraw solid circle
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            ctx.fillStyle = bgColor;
+            ctx.beginPath();
+            ctx.arc(canvasSize/2, canvasSize/2, canvasSize*0.46, 0, Math.PI*2);
+            ctx.fill();
+
+            // Draw icon on offscreen canvas then tint white via composite
+            const iconSize = canvasSize * 0.54;
+            const ix = (canvasSize - iconSize) / 2;
+            const iy = (canvasSize - iconSize) / 2;
+
+            const tmp = document.createElement('canvas');
+            tmp.width = canvasSize;
+            tmp.height = canvasSize;
+            const tc = tmp.getContext('2d');
+            tc.drawImage(img, ix, iy, iconSize, iconSize);
+            tc.globalCompositeOperation = 'source-in';
+            tc.fillStyle = '#ffffff';
+            tc.fillRect(0, 0, canvasSize, canvasSize);
+
+            ctx.drawImage(tmp, 0, 0);
             texture.needsUpdate = true;
         };
 
         const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false, depthWrite: false });
+        material.toneMapped = false; // keep canvas colours exact — no ACESFilmic wash
         const sprite = new THREE.Sprite(material);
 
         sprite.userData.isUIButton = true;
@@ -849,11 +985,14 @@ function createFurnitureItemControls(childMeshGroup, customId) {
             renderer.getContext().enable(renderer.getContext().DEPTH_TEST);
         };
 
-        // Place at center-top of the model
-        // sprite.position.set(worldPos.x + offsetX, topY + scaledSize.y*0.1, worldPos.z); 
-        sprite.position.set(worldPos.x + offsetX, topY - scaledSize.y*0.1, worldPos.z); 
+        const btnY = topY - scaledSize.y * 0.1;
+        sprite.position.set(worldPos.x + offsetX, btnY, worldPos.z);
+        // Store base position + offset direction so animate loop can reposition
+        sprite.userData.btnBaseX  = worldPos.x;
+        sprite.userData.btnBaseY  = btnY;
+        sprite.userData.btnBaseZ  = worldPos.z;
+        sprite.userData.btnOffDir = offsetX >= 0 ? 1 : -1;
 
-        // Set size relative to model
         const buttonScale = Math.max(scaledSize.x, scaledSize.y, scaledSize.z) * 0.2;
         sprite.scale.set(buttonScale, buttonScale, 1);
 
@@ -1681,10 +1820,31 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
             if (!wrapper.userData.uiButtons) return;
             wrapper.userData.uiButtons.forEach(btn => {
                 const dist = camera.position.distanceTo(btn.position);
-                const s = dist * 0.03;
+                const s = dist * 0.05;
                 btn.scale.set(s, s, 1);
+                // Reposition so buttons never overlap — separation = 1.1× button diameter
+                if (btn.userData.btnBaseX !== undefined) {
+                    btn.position.set(
+                        btn.userData.btnBaseX + btn.userData.btnOffDir * s * 0.6,
+                        btn.userData.btnBaseY,
+                        btn.userData.btnBaseZ
+                    );
+                }
             });
         });
+
+        // Keep dimension labels at a fixed pixel size (18px equivalent)
+        if (modelSettings.visibleDimensionsArrows) {
+            const TARGET_PX = 18;
+            const h = renderer.domElement.height || 1;
+            const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+            modelScene.traverse(obj => {
+                if (!obj.userData.isDimLabel) return;
+                const dist = camera.position.distanceTo(obj.position);
+                const sy = TARGET_PX * 2 * dist * tanHalf / h;
+                obj.scale.set(sy * (obj.userData.labelAspect || 1), sy, 1);
+            });
+        }
 
         {
             const dx = camera.position.x - controls.target.x;
@@ -2926,124 +3086,157 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
 }
 
 function createFurnitureDimensionArrows(childMeshGroup, modelScene, roomModelBox) {
-    // Remove old arrows & labels
     if (childMeshGroup.userData.dimensions) {
         childMeshGroup.userData.dimensions.forEach(obj => modelScene.remove(obj));
     }
 
-    const objects = [];
+    const positionMmOrigin = childMeshGroup.userData.positionMm;
+    const positionMm = typeof positionMmOrigin === 'string' ? JSON.parse(positionMmOrigin) : positionMmOrigin;
+    if (!positionMm) return;
 
-    // const roomBox = new THREE.Box3().setFromObject(room3DGroup);
+    const { width: mmW, depth: mmD } = roomState.roomDimensions;
+    const { width: W, depth: D } = roomState.modelRoomDimensions;
+
     const furnitureBox = new THREE.Box3().setFromObject(childMeshGroup);
-
     const furnitureSize = new THREE.Vector3();
     furnitureBox.getSize(furnitureSize);
 
-    const roomSize = new THREE.Vector3();
-    roomModelBox.getSize(roomSize);
+    const objects = [];
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x222222, depthTest: false });
 
-    const positionMmOrigin = childMeshGroup.userData.positionMm
-    const positionMm = typeof(positionMmOrigin) == 'string' ? JSON.parse(positionMmOrigin) : positionMmOrigin;
+    // Scale factor: convert world-unit distance to mm
+    const worldToMm = mmW / W;
 
-    // Helper: create line + label
-    function makeArrowWithNumber(start, end, color, labelText) {
-        const group = [];
-
-        // Line
-        const points = [start, end];
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({ color: color, linewidth: 2, depthTest: false });
-        const line = new THREE.Line(geometry, material);
-        group.push(line);
-
-        // Label at midpoint
-        const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-        const label = makeTextSprite(labelText, { fontSize: 600, color: "black" });
-        label.position.copy(mid);
-        label.position.y += 0.1; // small offset above line
-        group.push(label);
-
-        return group;
+    function makeLine(p1, p2) {
+        const geo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+        const line = new THREE.Line(geo, lineMat);
+        line.renderOrder = 998;
+        return line;
     }
 
-    function makeTextSprite(message, params = {}) {
-        const fontSize = params.fontSize || 100; // px
-        const color = params.color || "black";
-
-        // Create canvas
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // First, measure text
-        ctx.font = `${fontSize}px Arial`;
-        const textWidth = ctx.measureText(message).width;
-
-        // Set canvas size AFTER measuring
-        canvas.width = textWidth * 2; // add padding
-        canvas.height = fontSize * 2;
-
-        // Reset font after resizing canvas
-        ctx.font = `${fontSize}px Arial`;
-        ctx.fillStyle = color;
-        ctx.textBaseline = "top";
-        ctx.fillText(message, 0, 0);
-
-        // Create texture
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.needsUpdate = true;
-
-        const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
-        const sprite = new THREE.Sprite(material);
+    function dimLabel(text, x, y, z, refSize) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const fs = 72;
+        ctx.font = `${fs}px Arial`;
+        const tw = ctx.measureText(text).width;
+        canvas.width = tw + 16;
+        canvas.height = fs + 8;
+        ctx.font = `${fs}px Arial`;
+        ctx.fillStyle = '#111111';
+        ctx.textBaseline = 'top';
+        ctx.fillText(text, 8, 4);
+        const tex = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+        const sprite = new THREE.Sprite(mat);
         sprite.renderOrder = 999;
-        sprite.position.z += 0.05; 
-
-        // Scale to scene units
-        const scaleFactor = 0.02; // tweak depending on scene size
-        sprite.scale.set(canvas.width * scaleFactor, canvas.height * scaleFactor, 1);
-
+        sprite.position.set(x, y, z);
+        sprite.userData.isDimLabel = true;
+        sprite.userData.labelAspect = canvas.width / canvas.height;
+        // Initial scale — overridden each frame
+        const sf = (refSize || furnitureSize.x) * 0.5 / canvas.width;
+        sprite.scale.set(canvas.width * sf, canvas.height * sf, 1);
+        sprite.onBeforeRender = (r) => r.getContext().disable(r.getContext().DEPTH_TEST);
+        sprite.onAfterRender  = (r) => r.getContext().enable(r.getContext().DEPTH_TEST);
         return sprite;
     }
 
-    // === LEFT ARROW ===
-    const leftDist = furnitureBox.min.x - roomModelBox.min.x;
-    if (leftDist > 0) {
-        const leftArrow = makeArrowWithNumber(
-            new THREE.Vector3(roomModelBox.min.x, furnitureBox.min.y + furnitureSize.y, furnitureBox.min.z),
-            new THREE.Vector3(furnitureBox.min.x, furnitureBox.min.y + furnitureSize.y, furnitureBox.min.z),
-            0xff0000, // red
-            `${positionMm.left.toFixed(2)} mm`
-        );
-        objects.push(...leftArrow);
+    // ── Bounding box wireframe ──
+    const boxHelper = new THREE.Box3Helper(furnitureBox, new THREE.Color(0x222222));
+    boxHelper.material.depthTest = false;
+    boxHelper.renderOrder = 998;
+    objects.push(boxHelper);
+
+    const topY  = furnitureBox.max.y;
+    const midX  = (furnitureBox.min.x + furnitureBox.max.x) / 2;
+    const midZ  = (furnitureBox.min.z + furnitureBox.max.z) / 2;
+    const frontZ = furnitureBox.max.z;
+
+    // ── Width dimension (top, along X) ──
+    const wLabel = `${Math.round(furnitureSize.x * worldToMm)} mm`;
+    objects.push(makeLine(
+        new THREE.Vector3(furnitureBox.min.x, topY, frontZ),
+        new THREE.Vector3(furnitureBox.max.x, topY, frontZ)
+    ));
+    objects.push(dimLabel(wLabel, midX, topY, frontZ + furnitureSize.z * 0.15));
+
+    // ── Depth dimension (top, along Z) ──
+    const dLabel = `${Math.round(furnitureSize.z * worldToMm)} mm`;
+    objects.push(makeLine(
+        new THREE.Vector3(furnitureBox.max.x, topY, furnitureBox.min.z),
+        new THREE.Vector3(furnitureBox.max.x, topY, furnitureBox.max.z)
+    ));
+    objects.push(dimLabel(dLabel, furnitureBox.max.x + furnitureSize.x * 0.15, topY, midZ, furnitureSize.z));
+
+    // Gap lines sit at floor level so they're always visible and unambiguous
+    const gapY = 2;
+    const labelAbove = gapY + furnitureSize.y * 0.08;
+
+    // ── Left gap (furniture left edge → room left wall) ──
+    const leftMm = positionMm.left;
+    if (leftMm > 5) {
+        const roomLeftX = -W / 2;
+        objects.push(makeLine(
+            new THREE.Vector3(roomLeftX, gapY, midZ),
+            new THREE.Vector3(furnitureBox.min.x, gapY, midZ)
+        ));
+        objects.push(dimLabel(
+            `${Math.round(leftMm)} mm`,
+            (roomLeftX + furnitureBox.min.x) / 2,
+            labelAbove,
+            midZ
+        ));
     }
 
-    // === RIGHT ARROW ===
-    const rightDist = roomModelBox.max.x - furnitureBox.max.x;
-    if (rightDist > 0) {
-        const rightArrow = makeArrowWithNumber(
-            new THREE.Vector3(furnitureBox.max.x, furnitureBox.min.y + furnitureSize.y, furnitureBox.min.z),
-            new THREE.Vector3(roomModelBox.max.x, furnitureBox.min.y + furnitureSize.y, furnitureBox.min.z),
-            0xff0000,
-            `${positionMm.right.toFixed(2)} mm`
-        );
-        objects.push(...rightArrow);
+    // ── Right gap (furniture right edge → room right wall) ──
+    const rightMm = positionMm.right;
+    if (rightMm > 5) {
+        const roomRightX = W / 2;
+        objects.push(makeLine(
+            new THREE.Vector3(furnitureBox.max.x, gapY, midZ),
+            new THREE.Vector3(roomRightX, gapY, midZ)
+        ));
+        objects.push(dimLabel(
+            `${Math.round(rightMm)} mm`,
+            (furnitureBox.max.x + roomRightX) / 2,
+            labelAbove,
+            midZ
+        ));
     }
 
-    // === TOP ARROW ===
-    const topDist = roomModelBox.max.y - furnitureBox.max.y;
-    if (topDist > 0) {
-        const topArrow = makeArrowWithNumber(
-            new THREE.Vector3(furnitureBox.max.x - furnitureSize.x/2, furnitureBox.max.y, furnitureBox.min.z),
-            new THREE.Vector3(furnitureBox.max.x - furnitureSize.x/2, roomModelBox.max.y, furnitureBox.min.z),
-            0xff0000,
-            `${positionMm.top.toFixed(2)} mm`
-        );
-        objects.push(...topArrow);
+    // ── Front gap (furniture front edge → room front wall) ──
+    const frontMm = positionMm.front ?? positionMm.bottom ?? 0;
+    if (frontMm > 5) {
+        const roomFrontZ = D / 2;
+        objects.push(makeLine(
+            new THREE.Vector3(midX, gapY, furnitureBox.max.z),
+            new THREE.Vector3(midX, gapY, roomFrontZ)
+        ));
+        objects.push(dimLabel(
+            `${Math.round(frontMm)} mm`,
+            midX,
+            labelAbove,
+            (furnitureBox.max.z + roomFrontZ) / 2
+        ));
     }
 
-    // Add all objects to scene
+    // ── Back gap (furniture back edge → back wall) ──
+    const backMm = positionMm.back ?? positionMm.bottom ?? 0;
+    if (backMm > 5) {
+        const roomBackZ = -D / 2;
+        objects.push(makeLine(
+            new THREE.Vector3(midX, gapY, furnitureBox.min.z),
+            new THREE.Vector3(midX, gapY, roomBackZ)
+        ));
+        objects.push(dimLabel(
+            `${Math.round(backMm)} mm`,
+            midX,
+            labelAbove,
+            (furnitureBox.min.z + roomBackZ) / 2
+        ));
+    }
+
     objects.forEach(o => modelScene.add(o));
-
-    // Save for removal later
     childMeshGroup.userData.dimensions = objects;
 }
 
@@ -3718,19 +3911,31 @@ export function clearModelScene(modelObj, onPageLoad) {
 
 export function dragControlsMethod(dragControls, modelScene, roomModelBox, threeJSControls, roomType) {
     dragControls.addEventListener('dragstart', event => {
+        if (modelSettings.visibleDimensionsArrows) return;
+
         const obj = event.object;
 
         obj.userData.initialPosition = obj.position.clone();
+        obj.userData.dragStarted = false; // actual movement not yet confirmed
         threeJSControls.enabled = false;
-
-        removeAllFurnitureControls();
-        removeAllFurnitureButtons();
 
         setBgPlanesVisibleForWrapper(obj, false);
     });
 
     dragControls.addEventListener('drag', event => {
         const obj = event.object;
+
+        if (modelSettings.visibleDimensionsArrows) {
+            if (obj.userData.initialPosition) obj.position.copy(obj.userData.initialPosition);
+            return;
+        }
+
+        // Only remove buttons on first real movement, not on pointerdown
+        if (!obj.userData.dragStarted) {
+            obj.userData.dragStarted = true;
+            removeAllFurnitureControls();
+            removeAllFurnitureButtons();
+        }
 
         if (isSummaryStep) {
             obj.position.copy(obj.userData.initialPosition);
@@ -3747,18 +3952,14 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 				updateBgPlane(obj);
 		}
 
-        if (roomState.visibleDimensionArrows) {
-            if(!obj.productId) {
-               return; 
-            }
-            createFurnitureDimensionArrows(obj, room3DGroup);
-        }
     });
 
     dragControls.addEventListener('dragend', event => {
         const obj = event.object;
 
         threeJSControls.enabled = true;
+
+        if (modelSettings.visibleDimensionsArrows) return;
 
         updateBgPlane(obj);
         setBgPlanesVisibleForWrapper(obj, true);
