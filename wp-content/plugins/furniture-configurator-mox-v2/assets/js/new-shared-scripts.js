@@ -750,55 +750,49 @@ export function onClickModel(e, threeJSRendered, threeJSCamera) {
 
     const intersects = raycaster.intersectObjects(modelObj.scene.children, true);
 
-    let buttonHitItem = intersects.find(hit => hit.object.parent.userData.customId);
-
-    if(buttonHitItem) {
-        const obj = buttonHitItem.object.parent;
-        const userData = obj.userData;
-        const customId = userData.customId;
-
-        openEditModal(userData, customId, false);
-        createFurnitureItemControls(obj, customId); 
-    } else {
-        editContainerRemove();
+    // Walk up the hierarchy from any hit object to find the draggable wrapper
+    function findWrapper(obj) {
+        let current = obj;
+        while (current) {
+            if (current.userData && current.userData.customId) return current;
+            current = current.parent;
+        }
+        return null;
     }
 
-    let buttonHit = intersects.find(hit => hit.object.userData.isUIButton);
-    
+    // Check for UI button hits first
+    const buttonHit = intersects.find(hit => hit.object.userData.isUIButton);
     if (buttonHit) {
         const obj = buttonHit.object;
         const action = obj.userData.actionType;
         const customId = obj.userData.customId;
-
-        if (action === "delete") {
-            initFurnitureRemoveData(customId);
-        } else if (action === "duplicate") {
-            initFurnitureDuplicateData(customId);
-        }
-        return; 
+        if (action === 'delete') initFurnitureRemoveData(customId);
+        else if (action === 'duplicate') initFurnitureDuplicateData(customId);
+        return;
     }
 
-    if (intersects.length > 0) {
-        let obj = intersects[0].object;
-        const objParent = obj.parent;
-        if(!objParent) {
-            return;
-        }
-        
-        if (objParent.userData && objParent.userData.customId) {
+    // Find furniture wrapper from any hit mesh
+    let wrapper = null;
+    for (const hit of intersects) {
+        wrapper = findWrapper(hit.object);
+        if (wrapper) break;
+    }
 
-            objParent.traverse(child => {
-                if (child.isMesh) {
-                    child.renderOrder = 1; 
-                    child.material.emissive.set(0xffffff);
-                    child.material.emissiveIntensity = 0.2;
-                }
-            });
+    if (wrapper) {
+        const customId = wrapper.userData.customId;
 
-            openEditModal(objParent.userData, objParent.userData.customId, false);
-            createFurnitureItemControls(objParent, objParent.userData.customId); 
-        }
-    } 
+        wrapper.traverse(child => {
+            if (child.isMesh && child.material && child.material.emissive) {
+                child.material.emissive.set(0xffffff);
+                child.material.emissiveIntensity = 0.2;
+            }
+        });
+
+        openEditModal(wrapper.userData, customId, false);
+        createFurnitureItemControls(wrapper, customId);
+    } else {
+        editContainerRemove();
+    }
 }
 
 function createFurnitureItemControls(childMeshGroup, customId) {
@@ -838,14 +832,22 @@ function createFurnitureItemControls(childMeshGroup, customId) {
             texture.needsUpdate = true;
         };
 
-        const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+        const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(material);
 
         sprite.userData.isUIButton = true;
-        // sprite.userData.initCustomId = customId;
         sprite.userData.customId = customId;
         sprite.userData.actionType = actionType;
         sprite.renderOrder = 999;
+        sprite.frustumCulled = false;
+
+        // Force depth test off at the WebGL level — walls/geometry can never occlude buttons
+        sprite.onBeforeRender = (renderer) => {
+            renderer.getContext().disable(renderer.getContext().DEPTH_TEST);
+        };
+        sprite.onAfterRender = (renderer) => {
+            renderer.getContext().enable(renderer.getContext().DEPTH_TEST);
+        };
 
         // Place at center-top of the model
         // sprite.position.set(worldPos.x + offsetX, topY + scaledSize.y*0.1, worldPos.z); 
@@ -1364,18 +1366,13 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     // =========================================================
     // FIX #1: FORCE ROOM CENTER = (0,0,0)
     // =========================================================
-    const wallHeight = modelRoomHeight + FLOOR_THICKNESS;
+    const wallHeight = modelRoomHeight;
     const wallDepth = modelRoomDepth + WALL_THICKNESS;
 
     /******** LOAD FLOOR TEXTURE PROPERLY ********/
     textureLoader.load(floorTextureSrc, (floorTexture) => {
         floorTexture.colorSpace = THREE.SRGBColorSpace;
         applyFloorTexture(floorTexture, room3DGroup, modelRoomWidth, modelRoomDepth);
-    });
-
-    textureLoader.load(wallTextureSrc, (leftWallTexture) => {
-        leftWallTexture.colorSpace = THREE.SRGBColorSpace;
-        applyLeftWallTexture(leftWallTexture, room3DGroup, modelRoomWidth, modelRoomHeight, modelRoomDepth);
     });
 
     function applyFloorTexture(texture, room3DGroup = null, modelRoomWidth = null, modelRoomDepth = null) {
@@ -1397,8 +1394,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
             return;
         }
 
-        const roomW = modelRoomWidth;
-        const roomD = modelRoomDepth;
+        const roomW = modelRoomWidth + WALL_THICKNESS * 2;
+        const roomD = modelRoomDepth  + WALL_THICKNESS * 2;
 
         const imgAspect = img.width / img.height;
         const roomAspect = roomW / roomD;
@@ -1481,119 +1478,6 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         fitCameraToBox({box: fitBox, camera, controls, fov});
     }
 
-    function applyLeftWallTexture(texture, room3DGroup = null, modelRoomWidth = null, modelRoomHeight = null, modelRoomDepth = null) {
-
-        if(roomType !== ROOM_TYPE_WITH_CORNER) return;
-        if(!room3DGroup) {
-            const currentObj = roomState.modelsList[roomState.roomType];
-
-            room3DGroup = currentObj.room3DGroup;
-
-            const modelRoomDimensions = roomState.modelRoomDimensions;
-
-            modelRoomWidth = modelRoomDimensions.width;
-            modelRoomHeight = modelRoomDimensions.height;
-            modelRoomDepth = modelRoomDimensions.depth;
-        }
-
-        const img = texture.image;
-
-        if (!img || !img.width || !img.height) {
-            console.warn("Texture not loaded yet");
-            return;
-        }
-
-        const roomW = modelRoomWidth;
-        const roomH = modelRoomHeight;
-        const roomD = modelRoomDepth;
-
-        const imgAspect = img.width / img.height;
-        const roomAspect = roomD / roomH;
-
-        const leftWallGeometry = new THREE.BoxGeometry(
-            WALL_THICKNESS,
-            wallHeight,
-            wallDepth
-        );
-
-        const leftWallInnerMat = new THREE.MeshStandardMaterial({
-            map: texture,
-            color: 0xffffff,
-            roughness: 0.5,
-            metalness: 0,
-        });
-
-        const leftWallBase = new THREE.Mesh(
-            leftWallGeometry,
-            [
-                leftWallInnerMat, // +x — inner face (toward room)
-                exteriorMat,      // -x — outer face
-                exteriorMat,      // +y — top
-                exteriorMat,      // -y — bottom
-                exteriorMat,      // +z — front edge
-                exteriorMat,      // -z — back edge
-            ]
-        );
-
-        leftWallBase.position.set(
-            -roomW / 2 - WALL_THICKNESS / 2, 
-            wallHeight / 2 - FLOOR_THICKNESS, 
-            -WALL_THICKNESS / 2
-        );
-
-        leftWallBase.name = "left-wall-base";
-        room3DGroup.add(leftWallBase);
-
-        // ---------------------------
-        // IMAGE FLOOR (NO STRETCH)
-        // ---------------------------
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-
-        const repeatY = 1;
-        const repeatX = imgAspect / roomAspect;
-
-        texture.repeat.set(repeatX, repeatY);
-
-        // bottom-right
-        texture.offset.set(0, 0);
-    	// texture.offset.set(1 - repeatX, 0);
-
-        texture.needsUpdate = true;
-    
-     	const imageH = roomH;
-        const imageW = Math.min(imageH * imgAspect, roomD);
-
-        const leftWall = new THREE.Mesh(
-            new THREE.PlaneGeometry(imageW, imageH),
-            new THREE.MeshStandardMaterial({
-                map: texture,
-                roughness: 0.5,
-                metalness: 0
-            })
-        );
-
-        leftWall.rotation.y = Math.PI / 2;
-        leftWall.position.set(
-            -roomW / 2 + 0.001,  // push to left side
-            roomH / 2,           // center vertically
-        	// 0,
-            // roomD / 2 - imageW / 2 // centered in depth
-            -roomD / 2 + imageW / 2
-        );
-
-        /******* for product shadow *****/
-        leftWall.castShadow = false;
-        leftWall.receiveShadow = true;
-        /******* end for product shadow *****/
-
-        leftWall.name = "left-wall-mesh";
-        leftWall.userData.imgAspect = imgAspect;
-        room3DGroup.add(leftWall);
-
-        fitCameraToBox({box: fitBox, camera, controls, fov});
-    }
-
     /******** WALL TEXTURE ********/
     const wallTexture = textureLoader.load(wallTextureSrc);
     wallTexture.colorSpace = THREE.SRGBColorSpace;
@@ -1611,49 +1495,53 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         metalness: 0,
     });
 
-    // Back wall: inner face is +z (index 4), outer face is -z (index 5)
-    const rightWallGeometry = new THREE.BoxGeometry(
-        modelRoomWidth,
-        wallHeight,
-        WALL_THICKNESS
-    );
-
-    const rightWall = new THREE.Mesh(rightWallGeometry, [
-        exteriorMat,  // +x — right edge
-        exteriorMat,  // -x — left edge
-        exteriorMat,  // +y — top
-        exteriorMat,  // -y — bottom
-        wallMaterial, // +z — inner face (toward room)
-        exteriorMat,  // -z — outer face
-    ]);
-
-    rightWall.position.set(
-        0,
-        wallHeight / 2 - FLOOR_THICKNESS,
-        -modelRoomDepth / 2 - WALL_THICKNESS / 2
-    );
-
-    rightWall.castShadow = false;
-    rightWall.receiveShadow = true;
-    rightWall.name = "right-wall";
-    room3DGroup.add(rightWall);
-
     let leftSideWallMat = null;
     let rightSideWallMat = null;
+    let backWallMat = null;
+    let frontWallMat = null;
+
+    // Back wall — single transparent material so opacity can be set in the animate loop
+    backWallMat = wallMaterial.clone();
+    backWallMat.transparent = true;
+    backWallMat.depthWrite = false;
+
+    const backWall = new THREE.Mesh(
+        new THREE.BoxGeometry(modelRoomWidth + WALL_THICKNESS * 2, wallHeight, WALL_THICKNESS),
+        backWallMat
+    );
+    backWall.position.set(0, wallHeight / 2, -(modelRoomDepth / 2 + WALL_THICKNESS / 2));
+    backWall.castShadow = false;
+    backWall.receiveShadow = true;
+    backWall.name = 'right-wall';
+    room3DGroup.add(backWall);
+
+    // Front wall — starts transparent (camera is in front), fades IN when camera goes behind
+    frontWallMat = wallMaterial.clone();
+    frontWallMat.transparent = true;
+    frontWallMat.depthWrite = false;
+    frontWallMat.opacity = 0;
+
+    const frontWall = new THREE.Mesh(
+        new THREE.BoxGeometry(modelRoomWidth + WALL_THICKNESS * 2, wallHeight, WALL_THICKNESS),
+        frontWallMat
+    );
+    frontWall.position.set(0, wallHeight / 2, modelRoomDepth / 2 + WALL_THICKNESS / 2);
+    frontWall.castShadow = false;
+    frontWall.receiveShadow = true;
+    frontWall.name = 'front-wall';
+    room3DGroup.add(frontWall);
 
     if (roomType === ROOM_TYPE_SINGLE_WALL) {
         const sideWallGeometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
 
-        // Single material per wall so the whole mesh fades together.
-        // depthWrite=false is required for correct transparency in Three.js.
         leftSideWallMat = wallMaterial.clone();
         leftSideWallMat.transparent = true;
         leftSideWallMat.depthWrite = false;
 
         const leftSideWall = new THREE.Mesh(sideWallGeometry, leftSideWallMat);
         leftSideWall.position.set(
-            -modelRoomWidth / 2 - WALL_THICKNESS / 2,
-            wallHeight / 2 - FLOOR_THICKNESS,
+            -(modelRoomWidth / 2 + WALL_THICKNESS / 2),
+            wallHeight / 2,
             -WALL_THICKNESS / 2
         );
         leftSideWall.name = 'left-side-wall';
@@ -1663,21 +1551,55 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         rightSideWallMat.transparent = true;
         rightSideWallMat.depthWrite = false;
 
-        const rightSideWall = new THREE.Mesh(sideWallGeometry, rightSideWallMat);
+        const rightSideWall = new THREE.Mesh(sideWallGeometry.clone(), rightSideWallMat);
         rightSideWall.position.set(
             modelRoomWidth / 2 + WALL_THICKNESS / 2,
-            wallHeight / 2 - FLOOR_THICKNESS,
+            wallHeight / 2,
             -WALL_THICKNESS / 2
         );
         rightSideWall.name = 'right-side-wall';
         room3DGroup.add(rightSideWall);
     }
 
+    if (roomType === ROOM_TYPE_WITH_CORNER) {
+        const sideWallGeo = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
+
+        leftSideWallMat = wallMaterial.clone();
+        leftSideWallMat.transparent = true;
+        leftSideWallMat.depthWrite = false;
+
+        const leftWall = new THREE.Mesh(sideWallGeo, leftSideWallMat);
+        leftWall.position.set(
+            -(modelRoomWidth / 2 + WALL_THICKNESS / 2),
+            wallHeight / 2,
+            -WALL_THICKNESS / 2
+        );
+        leftWall.castShadow = false;
+        leftWall.receiveShadow = true;
+        leftWall.name = 'left-wall-base';
+        room3DGroup.add(leftWall);
+
+        rightSideWallMat = wallMaterial.clone();
+        rightSideWallMat.transparent = true;
+        rightSideWallMat.depthWrite = false;
+
+        const rightWallSide = new THREE.Mesh(sideWallGeo.clone(), rightSideWallMat);
+        rightWallSide.position.set(
+            modelRoomWidth / 2 + WALL_THICKNESS / 2,
+            wallHeight / 2,
+            -WALL_THICKNESS / 2
+        );
+        rightWallSide.castShadow = false;
+        rightWallSide.receiveShadow = true;
+        rightWallSide.name = 'right-wall-side';
+        room3DGroup.add(rightWallSide);
+    }
+
     modelScene.add(room3DGroup);
 
     const box = new THREE.Box3().setFromObject(room3DGroup);
     const fitBox = new THREE.Box3(
-        new THREE.Vector3(-modelRoomWidth / 2, -FLOOR_THICKNESS, -modelRoomDepth / 2),
+        new THREE.Vector3(-modelRoomWidth / 2, FLOOR_THICKNESS, -modelRoomDepth / 2),
         new THREE.Vector3(modelRoomWidth / 2, modelRoomHeight, modelRoomDepth / 2)
     );
 
@@ -1754,26 +1676,31 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
 
         controls.update();
 
-        if (leftSideWallMat || rightSideWallMat) {
+        // Keep UI button sprites a constant screen size regardless of zoom
+        modelObj.draggableObjects.forEach(wrapper => {
+            if (!wrapper.userData.uiButtons) return;
+            wrapper.userData.uiButtons.forEach(btn => {
+                const dist = camera.position.distanceTo(btn.position);
+                const s = dist * 0.03;
+                btn.scale.set(s, s, 1);
+            });
+        });
+
+        {
             const dx = camera.position.x - controls.target.x;
             const dz = camera.position.z - controls.target.z;
-            // angle: 0=directly in front, +PI/2=camera to right, -PI/2=camera to left
             const angle = Math.atan2(dx, dz);
 
-            const fadeStart = Math.PI / 6;  // 30° — begin fading
-            const fadeEnd   = Math.PI / 3;  // 60° — fully transparent
+            const threshold = Math.PI / 4; // 45° — snap point for side walls
 
             if (leftSideWallMat) {
-                const a = Math.max(0, -angle); // grows when camera swings left
-                leftSideWallMat.opacity = 1 - THREE.MathUtils.clamp(
-                    (a - fadeStart) / (fadeEnd - fadeStart), 0, 1
-                );
+                leftSideWallMat.opacity = Math.max(0, -angle) < threshold ? 1 : 0;
             }
             if (rightSideWallMat) {
-                const a = Math.max(0, angle); // grows when camera swings right
-                rightSideWallMat.opacity = 1 - THREE.MathUtils.clamp(
-                    (a - fadeStart) / (fadeEnd - fadeStart), 0, 1
-                );
+                rightSideWallMat.opacity = Math.max(0, angle) < threshold ? 1 : 0;
+            }
+            if (backWallMat) {
+                backWallMat.opacity = Math.abs(angle) < Math.PI * 0.75 ? 1 : 0;
             }
         }
 
@@ -1784,6 +1711,21 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         e.preventDefault();
         e.stopPropagation();
     }, { passive: false });
+
+    let _pointerDownX = 0;
+    let _pointerDownY = 0;
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+        _pointerDownX = e.clientX;
+        _pointerDownY = e.clientY;
+    });
+
+    renderer.domElement.addEventListener('click', (e) => {
+        const dx = e.clientX - _pointerDownX;
+        const dy = e.clientY - _pointerDownY;
+        if (Math.sqrt(dx * dx + dy * dy) > 5) return;
+        onClickModel(e, renderer, camera);
+    });
 
     animate();
 
@@ -1853,7 +1795,7 @@ export function updateRoomSize(modelObj) {
         renderLighting(scene, renderer, dirLight, modelObj.dirLight, widthPx, heightPx, depthPx);
     }
 
-    const wallHeight = heightPx + FLOOR_THICKNESS
+    const wallHeight = heightPx;
     const wallDepth = depthPx + WALL_THICKNESS;
 
     const halfD = depthPx / 2 + WALL_THICKNESS;
@@ -1902,7 +1844,7 @@ export function updateRoomSize(modelObj) {
         /**** bg base floor with thickness ***/
         floorBase.geometry.dispose();
         floorBase.geometry =
-            new THREE.BoxGeometry(widthPx, FLOOR_THICKNESS, depthPx);
+            new THREE.BoxGeometry(widthPx + WALL_THICKNESS * 2, FLOOR_THICKNESS, depthPx + WALL_THICKNESS * 2);
 
         floorBase.position.set(0, -FLOOR_THICKNESS / 2, 0);
         floorBase.updateMatrix();
@@ -1910,64 +1852,34 @@ export function updateRoomSize(modelObj) {
     }
 
     // -------------------------
-    // LEFT WALL
+    // SIDE WALLS (WITH_CORNER)
     // -------------------------
 
     if (modelObj.roomType === ROOM_TYPE_WITH_CORNER) {
-        const leftWallMesh = room3DGroup.getObjectByName("left-wall-mesh");
         const leftWallBase = room3DGroup.getObjectByName("left-wall-base");
-
-        if(leftWallMesh && leftWallBase) {
-            /**** bg plane ***/
-            const roomAspect = depthPx / heightPx;
-            const imgAspect = leftWallMesh.userData.imgAspect;
-
-            const repeatY = 1;
-            const repeatX = imgAspect / roomAspect;
-
-            const texture = leftWallMesh.material.map;
-
-            if (texture) {
-
-                texture.rotation = 0;
-
-                texture.repeat.set(repeatX, repeatY);
-
-                texture.offset.set(0, 0);
-
-                texture.needsUpdate = true;
-            }
-
-            leftWallMesh.geometry.dispose();
-
-            const imageH = heightPx;
-            const imageW = Math.min(imageH * imgAspect, depthPx);
-
-            leftWallMesh.geometry = new THREE.PlaneGeometry(imageW, imageH);
-
-            leftWallMesh.position.set(
-                -widthPx / 2 + 0.001,  // push to left side
-                heightPx / 2,           // center vertically
-                depthPx / 2 - imageW / 2 
-            );
-
-            /**** bg base floor with thickness ***/
+        if (leftWallBase) {
             leftWallBase.geometry.dispose();
-            leftWallBase.geometry =
-                new THREE.BoxGeometry(
-                    WALL_THICKNESS,
-                    wallHeight,
-                    wallDepth
-                );
-
+            leftWallBase.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
             leftWallBase.position.set(
-                -widthPx / 2 - WALL_THICKNESS / 2, 
-                wallHeight / 2 - FLOOR_THICKNESS, 
+                -widthPx / 2 - WALL_THICKNESS / 2,
+                wallHeight / 2,
                 -WALL_THICKNESS / 2
             );
             leftWallBase.updateMatrix();
             leftWallBase.updateMatrixWorld(true);
+        }
 
+        const rightWallSide = room3DGroup.getObjectByName("right-wall-side");
+        if (rightWallSide) {
+            rightWallSide.geometry.dispose();
+            rightWallSide.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
+            rightWallSide.position.set(
+                widthPx / 2 + WALL_THICKNESS / 2,
+                wallHeight / 2,
+                -WALL_THICKNESS / 2
+            );
+            rightWallSide.updateMatrix();
+            rightWallSide.updateMatrixWorld(true);
         }
     }
 
@@ -1980,13 +1892,23 @@ export function updateRoomSize(modelObj) {
 
         rightWallMesh.geometry.dispose();
         rightWallMesh.geometry =
-            new THREE.BoxGeometry(widthPx, wallHeight, WALL_THICKNESS);
+            new THREE.BoxGeometry(widthPx + WALL_THICKNESS * 2, wallHeight, WALL_THICKNESS);
 
         rightWallMesh.position.set(
             0,
-            wallHeight / 2 - FLOOR_THICKNESS,
+            wallHeight / 2,
             -halfD + WALL_THICKNESS / 2
         );
+    }
+
+    // -------------------------
+    // FRONT WALL
+    // -------------------------
+    const frontWallMesh = room3DGroup.getObjectByName("front-wall");
+    if (frontWallMesh) {
+        frontWallMesh.geometry.dispose();
+        frontWallMesh.geometry = new THREE.BoxGeometry(widthPx + WALL_THICKNESS * 2, wallHeight, WALL_THICKNESS);
+        frontWallMesh.position.set(0, wallHeight / 2, depthPx / 2 + WALL_THICKNESS / 2);
     }
 
     // -------------------------
@@ -2001,7 +1923,7 @@ export function updateRoomSize(modelObj) {
             leftSideWall.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
             leftSideWall.position.set(
                 -widthPx / 2 - WALL_THICKNESS / 2,
-                wallHeight / 2 - FLOOR_THICKNESS,
+                wallHeight / 2,
                 -WALL_THICKNESS / 2
             );
             leftSideWall.updateMatrix();
@@ -2013,7 +1935,7 @@ export function updateRoomSize(modelObj) {
             rightSideWall.geometry = new THREE.BoxGeometry(WALL_THICKNESS, wallHeight, wallDepth);
             rightSideWall.position.set(
                 widthPx / 2 + WALL_THICKNESS / 2,
-                wallHeight / 2 - FLOOR_THICKNESS,
+                wallHeight / 2,
                 -WALL_THICKNESS / 2
             );
             rightSideWall.updateMatrix();
@@ -3388,6 +3310,7 @@ function highlightCurrentItem(customId) {
 
 function unhighlightGLBModels() {
     const furnitureActionsContainer = container.querySelector('.furniture-controls');
+  
     if(furnitureActionsContainer) {
         editContainerRemove();
         furnitureActionsContainer.remove();
@@ -3434,6 +3357,66 @@ function setSingleWallChilderDragging(obj) {
         // fallback if no parent
         obj.position.copy(newPos);
     }
+}
+
+function setCornerChildenDragging(obj) {
+    const modelObj = roomState.modelsList[roomState.roomType];
+    // const roomModelBox = modelObj.box;
+
+    const objSize = obj.userData.scaledSize;
+    const furnitureType = obj.userData.furnitureType;
+
+    const objWidth =  objSize.x;
+    const objDepth =  objSize.z
+    const pos = obj.getWorldPosition(new THREE.Vector3());
+
+    // ---------- CORNER DIMENSIONS ----------
+    const getDimension = (type, dim) => {
+        const d = roomState.worldItemsDimensions[dim];
+
+        if (type === DIMENSION_TYPE_BOTTOM)
+            return d.bottomCorner || d.fullCorner || d.topCorner || 0;
+
+        if (type === DIMENSION_TYPE_TOP)
+            return d.topCorner || d.fullCorner || d.bottomCorner || 0;
+
+        if (type === DIMENSION_TYPE_FULL)
+            return d.fullCorner || d.topCorner || d.bottomCorner || 0;
+
+        return 0;
+    };
+
+    let cornerWidth = getDimension(furnitureType, "width");
+    let cornerDepth = getDimension(furnitureType, "depth");
+    cornerWidth = 0;
+    cornerDepth = 0;
+
+    // ---------- CORNER THRESHOLD ----------
+    const roomLeftX = -roomState.modelRoomDimensions.width / 2;
+    const threshold = cornerWidth > 0 ? cornerWidth : objWidth - 0.01;
+    const forwardThreshold = roomLeftX + threshold;
+
+    const isCorner = pos.x < forwardThreshold;
+
+    pos.y = obj.userData.savedPosition.y;
+
+    const yRotation = isCorner && !obj.userData.rotatedManually ||
+        isCorner && obj.userData.rotatedManuallyOld ? 
+        Math.PI / 2 :
+        obj.userData.rotatedManually && !obj.userData.rotatedManuallyOld ? 
+        obj.userData.rotation : 
+        0;
+
+    obj.rotation.y = yRotation;
+    obj.userData.rotation = yRotation;
+    obj.userData.rotationInDegrees = calculateRotationInDegrees(yRotation);
+
+    const newPos = getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos.clone(), furnitureType);
+
+    if(obj.parent) {
+        obj.position.copy(obj.parent.worldToLocal(newPos));
+    }
+   
 }
 
 function getDraggingItemsMinMaxPositions(obj, objWidth, objDepth, yRotation, pos, furnitureType = null) {
@@ -3740,6 +3723,9 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         obj.userData.initialPosition = obj.position.clone();
         threeJSControls.enabled = false;
 
+        removeAllFurnitureControls();
+        removeAllFurnitureButtons();
+
         setBgPlanesVisibleForWrapper(obj, false);
     });
 
@@ -3751,7 +3737,11 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
             return;
         }
 
-        setSingleWallChilderDragging(obj);
+        if(roomType == ROOM_TYPE_WITH_CORNER) {
+            setCornerChildenDragging(obj)
+        } else {
+            setSingleWallChilderDragging(obj);
+        }
 				
 		if(obj.userData.thumbType === THUMB_TYPE_SLOGAN) {
 				updateBgPlane(obj);
@@ -4043,7 +4033,7 @@ function removeItemButtonTrigger(furnitureItem, customId, furnitureType) {
 function openEditModal(userData, customId, actionTypeAdd = true) {
     const currentModel = roomState.modelsList[roomState.roomType];
 
-    const furnitureItem = currentModel.dbChildren.find(item => item.custom_id == customId);
+    const furnitureItem = currentModel.dbChildren.find(item => item.db_data.custom_id == customId);
 
     if(!furnitureItem) return;
 
