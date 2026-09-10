@@ -1364,11 +1364,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     // =========================================================
     // FIX #1: FORCE ROOM CENTER = (0,0,0)
     // =========================================================
-    const halfW = modelRoomWidth / 2;
-    const halfD = modelRoomDepth / 2;
     const wallHeight = modelRoomHeight + FLOOR_THICKNESS;
     const wallDepth = modelRoomDepth + WALL_THICKNESS;
-
 
     /******** LOAD FLOOR TEXTURE PROPERLY ********/
     textureLoader.load(floorTextureSrc, (floorTexture) => {
@@ -1411,8 +1408,8 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         // ---------------------------
         const floorTopMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color("#C8C2C6"),
-            roughness: 0.25,
-            metalness: 0.35,
+            roughness: 0.05,
+            metalness: 0.0,
         });
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(roomW, FLOOR_THICKNESS, roomD),
@@ -1463,13 +1460,13 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
             new THREE.PlaneGeometry(roomW, roomD),
             new THREE.MeshStandardMaterial({
                 map: texture,
-                roughness: 0.3,
-                metalness: 0.25,
+                roughness: 0.05,
+                metalness: 0.0,
             })
         );
 
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(0, 0.001, 0); 
+        floor.position.set(0, 1, 0);
 
         /******* for product shadow *****/
         floor.castShadow = false;
@@ -1899,7 +1896,7 @@ export function updateRoomSize(modelObj) {
         floorMesh.geometry.dispose();
         floorMesh.geometry = new THREE.PlaneGeometry(widthPx, depthPx);
 
-        floorMesh.position.set(0, 0.001, 0);
+        floorMesh.position.set(0, 1, 0);
 
 
         /**** bg base floor with thickness ***/
@@ -4612,7 +4609,7 @@ function setupRendererForShadows(renderer) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.9;
+    renderer.toneMappingExposure = 1.6;
 
     if ('physicallyCorrectLights' in renderer) {
         renderer.physicallyCorrectLights = true;
@@ -4627,7 +4624,7 @@ function addShadowElements(renderer, dirLight, width, height, depth) {
     if (!dirLight) return;
 
     dirLight.castShadow = false;
-    dirLight.intensity = 0.15;
+    dirLight.intensity = 0.4;
 }
 function addShadowElements2(renderer, dirLight, width, height, depth) {
     renderer.shadowMap.enabled = true;
@@ -4636,16 +4633,14 @@ function addShadowElements2(renderer, dirLight, width, height, depth) {
 
     dirLight.castShadow = true;
 
-    // ✅ stronger shadow-casting light
-    dirLight.intensity = 3.5;
+    dirLight.intensity = 1.5;
 
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.mapSize.width = 4096;
+    dirLight.shadow.mapSize.height = 4096;
 
     dirLight.shadow.camera.near = 1;
     dirLight.shadow.camera.far = 1000;
 
-    // ✅ tighter shadow camera = darker/clearer shadow
     const shadowSize = Math.max(width, depth) * 1.2;
 
     dirLight.shadow.camera.left = -shadowSize;
@@ -4653,9 +4648,9 @@ function addShadowElements2(renderer, dirLight, width, height, depth) {
     dirLight.shadow.camera.top = shadowSize;
     dirLight.shadow.camera.bottom = -shadowSize;
 
-    dirLight.shadow.bias = -0.0003;
-    dirLight.shadow.normalBias = 0.01;
-    dirLight.shadow.radius = 2;
+    dirLight.shadow.bias = -0.002;
+    dirLight.shadow.normalBias = 0.05;
+    dirLight.shadow.radius = 3;
 
     dirLight.shadow.camera.updateProjectionMatrix();
 }
@@ -4757,6 +4752,11 @@ function addCeilingLamps(scene, width, height, depth) {
 
     createWallFill(-width * 0.25);
     createWallFill(width * 0.25);
+
+    // Bounce fill — simulates light reflecting off floor back onto ceiling/upper walls
+    const bounceHemi = new THREE.HemisphereLight(0xffffff, 0xfff4e0, 1.2);
+    bounceHemi.position.set(0, height * 0.5, 0);
+    ceilingLampsGroup.add(bounceHemi);
 
     scene.add(ceilingLampsGroup);
 }

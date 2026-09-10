@@ -86,3 +86,16 @@ SCSS variables in `_var.scss` map to Avada's CSS custom properties (`--awb-color
 ### Maintenance Script
 
 `delete-old-config-attachments.php` (root) is a standalone CLI-style script — run directly in a browser or via cron. It connects to the database directly (not via WordPress bootstrap), deletes temp configurator images older than 1 month from `wp-content/uploads/temp-configurator/`, and cleans up `wp_config_user_settings.temp_ai_textures` JSON references.
+
+## Three.js Development
+
+The project contains a Three.js-based 3D configurator.
+
+For Three.js work, use the `threejs` skill.
+
+The official Three.js reference repository is:
+
+`~/references/threejs-r160/`
+
+Prefer official Three.js examples as implementation references.
+Always verify APIs against the Three.js version used by the project.
