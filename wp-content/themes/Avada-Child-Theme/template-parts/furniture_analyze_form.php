@@ -37,7 +37,8 @@ $devMode = $args['devMode'];
             </div>
 
             <div class="dragDrop-container">
-                <p class="furniture-analyze__label picker-label">Wall Photo</p>
+                <p class="furniture-analyze__label picker-label margin-none-mob">Wall Photo</p>
+                <p class="sublabel-mob">Take a wider photo that includes the furniture for more accurate proportion analysis.</p>
 
                 <div class="picker-desktop furniture-analyze__upload" id="wallDesktopPicker">
                     <label class="furniture-analyze__upload-zone" for="wallFileInputDesktop">
@@ -66,10 +67,13 @@ $devMode = $args['devMode'];
                     <input type="file" id="wallFileInputGallery" class="furniture-analyze__wallFile-input" accept="image/png,image/jpeg,image/*" hidden>
                     <input type="file" id="wallFileInputCamera" class="furniture-analyze__wallFile-input" accept="image/png,image/jpeg,image/*" capture="environment" hidden>
                 </div>
+
+                <p class="sublabel-deskt">Take a wider photo that includes the furniture for more accurate proportion analysis.</p>
             </div>
 
             <div class="dragDrop-container">
-                <p class="furniture-analyze__label picker-label">Floor Photo</p>
+                <p class="furniture-analyze__label picker-label margin-none-mob">Floor Photo</p>
+                <p class="sublabel-mob">Take a wider photo that includes the furniture for more accurate proportion analysis.</p>
 
                 <div class="picker-desktop furniture-analyze__upload" id="floorDesktopPicker">
                     <label class="furniture-analyze__upload-zone" for="floorFileInputDesktop">
@@ -98,6 +102,8 @@ $devMode = $args['devMode'];
                     <input type="file" id="floorFileInputGallery" class="furniture-analyze__floorFile-input" accept="image/png,image/jpeg,image/*" hidden>
                     <input type="file" id="floorFileInputCamera" class="furniture-analyze__floorFile-input" accept="image/png,image/jpeg,image/*" capture="environment" hidden>
                 </div>
+
+                <p class="sublabel-deskt">Take a wider photo that includes the furniture for more accurate proportion analysis.</p>
             </div>
         </div>
 

@@ -57,7 +57,6 @@
     }
 
     .dragDrop-container {
-        flex-grow: 1;
 
         &:not(:last-child) {
             margin: 0 0 15px;
@@ -69,12 +68,13 @@
 
         @include mq_md {
             padding: 0 7.5px;
+            width: 33.3%;
+            flex-shrink: 1;
         }
         
     }
 
     .furniture-analyze__label {
-        margin: 0 0 0.75rem;
         font-family: var(--awb-custom_typography_12-font-family, inherit);
         font-size: var(--awb-custom_typography_12-font-size, 0.875rem);
         font-weight: var(--awb-custom_typography_12-font-weight, 600);
@@ -82,7 +82,42 @@
         color: var(--fa-text);
         text-transform: var(--awb-custom_typography_12-text-transform, none);
         letter-spacing: var(--awb-custom_typography_12-letter-spacing, normal);
+
+        &:not(.margin-none-mob) {
+            margin: 0 0 0.75rem;            
+        }
+
+        &.margin-none-mob {
+            margin: 0;
+
+            @include mq_md {
+                margin: 0 0 0.75rem;  
+            }
+        }
+
     }
+
+    .sublabel-mob {
+        opacity: .7;
+        margin: 0 0 0.3125rem;
+        font-size: calc(var(--awb-custom_typography_12-font-size, 0.875rem) * 0.9);
+
+        @include mq_md {
+           display: none;
+        }
+    }
+
+    .sublabel-deskt {
+        display: none;
+
+        @include mq_md {
+            display: block;
+            opacity: .7;
+            margin: 0.3125rem 0 0;  
+            font-size: calc(var(--awb-custom_typography_12-font-size, 0.875rem) * 0.9);
+        }
+    }
+
 
     // Desktop upload zone
     .furniture-analyze__upload-zone {
