@@ -1949,7 +1949,7 @@ export function updateRoomSize(modelObj) {
             leftWallMesh.position.set(
                 -widthPx / 2 + 0.001,  // push to left side
                 heightPx / 2,           // center vertically
-                depthPx / 2 - imageW / 2 
+                depthPx / 2 - imageW / 2
             );
 
             /**** bg base floor with thickness ***/
@@ -1962,14 +1962,15 @@ export function updateRoomSize(modelObj) {
                 );
 
             leftWallBase.position.set(
-                -widthPx / 2 - WALL_THICKNESS / 2, 
-                wallHeight / 2 - FLOOR_THICKNESS, 
+                -widthPx / 2 - WALL_THICKNESS / 2,
+                wallHeight / 2 - FLOOR_THICKNESS,
                 -WALL_THICKNESS / 2
             );
             leftWallBase.updateMatrix();
             leftWallBase.updateMatrixWorld(true);
 
         }
+
     }
 
     // -------------------------
