@@ -129,14 +129,16 @@ function getAiSettingsProducts($products, $furnitureDimensions)
         $FURNITURE_TYPE_FULL => $fullFurniture,
     ];
 
-    $bottomHeight = $furnitureDimensions['bottom_height'];
-    $topHeight = $furnitureDimensions['top_height'];
-    $fullHeight = $furnitureDimensions['full_height'];
-    $bottomDepth = $furnitureDimensions['bottom_depth'];
-    $topDepth = $furnitureDimensions['top_depth'];
-    $fullDepth = $furnitureDimensions['full_depth'];
-    $spaceBottom = $furnitureDimensions['space_bottom'];
+    // $bottomHeight = $furnitureDimensions['bottom_height'];
+    // $topHeight = $furnitureDimensions['top_height'];
+    // $fullHeight = $furnitureDimensions['full_height'];
+    // $bottomDepth = $furnitureDimensions['bottom_depth'];
+    // $topDepth = $furnitureDimensions['top_depth'];
+    // $fullDepth = $furnitureDimensions['full_depth'];
+    // $spaceBottom = $furnitureDimensions['space_bottom'];
 
+    $itemDepth = $products->depth_mm;
+    $spaceBottom = $products->space_mm;
 
     $productsLeftData = getFurnitureLeftTotal2(
         $fullFurniture, 
@@ -145,9 +147,12 @@ function getAiSettingsProducts($products, $furnitureDimensions)
         $products->$FURNITURE_TYPE_FULL->items ?? [], 
         $products->$FURNITURE_TYPE_BASE->items ?? [], 
         $products->$FURNITURE_TYPE_TOP->items ?? [], 
+        $products->space->items ?? [],
     );
 
     $leftsArray = $productsLeftData['lefts_array'];
+
+    $bottomHeight = $productsLeftData['bottom_height'];
 
     $topFurnitureSpace = getTopFurnitureYPosition($bottomHeight, $spaceBottom);
 
@@ -159,45 +164,25 @@ function getAiSettingsProducts($products, $furnitureDimensions)
         }
 
         $productId = $aiProductData['product_id'];
-        $itemWidth = $aiProductData['width'];
         $itemList = $aiProductData['list'];
-        // $itemLeftMm = $aiProductData['left'];
 
         $isFitting = 1;
-        $itemHeight = 0;
-        $itemDepth = 0;
-        $itemSpaceBottom = 0;
 
-        switch($furnitureType) {
-            case $FURNITURE_TYPE_TOP: {
-                $itemHeight = $topHeight;
-                $itemDepth = $topDepth;
-                $itemSpaceBottom = $topFurnitureSpace / 10;
-                break;
-            }
-            case $FURNITURE_TYPE_BASE: {
-                $itemHeight = $bottomHeight;
-                $itemDepth = $bottomDepth;
-                break;
-            }
-            default: {
-                $itemHeight = $fullHeight;
-                $itemDepth = $fullDepth;
-                break;
-            }
-        }
-
-        $furniturePosition = [
-            'back' => 0,
-            'bottom' => $itemSpaceBottom,
-        ];
+        $itemSpaceBottom = $furnitureType === $FURNITURE_TYPE_TOP ? $spaceBottom : 0;
 
         foreach($itemList as $listItem) {
+            $itemWidth = $listItem['width'];
+            $itemHeight = $listItem['height'];
             $itemLeftMm = $listItem['left'];
-        // for($i = 0; $i < $count; $i++) {
+            $itemBottomMm = getTopFurnitureYPosition($bottomHeight, $spaceBottom);
+
             $customId = uniqid();
 
-            $furniturePosition['left'] = $itemLeftMm;
+            $furniturePosition = [
+                'back' => 0,
+                'left' => $itemLeftMm,
+                'bottom' => $furnitureType === $FURNITURE_TYPE_TOP ? $topFurnitureSpace : 0,
+            ];
 
             $furniturePositionStr = json_encode($furniturePosition);
 
@@ -286,12 +271,6 @@ function createNewSettings($user_id, $main_settings, $aiTextures, $tempAttachmen
             'room_height'       => intval($room_settings['height']),
             'room_width'        => intval($room_settings['width']),
             'room_depth'        => intval($room_settings['depth']),
-            // // 'bottom_height'       => intval($furniture_dimensions['bottom_height']),
-            // // 'bottom_depth'       => intval($furniture_dimensions['bottom_depth']),
-            // // 'top_height'       => intval($furniture_dimensions['top_height']),
-            // // 'top_depth'       => intval($furniture_dimensions['top_depth']),
-            // // 'full_height'       => intval($furniture_dimensions['full_height']),
-            // // 'full_depth'       => intval($furniture_dimensions['full_depth']),
             'bottom_height'       => intval($furniture_dimensions_bottom['height']),
             'bottom_depth'       => intval($furniture_dimensions_bottom['depth']),
             'top_height'       => intval($furniture_dimensions_top['height']),
@@ -357,131 +336,6 @@ function updateExistingSettings($config_id, $user_id, $main_settings, $aiTexture
 
     return $updated || $updated === 0;
 }
-
-// function addFurnitureToSettingsConfig($config_id, $products_list)
-// {
-//     global $wpdb;
-
-//     $config_child_table_name = $wpdb->prefix . CONFIG_USER_PRODUCTS_TABLE_NAME;
-
-//     $create_values = [];
-//     $create_placeholders = [];
-
-//     $update_config_ids = [];
-//     $update_cases_prices = [];
-//     $update_cases_width = [];
-//     $update_cases_height = [];
-//     $update_cases_depth = [];
-//     $update_cases_space_bottom = [];
-//     $update_cases_furniture_position = [];
-//     $update_cases_rotation = [];
-//     $update_cases_is_fitting = [];
-//     $update_cases_options = [];
-//     $update_ids = [];
-//     $custom_ids = [];
-
-//     $existingCustomIds = getExistingCustomIds($config_child_table_name, $config_id);
-
-//     foreach ($products_list as $product) {
-//         $product = (array) $product;
-//         $db_data = (array) $product['db_data'];
-//         $custom_id = intval($db_data['custom_id']);
-//         // $init_custom_id = intval($db_data['init_custom_id']);
-//         $prices = $db_data['prices'];
-//         $prices = is_string($prices) ? $prices : json_encode($prices);
-
-//         $rotation = $db_data['rotation'] !== null 
-//                     ? floatval($db_data['rotation']) 
-//                     : "NULL";
-
-//         $custom_ids[] = $custom_id;
-//     error_log(print_r($db_data['options']));
-//         $encoded_options = wp_json_encode($db_data['options']);
-//         // $custom_ids[] = $init_custom_id;
-//         if(isset($existingCustomIds[$custom_id])) {
-//             $update_ids[] = $custom_id;
-
-//             $update_cases_prices[] = "WHEN {$custom_id} THEN '" . $prices . "'";
-//             $update_cases_width[] = "WHEN {$custom_id} THEN " . intval($db_data['width']);
-//             $update_cases_height[] = "WHEN {$custom_id} THEN " . intval($db_data['height']);
-//             $update_cases_depth[] = "WHEN {$custom_id} THEN " . intval($db_data['depth']);
-//             $update_cases_space_bottom[] = "WHEN {$custom_id} THEN " . intval($db_data['space_bottom']);
-//             $update_cases_furniture_position[] = "WHEN {$custom_id} THEN '" . $db_data['furniture_position_mm'] . "'";
-//             $update_cases_rotation[] = is_null($rotation)
-//                 ? "WHEN {$custom_id} THEN NULL"
-//                 : "WHEN {$custom_id} THEN {$rotation}";
-//             $update_cases_is_fitting[] = "WHEN {$custom_id} THEN " . intval($db_data['is_fitting']);
-//             $update_cases_options[] = $wpdb->prepare(
-//                 "WHEN %d THEN %s",
-//                 $custom_id,
-//                 $encoded_options
-//             );
-//         } else {
-//             $product_id = $product['product_id'];
-//             $create_values[] = $custom_id;
-//             $create_values[] = $config_id;
-//             $create_values[] = $product_id;
-//             $create_values[] = get_the_title($product_id);
-//             $create_values[] = $product['furniture_type'];
-//             $create_values[] = $db_data['object_src'];
-//             $create_values[] = $prices;
-//             $create_values[] = intval($db_data['width']);
-//             $create_values[] = intval($db_data['height']);
-//             $create_values[] = intval($db_data['depth']);
-//             $create_values[] = intval($db_data['space_bottom']);
-//             $create_values[] = $db_data['furniture_position_mm'];
-//             $create_values[] = $rotation;
-//             // $create_values[] = $db_data['model_original_size'];
-//             // $create_values[] = $db_data['model_scaled_size'];
-//             // $create_values[] = $db_data['model_position'];
-//             $create_values[] = intval($db_data['is_fitting']);
-//             $create_values[] = $encoded_options;
-//             $create_placeholders[] = "(%d,%d,%d,%s,%s,%s,%s,%d,%d,%d,%d,%s,%f,%d,%s)";
-//             // $create_placeholders[] = "(%d,%d,%d,%s,%s,%s,%s,%d,%s,%d)";
-//         }
-//     }
-
-//     $sql_insert = true;
-//     if (!empty($create_placeholders)) {
-//         $sql_insert = "INSERT INTO {$config_child_table_name} 
-//             (custom_id,config_id,product_id,product_name,furniture_type,model_src,prices,width,height,depth,space_bottom,furniture_position_mm,rotation,is_fitting,options) 
-//             VALUES " . implode(',', $create_placeholders);
-//         $wpdb->query($wpdb->prepare($sql_insert, $create_values));
-//         if ($wpdb->last_error) {
-//             error_log("Insert error: " . $wpdb->last_error);
-//         }
-//     }
-
-//     $sql_update = true;
-//     if (!empty($update_ids)) {
-//         $ids_str = implode(',', $update_ids);
-//         $sql_update = "UPDATE {$config_child_table_name} SET 
-//             prices = CASE custom_id " . implode(' ', $update_cases_prices) . " END,
-//             width = CASE custom_id " . implode(' ', $update_cases_width) . " END,
-//             height = CASE custom_id " . implode(' ', $update_cases_height) . " END,
-//             depth = CASE custom_id " . implode(' ', $update_cases_depth) . " END,
-//             space_bottom = CASE custom_id " . implode(' ', $update_cases_space_bottom) . " END,
-//             furniture_position_mm = CASE custom_id " . implode(' ', $update_cases_furniture_position) . " END,
-//             rotation = CASE custom_id " . implode(' ', $update_cases_rotation) . " END,
-//             is_fitting = CASE custom_id " . implode(' ', $update_cases_is_fitting) . " END,
-//             options = CASE custom_id " . implode(' ', $update_cases_options) . " END
-//             WHERE custom_id IN ({$ids_str})";
-
-//         $wpdb->query($sql_update);
-//         if ($wpdb->last_error) {
-//             error_log("Update error: " . $wpdb->last_error);
-//         }
-
-//         $sql_update = $sql_update || $sql_update == 0;
-//     } 
-
-//     $sql_removed = true;
-//     if($sql_insert && $sql_update) {
-//         $sql_removed = removeSettingsFurnitureListItems($config_id, $custom_ids);
-//     }
-
-//     return $sql_insert && $sql_update && $sql_removed;
-// }
 
 function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachment = true)
 {
@@ -1855,7 +1709,7 @@ function getFurnitureLeftTotal($modifiedArray, $aiProduct, $productItem, $curren
     return $modifiedArray;
 }
 
-function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fList, $bList, $tList) 
+function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fList, $bList, $tList, $spaceList) 
 {
     if(!$fProductItem && !$bProductItem && !$tProductItem) return;
 
@@ -1865,32 +1719,24 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
         $FURNITURE_TYPE_TOP;
 
     $fProductId = $fProductItem->ID ?? null;
-    $width_obj = get_field('width', $fProductId);
-    $fItemWidth = (int) $width_obj['default'];
 
     $bProductId = $bProductItem->ID ?? null;
-    $width_obj = get_field('width', $bProductId);
-    $bItemWidth = (int) $width_obj['default'];
 
     $tProductId = $tProductItem->ID ?? null;
-    $width_obj = get_field('width', $tProductId);
-    $tItemWidth = (int) $width_obj['default'];
 
     
     $xPositionArr = [
         $FURNITURE_TYPE_FULL => [
             'product_id' => $fProductId,
-            'width' => $fItemWidth,
             'list' => []
         ],
         $FURNITURE_TYPE_BASE => [
             'product_id' => $bProductId,
-            'width' => $bItemWidth,
+            // 'width' => $bItemWidth,
             'list' => []
         ],
         $FURNITURE_TYPE_TOP => [
             'product_id' => $tProductId,
-            'width' => $tItemWidth,
             'list' => []
         ],
     ];
@@ -1899,13 +1745,24 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
     $bListCount = count($bList);
     $tListCount = count($tList);
 
-    $totalWidthBottom = $fListCount * $fItemWidth + $bListCount * $bItemWidth;
-    $totalBottomTop = $tListCount * $tItemWidth + $bListCount * $bItemWidth;
-    $totalWidth = 0;
-    if($totalWidthBottom > $totalBottomTop) {
-        $totalWidth = (int)$totalWidthBottom / 10;
+    $bListRef = $bList;
+    $tListRef = $tList;
+
+    $bottomHeight = 0;
+
+    $totalBottomWidth = 0;
+    $totalTopWidth = 0;
+
+    // Midpoint between top-section's bottom edge and bottom-section's top edge.
+    // Used to classify space items as belonging to the top or bottom furniture row.
+    if(count($tListRef) > 0 && count($bListRef) > 0) {
+        $tBottom = max(array_map(fn($i) => $i->bottom_left[1], $tListRef));
+        $bTop    = min(array_map(fn($i) => $i->top_left[1],    $bListRef));
+        $spaceBottomYPosition = ($tBottom + $bTop) / 2;
+    } else if(count($bListRef) > 0) {
+        $spaceBottomYPosition = min(array_map(fn($i) => $i->top_left[1], $bListRef));
     } else {
-        $totalWidth = (int) $totalBottomTop / 10;
+        $spaceBottomYPosition = count($fList) > 0 ? $fList[0]->top_right[1] : 0;
     }
 
     if($fListCount > 0) {
@@ -1917,6 +1774,10 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
             $left = $fListObj->bottom_left[0] ?? 0;
             $fIndex = "$FURNITURE_TYPE_FULL-$i";
             $fLeftMm = $leftCurrent;
+            $fItemWidth = $fListObj->width_mm;
+            $totalBottomWidth += $fItemWidth;
+            $totalTopWidth += $fItemWidth;
+            $fItemHeight = $fListObj->height_mm;
 
             $bListMod = $bList;
             $bListModCount = count($bList);
@@ -1925,17 +1786,22 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
             $tListModCount = count($tList);
             $tLeftMm = null;
 
-            $bData = topBottomXData($xPositionArr, $bItemWidth, $bListMod, $bListModCount, $FURNITURE_TYPE_BASE, $fLeftMm, $left, $bList);
+            $bData = topBottomXData($xPositionArr, $bListMod, $bListModCount, $FURNITURE_TYPE_BASE, $fLeftMm, $left, $bList);
             $bLeftMm = $bData['total_left'];
-            // $fLeftMm = $bData['total_left'];
             $bList = $bData['list'];
             $xPositionArr = $bData['mod_array'];
+            $bHeight = $bData['height'];
+            $totalBottomWidth += $bData['total_width'];
 
-            $tData = topBottomXData($xPositionArr, $tItemWidth, $tListMod, $tListModCount, $FURNITURE_TYPE_TOP, $fLeftMm, $left,  $tList);
+            if($bottomHeight < $bHeight) {
+                $bottomHeight = $bHeight;
+            }
+
+            $tData = topBottomXData($xPositionArr, $tListMod, $tListModCount, $FURNITURE_TYPE_TOP, $fLeftMm, $left,  $tList);
             $tLeftMm = $tData['total_left'];
-            // $fLeftMm = $bData['total_left'];
             $tList = $tData['list'];
             $xPositionArr = $tData['mod_array'];
+            $totalTopWidth += $bData['total_width'];
 
             if($bLeftMm && $tLeftMm) {
                 if($bLeftMm > $tLeftMm) {
@@ -1951,55 +1817,98 @@ function getFurnitureLeftTotal2($fProductItem, $bProductItem, $tProductItem, $fL
 
             $xPositionArr[$FURNITURE_TYPE_FULL]['list'][$fIndex] = [
                 'left' => $fLeftMm / 10,
+                'width' => $fItemWidth,
+                'height' => $fItemHeight,
             ];
             $leftCurrent = $fLeftMm + $fItemWidth;
         }
 
         $bListMod = $bListOriginal;
         $bListModCount = count($bListOriginal);
-        $bData = topBottomXData($xPositionArr, $bItemWidth, $bListMod, $bListModCount, $FURNITURE_TYPE_BASE, $leftCurrent);
+        $bData = topBottomXData($xPositionArr, $bListMod, $bListModCount, $FURNITURE_TYPE_BASE, $leftCurrent);
         $xPositionArr = $bData['mod_array'];
+        $totalBottomWidth += $bData['total_width'];
 
         $tListMod = $tListOriginal;
         $tListModCount = count($tListOriginal);
-        $tData = topBottomXData($xPositionArr, $tItemWidth, $tListMod, $tListModCount, $FURNITURE_TYPE_TOP, $leftCurrent);
+        $tData = topBottomXData($xPositionArr, $tListMod, $tListModCount, $FURNITURE_TYPE_TOP, $leftCurrent);
         $xPositionArr = $tData['mod_array'];
+        $totalTopWidth += $tData['total_width'];
 
     } else {
         $bListCount = count($bList);
-        $bData = topBottomXData($xPositionArr, $bItemWidth, $bList, $bListCount, $FURNITURE_TYPE_BASE);
+        $bData = topBottomXData($xPositionArr, $bList, $bListCount, $FURNITURE_TYPE_BASE);
         $xPositionArr = $bData['mod_array'];
+        $bottomHeight = $bData['bottom_height'];
+        $totalBottomWidth = $bData['total_width'];
 
         $tListCount = count($tList);
-        $tData = topBottomXData($xPositionArr, $tItemWidth, $tList, $tListCount, $FURNITURE_TYPE_TOP);
+        $tData = topBottomXData($xPositionArr, $tList, $tListCount, $FURNITURE_TYPE_TOP);
+        $totalTopWidth = $tData['total_width'];
         $xPositionArr = $tData['mod_array'];
+    }
+
+    foreach($spaceList as $spaceItem) {
+        $spaceX       = $spaceItem->bottom_left[0] ?? 0;
+        $spaceCenterY = $spaceItem->center[1] ?? ($spaceItem->top_left[1] ?? 0);
+        $spaceWidthCm = $spaceItem->width_mm / 10;
+
+        $isBottomRow = $spaceCenterY > $spaceBottomYPosition;
+        $targetType  = $isBottomRow ? $FURNITURE_TYPE_BASE : $FURNITURE_TYPE_TOP;
+        $refList     = $isBottomRow ? $bListRef : $tListRef;
+
+        foreach($xPositionArr[$targetType]['list'] as $itemKey => &$listItem) {
+            $j = (int) explode('-', $itemKey)[1];
+            if(isset($refList[$j]) && ($refList[$j]->bottom_left[0] ?? 0) > $spaceX) {
+                $listItem['left'] += $spaceWidthCm;
+            }
+        }
+        unset($listItem);
+    }
+
+    // Derive total width from the actual item positions — rightmost right edge in mm.
+    // This is the source of truth after space offsets are applied.
+    $totalWidthMm = 0;
+    foreach($xPositionArr as $typeData) {
+        foreach($typeData['list'] as $item) {
+            $rightEdgeMm = $item['left'] * 10 + $item['width'];
+            if($rightEdgeMm > $totalWidthMm) $totalWidthMm = $rightEdgeMm;
+        }
     }
 
     return [
         'lefts_array' => $xPositionArr,
-        'total_width' => $totalWidth,
+        'total_width' => $totalWidthMm,
+        'bottom_height' => $bottomHeight,
     ];
 }
 
-function topBottomXData($modifiedArray, $itemWidth, $listMod, $listModCount, $furnitureType, $totalLeft = 0, $leftAi = null, $list = null) 
+function topBottomXData($modifiedArray, $listMod, $listModCount, $furnitureType, $totalLeft = 0, $leftAi = null, $list = null) 
 {  
     $leftMm = null;
+    $bHeight = 0;
+    $totalBottomWidth = 0;
 
     for($j = 0; $j < $listModCount; $j++) {
         $listObj = $listMod[$j];
         $currentLeft = $listObj->bottom_left[0] ?? 0;
 
         if($leftAi !== null && $leftAi < $currentLeft) {
-            error_log("break --------- ");
             break;
         }
 
         $index = "$furnitureType-$j";
         if(!isset($modifiedArray[$furnitureType]['list'][$index])) {
             $leftMm = $totalLeft;
+            $itemWidth = $listObj->width_mm;
+            $itemHeight = $listObj->height_mm;
+            $bHeight = $bHeight < $itemHeight ? $itemHeight : $bHeight;
+            $totalBottomWidth += $itemWidth;
 
             $modifiedArray[$furnitureType]['list'][$index] = [
                 'left' => $leftMm / 10,
+                'width' => $itemWidth,
+                'height' => $itemHeight,
             ];
 
             $totalLeft += $itemWidth;
@@ -2011,10 +1920,14 @@ function topBottomXData($modifiedArray, $itemWidth, $listMod, $listModCount, $fu
         }
     }
 
+    $totalBottomWidth += $totalWidth;
+
     return [
         // 'left_mm' => $leftMm,
         'total_left' => $totalLeft,
         'mod_array' => $modifiedArray,
         'list' => $list,
+        'bottom_height' => $bHeight,
+        'total_width' => $totalBottomWidth,
     ];
 }
