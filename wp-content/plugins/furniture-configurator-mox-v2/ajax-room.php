@@ -58,7 +58,7 @@ function render_config_room()
     } else {
         $productsListData = getAiSettingsProducts($aiFurnitureData, $furnitureDimensions);
         $productsList = $productsListData['new_list'];
-        $minRoomWidth = $productsListData['total_width'];
+        $minRoomWidth = $productsListData['total_width'] / 10;
     }
 
     $roomData = getDefaultRoomSettings($savedSettings, $currentRoomType, $minRoomWidth);
@@ -72,8 +72,6 @@ function render_config_room()
     $wallDepthMin = $roomData['wall_depth_min'];
     $wallDepthMax = $roomData['wall_depth_max'];
     $wallDepthStandard = $roomData['wall_depth_standard'];
-
-//     $furnitureDimensions = getDefaultFurnitureDimensions($savedSettings);
 
     list(
         $bottomCornerItem, 
