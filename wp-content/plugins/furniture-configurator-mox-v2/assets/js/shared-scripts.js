@@ -8,6 +8,7 @@ export const TEXTURE_TYPE_FRONT = 'front';
 export const TEXTURE_ALL_SLUG = 'all';
 export const FURNITURE_TYPE_BOTTOM = 'bottom';
 export const FURNITURE_TYPE_BOTTOM_CORNER = 'bottom-corner';
+export const FURNITURE_TYPE_COOKER = 'bottom-cooker';
 export const FURNITURE_TYPE_WALL = 'wall';
 export const FURNITURE_TYPE_TOP = 'top';
 export const FURNITURE_TYPE_FULL = 'full';
@@ -1752,7 +1753,6 @@ export function colorToRed(obj) {
 
             mat.transparent = true;
             mat.opacity = 0.5;
-            mat.depthWrite = false;
 
             mat.needsUpdate = true;
         });

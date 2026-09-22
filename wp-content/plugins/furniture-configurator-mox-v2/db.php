@@ -28,6 +28,8 @@ function create_config_tables()
         full_height int NOT NULL,
         full_depth int NOT NULL,
         space_bottom int NOT NULL,
+        water_supply_enabled TINYINT(1) NOT NULL DEFAULT 0,
+        water_supply_distance int NOT NULL DEFAULT 250,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         -- texture_base64 TEXT DEFAULT NULL,
         -- texture_color VARCHAR(20) DEFAULT NULL,
@@ -76,9 +78,28 @@ function create_config_tables()
 
     dbDelta( $child_sql );
 
+
     $wpdb->query("
         ALTER TABLE $child_table_name
         ADD CONSTRAINT fconfig_config FOREIGN KEY (config_id)
         REFERENCES $parent_table_name(id) ON DELETE CASCADE
     ");
 }
+
+function migrate_config_tables_water_supply() {
+    if (get_option('fc_water_supply_migrated')) return;
+
+    global $wpdb;
+    $parent_table_name = $wpdb->prefix . 'config_user_settings';
+
+    $columns = $wpdb->get_col("SHOW COLUMNS FROM {$parent_table_name}", 0);
+    if (!in_array('water_supply_enabled', $columns)) {
+        $wpdb->query("ALTER TABLE {$parent_table_name} ADD COLUMN water_supply_enabled TINYINT(1) NOT NULL DEFAULT 0 AFTER space_bottom");
+    }
+    if (!in_array('water_supply_distance', $columns)) {
+        $wpdb->query("ALTER TABLE {$parent_table_name} ADD COLUMN water_supply_distance int NOT NULL DEFAULT 250 AFTER water_supply_enabled");
+    }
+
+    update_option('fc_water_supply_migrated', 1);
+}
+add_action('init', 'migrate_config_tables_water_supply');

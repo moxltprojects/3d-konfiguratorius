@@ -32,6 +32,7 @@ import {
     changeTotals,
     init3dModel,
     updateRoomSize,
+    updateWaterSupplySprite,
 } from './new-shared-scripts.js';
 
 let
@@ -131,6 +132,7 @@ function initRoomConfigFunctions(
 
     changeInputFromRangeValue(container);
     changeRoomDimensionsValue(container);
+    changeWaterSupplyValue();
 
     initAddFurnitureMethod();
     loadMoreProducts(productsListPerPage, configDataRoom.ajaxurl);
@@ -165,6 +167,9 @@ function initRoomConfigFunctions(
 
         dimensionsItemContainers.forEach(dimensionsContainer => {
             const type = dimensionsContainer.getAttribute('data-dimension_type');
+
+            if (type === 'water_supply_distance') return;
+
             const rangeInput = dimensionsContainer.querySelector('.slider-container input[type="range"]');
             const rangeNumInput = dimensionsContainer.querySelector('.input-container input[type="number"]');
 
@@ -191,7 +196,6 @@ function initRoomConfigFunctions(
         });
 
         function changeDimensionValueSwitch(type, value) {
-
             switch(type) {
                 case DIMENSION_TYPE_HEIGHT: {
                     roomState.roomDimensions.height = value;
@@ -201,19 +205,84 @@ function initRoomConfigFunctions(
                     roomState.roomDimensions.depth = value;
                     break;
                 }
-
                 case DIMENSION_TYPE_WIDTH: {
                     roomState.roomDimensions.width = value;
                     break;
-                }
-
-                default: {
-                    roomState.roomDimensions.width = value;
                 }
             }
         }
     }
 
+
+    function changeWaterSupplyValue() {
+        const checkboxes = container.querySelectorAll('.room-layout .water-supply-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            const wsContainer = checkbox.closest('.water-supply-container');
+            const distanceBlock = wsContainer.querySelector('.water-supply-distance');
+            const wallRadios = wsContainer.querySelectorAll('.water-supply-wall-radio');
+            const distanceSlider = distanceBlock?.querySelector('.slider-container input[type="range"]');
+            const distanceNumInput = distanceBlock?.querySelector('.input-container input[type="number"]');
+            const distanceHeading = distanceBlock?.querySelector('h3');
+
+            // Initialize wall selection from the initially checked radio
+            const initialRadio = wsContainer.querySelector('.water-supply-wall-radio:checked');
+            roomState.roomDimensions.water_supply_wall = initialRadio?.value ?? 'right';
+
+            const getWall = () => roomState.roomDimensions.water_supply_wall ?? 'right';
+
+            checkbox.addEventListener('change', function() {
+                roomState.roomDimensions.water_supply_enabled = this.checked ? 1 : 0;
+                distanceBlock.classList.toggle('hidden', !this.checked);
+                updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+            });
+
+            wallRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const isLeft = this.value === 'left';
+                    const sign = isLeft ? -1 : 1;
+                    roomState.roomDimensions.water_supply_wall = this.value;
+                    roomState.roomDimensions.water_supply_distance = sign * Math.abs(roomState.roomDimensions.water_supply_distance || 0);
+
+                    const newMax = isLeft
+                        ? roomState.roomDimensions.depth
+                        : roomState.roomDimensions.width;
+
+                    if (distanceSlider) {
+                        distanceSlider.max = newMax;
+                        distanceSlider.value = Math.min(parseInt(distanceSlider.value), newMax);
+                    }
+                    if (distanceNumInput) {
+                        distanceNumInput.max = newMax;
+                        distanceNumInput.value = Math.min(parseInt(distanceNumInput.value), newMax);
+                    }
+
+                    if (distanceHeading) {
+                        distanceHeading.textContent = isLeft
+                            ? 'Distance from left side wall'
+                            : 'Distance from right side wall';
+                    }
+                    updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                });
+            });
+
+            if (distanceSlider) {
+                distanceSlider.addEventListener('change', function() {
+                    distanceNumInput.value = this.value;
+                    roomState.roomDimensions.water_supply_distance = parseInt(this.value);
+                    updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                });
+            }
+
+            if (distanceNumInput) {
+                distanceNumInput.addEventListener('change', function() {
+                    distanceSlider.value = this.value;
+                    roomState.roomDimensions.water_supply_distance = parseInt(this.value);
+                    updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                });
+            }
+        });
+    }
 
     function changeRoomType() {
         const options = container.querySelectorAll('.room-layout-options button');

@@ -278,8 +278,10 @@ function createNewSettings($user_id, $main_settings, $aiTextures, $tempAttachmen
             'full_height'       => intval($furniture_dimensions_full['height']),
             'full_depth'       => intval($furniture_dimensions_full['depth']),
             'space_bottom'    => intval($furniture_dimensions_top['space_bottom']),
+            'water_supply_enabled' => isset($room_settings['water_supply_enabled']) ? intval($room_settings['water_supply_enabled']) : 0,
+            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) : 250,
         ],
-        [ '%d','%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ]
+        [ '%d','%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ]
     );
   
     $config_id = $wpdb->insert_id;
@@ -319,10 +321,12 @@ function updateExistingSettings($config_id, $user_id, $main_settings, $aiTexture
             'top_depth'       => intval($furniture_dimensions_top['depth']),
             'full_height'       => intval($furniture_dimensions_full['height']),
             'full_depth'       => intval($furniture_dimensions_full['depth']),
-            'space_bottom'    => intval($furniture_dimensions_top['space_bottom'])
+            'space_bottom'    => intval($furniture_dimensions_top['space_bottom']),
+            'water_supply_enabled' => isset($room_settings['water_supply_enabled']) ? intval($room_settings['water_supply_enabled']) : 0,
+            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) : 250,
         ],
         [ 'id' => $config_id ], // WHERE
-        [ '%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ],
+        [ '%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ],
         [ '%d' ]
     );
 
@@ -661,18 +665,22 @@ function getDefaultRoomSettings($savedSettings, $templateRoomType, $aiMinRoomWid
     $wall_depth_max = (int) get_theme_mod('room_wall_depth_max', 250);
     $wall_depth_standard = 0;
 
-    if($savedSettings) {        
+    if($savedSettings) {
         $default_room_layout = isset($savedSettings->room_type) ? $savedSettings->room_type : $templateRoomType;
 
         $wall_height_standard = (int) $savedSettings->room_height;
         $wall_width_standard = (int) $savedSettings->room_width;
         $wall_depth_standard = (int) $savedSettings->room_depth;
+        $water_supply_enabled = isset($savedSettings->water_supply_enabled) ? (int) $savedSettings->water_supply_enabled : 0;
+        $water_supply_distance = isset($savedSettings->water_supply_distance) ? (int) $savedSettings->water_supply_distance : 250;
     } else {
         $default_room_layout = $wall_single;
 
         $wall_height_standard = (int) get_theme_mod('room_wall_height_standard', 250);
         $wall_width_standard = (int) get_theme_mod('room_wall_width_standard', 250);
         $wall_depth_standard = (int) get_theme_mod('room_wall_depth_standard', 250);
+        $water_supply_enabled = 0;
+        $water_supply_distance = 250;
     }
 
     $wall_width_standard =
@@ -701,6 +709,8 @@ function getDefaultRoomSettings($savedSettings, $templateRoomType, $aiMinRoomWid
         'wall_depth_min' => $wall_depth_min,
         'wall_depth_max' => $wall_depth_max,
         'wall_depth_standard' => $wall_depth_standard,
+        'water_supply_enabled' => $water_supply_enabled,
+        'water_supply_distance' => $water_supply_distance,
     ];
 }
 

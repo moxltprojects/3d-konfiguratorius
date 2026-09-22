@@ -72,6 +72,8 @@ function render_config_room()
     $wallDepthMin = $roomData['wall_depth_min'];
     $wallDepthMax = $roomData['wall_depth_max'];
     $wallDepthStandard = $roomData['wall_depth_standard'];
+    $waterSupplyEnabled = $roomData['water_supply_enabled'];
+    $waterSupplyDistance = $roomData['water_supply_distance'];
 
     list(
         $bottomCornerItem, 
@@ -139,6 +141,8 @@ function render_config_room()
             'width_max' => $wallWidthMax,
             'height_max' => $wallHeightMax,
             'depth_max' => $wallDepthMax,
+            'water_supply_enabled' => $waterSupplyEnabled,
+            'water_supply_distance' => $waterSupplyDistance,
         ],
         'furniture_dimensions' => $furnitureDimensionsSortedByType,
         'default_textures' => $defaultTextures,
@@ -835,6 +839,8 @@ function render_config_room_preview()
     $wallHeightStandard = $roomData['wall_height_standard'];
     $wallWidthStandard = $roomData['wall_width_standard'];
     $wallDepthStandard = $roomData['wall_depth_standard'];
+    $waterSupplyEnabled = $roomData['water_supply_enabled'];
+    $waterSupplyDistance = $roomData['water_supply_distance'];
     ?>
     
     <?php
@@ -859,6 +865,8 @@ function render_config_room_preview()
             'width_max' => $roomData['wall_width_max'],
             'height_max' => $roomData['wall_height_max'],
             'depth_max' => $roomData['wall_depth_max'],
+            'water_supply_enabled' => $waterSupplyEnabled,
+            'water_supply_distance' => $waterSupplyDistance,
         ],
         'default_textures' => $defaultTextures,
         'furniture_dimensions' => $furnitureDimensions,

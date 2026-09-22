@@ -1118,6 +1118,118 @@
 .config-term-settings-furniture-shortcode .display-type-container {
   /************ room-layout *************/
 }
+.room-config-shortcode .water-supply-container,
+.room-config-preview-shortcode .water-supply-container,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container {
+  margin-top: 30px;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle h3,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle h3,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle h3 {
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+  color: rgb(38, 42, 49) !important;
+  margin: 0;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label input[type=checkbox],
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label input[type=checkbox],
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label input[type=checkbox] {
+  display: none;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgb(19, 49, 92);
+  display: block;
+  transition: background-color 0.2s ease;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle::before,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle::before,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label .water-supply-circle::before {
+  content: "✓";
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: center !important;
+  justify-content: center !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  color: #ffffff;
+  opacity: 0;
+  font-size: 12px;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle {
+  background-color: rgb(19, 49, 92);
+}
+.room-config-shortcode .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle::before,
+.room-config-preview-shortcode .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle::before,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-toggle .water-supply-label input:checked + .water-supply-circle::before {
+  opacity: 1;
+}
+.room-config-shortcode .water-supply-container .water-supply-distance,
+.room-config-preview-shortcode .water-supply-container .water-supply-distance,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-distance {
+  margin-top: 20px;
+}
+.room-config-shortcode .water-supply-container .water-supply-distance.hidden,
+.room-config-preview-shortcode .water-supply-container .water-supply-distance.hidden,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-distance.hidden {
+  display: none;
+}
+.room-config-shortcode .water-supply-container .water-supply-distance .water-supply-wall-selection,
+.room-config-preview-shortcode .water-supply-container .water-supply-distance .water-supply-wall-selection,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-distance .water-supply-wall-selection {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+.room-config-shortcode .water-supply-container .water-supply-distance .water-supply-wall-selection .water-supply-wall-label,
+.room-config-preview-shortcode .water-supply-container .water-supply-distance .water-supply-wall-selection .water-supply-wall-label,
+.config-term-settings-furniture-shortcode .display-type-container .water-supply-container .water-supply-distance .water-supply-wall-selection .water-supply-wall-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+  color: rgb(38, 42, 49);
+}
 .room-config-shortcode .dimension-container h3,
 .room-config-preview-shortcode .dimension-container h3,
 .config-term-settings-furniture-shortcode .display-type-container .dimension-container h3 {

@@ -20,6 +20,7 @@ import {
     DIMENSION_TYPE_BOTTOM,
     DIMENSION_TYPE_TOP,
     FURNITURE_TYPE_TOP,
+    FURNITURE_TYPE_COOKER,
     DIMENSION_TYPE_TOP_CORNER,
     DIMENSION_TYPE_FULL,
     DIMENSION_TYPE_FULL_CORNER,
@@ -1442,6 +1443,9 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     const modelRoomHeight = heightPx;
     const modelRoomDepth = depthPx;
 
+    modelObj.modelRoomWidth = modelRoomWidth;
+    modelObj.modelRoomDepth = modelRoomDepth;
+
     roomState.modelRoomDimensions = {
         width: widthPx,
         height: heightPx,
@@ -1887,6 +1891,9 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         onClickModel(e, renderer, camera);
     });
 
+    modelObj.scene = modelScene;
+    updateWaterSupplySprite(modelObj);
+
     animate();
 
     return {
@@ -1899,6 +1906,74 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         dragControls,
         room3DGroup
     };
+}
+
+export function updateWaterSupplySprite(modelObj) {
+    const scene = modelObj?.scene;
+    if (!scene) return;
+
+    const existing = scene.getObjectByName('water-supply-plane');
+    if (existing) {
+        existing.material.map?.dispose();
+        existing.material.dispose();
+        existing.geometry.dispose();
+        scene.remove(existing);
+    }
+
+    const { water_supply_enabled, water_supply_distance } = roomState.roomDimensions;
+    if (!water_supply_enabled) return;
+
+    const scale = roomState.baseScale;
+    const modelRoomWidth = modelObj.modelRoomWidth || roomState.modelRoomDimensions.width;
+    const modelRoomDepth = modelObj.modelRoomDepth || roomState.modelRoomDimensions.depth;
+
+    const distanceUnits = (water_supply_distance || 0) * scale;
+
+    const isLeftWall = roomState.roomDimensions.water_supply_wall === 'left';
+    const halfW = modelRoomWidth / 2;
+    const halfD = modelRoomDepth / 2;
+    const planeSize = scale * 25;
+    const halfPlane = planeSize / 2;
+    const y = scale * 30;
+
+    let posX, posZ, rotY;
+
+    if (!isLeftWall) {
+        // Back wall — vary x
+        posX = Math.max(-halfW + halfPlane, Math.min(halfW - halfPlane, -halfW + distanceUnits));
+        posZ = -halfD + 0.5;
+        rotY = 0;
+    } else {
+        // Left side wall — vary z, rotate plane to face into room (+x)
+        posX = -halfW + 0.5;
+        posZ = Math.max(-halfD + halfPlane, Math.min(halfD - halfPlane, -halfD + distanceUnits));
+        rotY = Math.PI / 2;
+    }
+
+    const loader = new THREE.TextureLoader();
+    loader.load(assetsUrl + '/images/room/tap-water.png', (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthTest: true,
+            depthWrite: false,
+        });
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(1, 1),
+            material
+        );
+
+        plane.name = 'water-supply-plane';
+        plane.renderOrder = 1;
+        plane.rotation.y = rotY;
+        plane.scale.set(planeSize, planeSize, 1);
+        plane.position.set(posX, y, posZ);
+
+        scene.add(plane);
+    });
 }
 
 function handle3dResize() {
@@ -1950,7 +2025,9 @@ export function updateRoomSize(modelObj) {
         depth: depthPx,
     };
 
-    
+    modelObj.modelRoomWidth = widthPx;
+    modelObj.modelRoomDepth = depthPx;
+
     if(modelSettings.lightsOn) {
         renderLighting(scene, renderer, dirLight, modelObj.dirLight, widthPx, heightPx, depthPx);
     }
@@ -2468,7 +2545,15 @@ function addGLBModel(
 
                 /******* enable dragging *********/
 
-                const isFittingItem = initModelDragging(wrapper, furnitureType);
+                let isFittingItem = initModelDragging(wrapper, furnitureType);
+
+                if(isFittingItem) {
+                    isFittingItem = checkIsSinkPlaceAllowed(wrapper);
+                }
+
+                if(!isFittingItem) {
+                    colorToRed(wrapper);
+                }
                     
                 const itemPositionMm = dupItemPosition ?? getItemPosition(
                     furnitureType, 
@@ -3949,7 +4034,7 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         }
 				
 		if(obj.userData.thumbType === THUMB_TYPE_SLOGAN) {
-				updateBgPlane(obj);
+			updateBgPlane(obj);
 		}
 
     });
@@ -3960,7 +4045,7 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         threeJSControls.enabled = true;
 
         if (modelSettings.visibleDimensionsArrows) return;
-
+        
         updateBgPlane(obj);
         setBgPlanesVisibleForWrapper(obj, true);
 
@@ -3982,7 +4067,12 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 
         obj.userData.positionMm = itemPositionMm;
 
-        const isFitting = checkIfAbleToDragChildToPosition(obj);
+        let isFitting = checkIsSinkPlaceAllowed(obj);
+
+        if(isFitting) {
+            isFitting = checkIfAbleToDragChildToPosition(obj);
+        }
+        
         obj.userData.isFitting = isFitting;
 
         if (isFitting) {
@@ -4532,7 +4622,12 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
     userData.savedPosition = localPos.clone();
 
     // ---------- COLLISION CHECK ----------
-    const isFitting = checkIfAbleToDragChildToPosition(childObj);
+
+    let isFitting = checkIsSinkPlaceAllowed(obj);
+
+    if(isFitting) {
+        isFitting = checkIfAbleToDragChildToPosition(childObj);
+    }
 
     // ---------- CALCULATE MM POSITION ----------
     const itemPositionMm = getItemPosition(
@@ -4704,6 +4799,40 @@ function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
     }
 
     return true;
+}
+
+function checkIsSinkPlaceAllowed(obj) {
+    const furnitureType = obj?.userData?.furnitureType || '';
+
+    if(furnitureType.includes(FURNITURE_TYPE_TOP)) {
+        return true;
+    }
+
+    const { water_supply_enabled, water_supply_distance, water_supply_wall } = roomState.roomDimensions;
+
+    if (!water_supply_enabled) return true;
+
+
+    const objPos = obj?.userData?.savedPosition;
+    if (!objPos) return true;
+
+    const scale = roomState.baseScale;
+    const { width: modelRoomWidth, depth: modelRoomDepth } = roomState.modelRoomDimensions;
+    const halfW = modelRoomWidth / 2;
+    const halfD = modelRoomDepth / 2;
+    const distanceUnits = (water_supply_distance || 0) * scale;
+
+    const wsX = water_supply_wall === 'left' ? -halfW : -halfW + distanceUnits;
+    const wsZ = water_supply_wall === 'left' ? -halfD + distanceUnits : -halfD;
+
+    const threshold = scale * 60;
+    const dist = Math.sqrt(Math.pow(objPos.x - wsX, 2) + Math.pow(objPos.z - wsZ, 2));
+
+    if (dist < threshold) {
+        return furnitureType.includes(FURNITURE_TYPE_COOKER);
+    }
+
+    return !furnitureType.includes(FURNITURE_TYPE_COOKER);
 }
 
 function getItemPosition(furnitureType, currentPosition, currentSize, rotation, spaceBottomPx, id = null) {
