@@ -1116,6 +1116,57 @@
 .room-config-shortcode,
 .room-config-preview-shortcode,
 .config-term-settings-furniture-shortcode .display-type-container {
+  /************ add-element inner tabs *************/
+}
+.room-config-shortcode .add-element-tab-content,
+.room-config-preview-shortcode .add-element-tab-content,
+.config-term-settings-furniture-shortcode .display-type-container .add-element-tab-content {
+  display: none;
+}
+.room-config-shortcode .add-element-tab-content.active,
+.room-config-preview-shortcode .add-element-tab-content.active,
+.config-term-settings-furniture-shortcode .display-type-container .add-element-tab-content.active {
+  display: block;
+}
+.room-config-shortcode .add-element-tabs,
+.room-config-preview-shortcode .add-element-tabs,
+.config-term-settings-furniture-shortcode .display-type-container .add-element-tabs {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  margin: 0 0 16px;
+  border-bottom: 2px solid #F3F3F3;
+}
+.room-config-shortcode .add-element-tabs .add-element-tab,
+.room-config-preview-shortcode .add-element-tabs .add-element-tab,
+.config-term-settings-furniture-shortcode .display-type-container .add-element-tabs .add-element-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  font-family: "Titillium Web", Arial, Helvetica, sans-serif;
+  color: rgb(38, 42, 49);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition-property: all;
+  transition-duration: 0.1s;
+  transition-delay: 0ms;
+  transition-timing-function: linear;
+}
+.room-config-shortcode .add-element-tabs .add-element-tab.active,
+.room-config-preview-shortcode .add-element-tabs .add-element-tab.active,
+.config-term-settings-furniture-shortcode .display-type-container .add-element-tabs .add-element-tab.active {
+  border-bottom-color: rgb(38, 42, 49);
+}
+.room-config-shortcode,
+.room-config-preview-shortcode,
+.config-term-settings-furniture-shortcode .display-type-container {
   /************ room-layout *************/
 }
 .room-config-shortcode .water-supply-container,

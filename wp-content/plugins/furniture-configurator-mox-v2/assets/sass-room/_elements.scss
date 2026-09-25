@@ -196,6 +196,39 @@ input {
 
 // }
 
+/************ add-element inner tabs *************/
+
+.add-element-tab-content {
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+.add-element-tabs {
+    @include displayFlex;
+    margin: 0 0 16px;
+    border-bottom: 2px solid $lightgrey2;
+
+    .add-element-tab {
+        flex: 1;
+        padding: 10px 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        @include fontH3;
+        color: $black2;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        @include transition;
+
+        &.active {
+            border-bottom-color: $black2;
+        }
+    }
+}
+
 /************ room-layout *************/
 
 .water-supply-container {

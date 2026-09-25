@@ -1,4 +1,8 @@
-<?php 
+<?php
+
+if ( ! defined( 'CONFIG_USER_COUNTERTOP_INSTANCES_TABLE_NAME' ) ) {
+    define( 'CONFIG_USER_COUNTERTOP_INSTANCES_TABLE_NAME', 'config_user_countertop_instances' );
+}
 
 // function get_user_configs($user_id) {
 //     if(!$config_id) {
@@ -89,7 +93,7 @@ function getSettingsProductsByConfigId($config_id)
     $config_child_table_name = $wpdb->prefix . CONFIG_USER_PRODUCTS_TABLE_NAME;
 
     $sql = $wpdb->prepare(
-        "SELECT * FROM $config_child_table_name 
+        "SELECT * FROM $config_child_table_name
         WHERE config_id = %d",
         $config_id
     );
@@ -97,6 +101,74 @@ function getSettingsProductsByConfigId($config_id)
     $config_products_results = $wpdb->get_results($sql);
 
     return $config_products_results;
+}
+
+function getCountertopInstancesByConfigId($config_id)
+{
+    if (!$config_id) return [];
+    global $wpdb;
+    $table = $wpdb->prefix . CONFIG_USER_COUNTERTOP_INSTANCES_TABLE_NAME;
+
+    return $wpdb->get_results(
+        $wpdb->prepare("SELECT * FROM $table WHERE config_id = %d", $config_id)
+    );
+}
+
+function attachCountertopInstancesToProductsList(&$productsList, $config_id)
+{
+    if (empty($productsList) || !$config_id) return;
+
+    $countertopInstances = getCountertopInstancesByConfigId($config_id);
+    if (empty($countertopInstances)) return;
+
+    $instancesByCountertop = [];
+    foreach ($countertopInstances as $instance) {
+        $instancesByCountertop[$instance->countertop_custom_id][] = [
+            'bottom_custom_id'      => (int) $instance->bottom_custom_id,
+            'width'                 => (int) $instance->width,
+            'depth'                 => (int) $instance->depth,
+            'furniture_position_mm' => $instance->furniture_position_mm,
+        ];
+    }
+
+    foreach ($productsList as $productRow) {
+        if (($productRow->component_type ?? null) === 'countertops') {
+            $productRow->instances = $instancesByCountertop[$productRow->custom_id] ?? [];
+        }
+    }
+}
+
+function saveCountertopInstances($config_id, $countertop_custom_id, $instances)
+{
+    global $wpdb;
+    $table = $wpdb->prefix . CONFIG_USER_COUNTERTOP_INSTANCES_TABLE_NAME;
+
+    // Delete old instances for this countertop in this config
+    $wpdb->delete($table, [
+        'config_id'            => intval($config_id),
+        'countertop_custom_id' => intval($countertop_custom_id),
+    ], ['%d', '%d']);
+
+    if (empty($instances) || !is_array($instances)) return;
+
+    foreach ($instances as $instance) {
+        $bottom_custom_id = isset($instance['bottom_custom_id'])
+            ? intval($instance['bottom_custom_id'])
+            : null;
+
+        $wpdb->insert($table, [
+            'config_id'             => intval($config_id),
+            'countertop_custom_id'  => intval($countertop_custom_id),
+            'bottom_custom_id'      => $bottom_custom_id,
+            'width'                 => isset($instance['width']) ? intval($instance['width']) : 0,
+            'depth'                 => isset($instance['depth']) ? intval($instance['depth']) : 0,
+            'furniture_position_mm' => isset($instance['furniture_position_mm'])
+                ? (is_string($instance['furniture_position_mm'])
+                    ? $instance['furniture_position_mm']
+                    : wp_json_encode($instance['furniture_position_mm']))
+                : '{}',
+        ], ['%d', '%d', '%d', '%d', '%d', '%s']);
+    }
 }
 
 function getAiSettingsProducts($products, $furnitureDimensions)
@@ -258,6 +330,7 @@ function createNewSettings($user_id, $main_settings, $aiTextures, $tempAttachmen
     $furniture_dimensions_bottom = (array) $furniture_dimensions[$FURNITURE_TYPE_BASE];
     $defaultAiTextures = $tempAttachment ? null : json_encode($aiTextures);
     $tempAiTextures = $tempAttachment ? json_encode($aiTextures) : null;
+    $waterSupplyWallValue = isset($room_settings['water_supply_wall']) && $room_settings['water_supply_wall'] === 'left' ? -1 : 1;
 
     $sql = $wpdb->insert(
         $config_table_name,
@@ -279,7 +352,7 @@ function createNewSettings($user_id, $main_settings, $aiTextures, $tempAttachmen
             'full_depth'       => intval($furniture_dimensions_full['depth']),
             'space_bottom'    => intval($furniture_dimensions_top['space_bottom']),
             'water_supply_enabled' => isset($room_settings['water_supply_enabled']) ? intval($room_settings['water_supply_enabled']) : 0,
-            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) : 250,
+            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) * $waterSupplyWallValue : 250 * $waterSupplyWallValue,
         ],
         [ '%d','%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ]
     );
@@ -303,6 +376,7 @@ function updateExistingSettings($config_id, $user_id, $main_settings, $aiTexture
     $furniture_dimensions_bottom = (array) $furniture_dimensions[$FURNITURE_TYPE_BASE];
     $defaultAiTextures = $tempAttachment ? null : json_encode($aiTextures);
     $tempAiTextures = $tempAttachment ? json_encode($aiTextures) : null;
+    $waterSupplyWallValue = isset($room_settings['water_supply_wall']) && $room_settings['water_supply_wall'] === 'left' ? -1 : 1;
 
     $updated = $wpdb->update(
         $config_table_name,
@@ -323,7 +397,7 @@ function updateExistingSettings($config_id, $user_id, $main_settings, $aiTexture
             'full_depth'       => intval($furniture_dimensions_full['depth']),
             'space_bottom'    => intval($furniture_dimensions_top['space_bottom']),
             'water_supply_enabled' => isset($room_settings['water_supply_enabled']) ? intval($room_settings['water_supply_enabled']) : 0,
-            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) : 250,
+            'water_supply_distance' => isset($room_settings['water_supply_distance']) ? intval($room_settings['water_supply_distance']) * $waterSupplyWallValue : 250 * $waterSupplyWallValue,
         ],
         [ 'id' => $config_id ], // WHERE
         [ '%s','%s','%s','%s','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d' ],
@@ -347,7 +421,8 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
 
     $table = $wpdb->prefix . CONFIG_USER_PRODUCTS_TABLE_NAME;
 
-    $mod_products_list = [];
+    $mod_products_list    = [];
+    $countertop_instances = [];
 
     $create_values = [];
     $create_rows = [];
@@ -366,6 +441,8 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
         'furniture_position_mm' => [],
         'rotation' => [],
         'is_fitting' => [],
+        'component_type' => [],
+        'component_id' => [],
     ];
 
     $custom_ids = [];
@@ -424,13 +501,26 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
                 ? "WHEN {$custom_id} THEN NULL"
                 : $wpdb->prepare("WHEN %d THEN %f", $custom_id, $rotation);
             $update_cases['is_fitting'][] = $wpdb->prepare("WHEN %d THEN %d", $custom_id, intval($db['is_fitting']));
+            $component_type = $product['component_type'] ?? null;
+            $update_cases['component_type'][] = is_null($component_type)
+                ? "WHEN {$custom_id} THEN NULL"
+                : $wpdb->prepare("WHEN %d THEN %s", $custom_id, $component_type);
+            $component_id = isset($product['component_id']) ? intval($product['component_id']) : null;
+            $update_cases['component_id'][] = is_null($component_id)
+                ? "WHEN {$custom_id} THEN NULL"
+                : $wpdb->prepare("WHEN %d THEN %d", $custom_id, $component_id);
 
         } else {
-            $create_rows[] = "(%d,%d,%d,%s,%s,%s,%s,%d,%d,%d,%s,%d,%d,%d,%d,%s," . ($rotation === null ? "NULL" : "%f") . ",%d)";
+            $component_type = $product['component_type'] ?? null;
+            $component_id = isset($product['component_id']) ? intval($product['component_id']) : null;
+            $create_rows[] = "(%d,%d,%d," . ($component_id === null ? "NULL" : "%d") . ",%s,%s,%s,%s,%d,%d,%d,%s,%d,%d,%d,%d,%s," . ($rotation === null ? "NULL" : "%f") . ",%d,%s)";
 
             $create_values[] = $custom_id;
             $create_values[] = $config_id;
             $create_values[] = intval($product['product_id']);
+            if ($component_id !== null) {
+                $create_values[] = $component_id;
+            }
             $create_values[] = get_the_title($product['product_id']);
             $create_values[] = $product['furniture_type'];
             $create_values[] = $db['object_src'];
@@ -457,11 +547,19 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
             }
 
             $create_values[] = intval($db['is_fitting']);
+            $create_values[] = $component_type;
+        }
+
+        if (
+            ($component_type ?? null) === 'countertops' &&
+            !empty($db['instances']) &&
+            is_array($db['instances'])
+        ) {
+            $countertop_instances[$custom_id] = $db['instances'];
         }
 
         set_db_data_value($product, 'attachment_id', $attachment_id);
         set_product_value($product, 'attachment_url', $attachment_url);
-
 
         $mod_products_list[] = $product;
     }
@@ -470,7 +568,7 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
     $sql_insert = true;
     if (!empty($create_rows)) {
         $sql = "INSERT INTO {$table}
-            (custom_id,config_id,product_id,product_name,furniture_type,model_src,attachment_type,attachment_id,temp_attachment_id,has_brand_texture,prices,width,height,depth,space_bottom,furniture_position_mm,rotation,is_fitting)
+            (custom_id,config_id,product_id,component_id,product_name,furniture_type,model_src,attachment_type,attachment_id,temp_attachment_id,has_brand_texture,prices,width,height,depth,space_bottom,furniture_position_mm,rotation,is_fitting,component_type)
             VALUES " . implode(',', $create_rows);
 
         $wpdb->query($wpdb->prepare($sql, $create_values));
@@ -496,7 +594,9 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
             space_bottom = CASE custom_id " . implode(' ', $update_cases['space_bottom']) . " END,
             furniture_position_mm = CASE custom_id " . implode(' ', $update_cases['furniture_position_mm']) . " END,
             rotation = CASE custom_id " . implode(' ', $update_cases['rotation']) . " END,
-            is_fitting = CASE custom_id " . implode(' ', $update_cases['is_fitting']) . " END
+            is_fitting = CASE custom_id " . implode(' ', $update_cases['is_fitting']) . " END,
+            component_type = CASE custom_id " . implode(' ', $update_cases['component_type']) . " END,
+            component_id = CASE custom_id " . implode(' ', $update_cases['component_id']) . " END
             WHERE custom_id IN ($ids)";
 
         $wpdb->query($sql);
@@ -517,6 +617,10 @@ function addFurnitureToSettingsConfig($config_id, $products_list, $tempAttachmen
         return false;
     }
 
+    foreach ($countertop_instances as $countertop_custom_id => $instances) {
+        saveCountertopInstances($config_id, $countertop_custom_id, $instances);
+    }
+
     return [
         'mod_products' => $mod_products_list,
     ];
@@ -528,81 +632,321 @@ function addFurnitureToNewSettingsConfig($config_id, $products_list, $tempAttach
 
     $config_child_table_name = $wpdb->prefix . CONFIG_USER_PRODUCTS_TABLE_NAME;
 
-    $mod_products_list = [];
+    $mod_products_list      = [];
+    $create_values          = [];
+    $create_placeholders    = [];
+    $custom_ids             = [];
+    $newCustomIdsObj        = [];
+    $countertop_instances   = []; // [ countertop_custom_id => [ instances ] ]
 
-    $create_values = [];
-    $create_placeholders = [];
-    $custom_ids = [];
-    $newCustomIdsObj = [];
+    // Normalize config ID.
+    $config_id = (int) $config_id;
+
+    if (empty($products_list) || !is_array($products_list)) {
+        return [
+            'mod_products' => [],
+        ];
+    }
 
     foreach ($products_list as $product) {
         $product = (array) $product;
+
+        // db_data is required.
+        if (empty($product['db_data'])) {
+            error_log('addFurnitureToNewSettingsConfig: Missing db_data.');
+            continue;
+        }
+
         $db_data = (array) $product['db_data'];
-        $custom_id = $db_data['custom_id'];
-        $prices = $db_data['prices'];
-        $prices = is_string($prices) ? $prices : json_encode($prices);
+
+        /*
+         * Basic product data.
+         */
+        $custom_id = $db_data['custom_id'] ?? null;
+        $product_id = isset($product['product_id'])
+            ? (int) $product['product_id']
+            : 0;
+
+        if ($custom_id === null || $product_id <= 0) {
+            error_log(
+                'addFurnitureToNewSettingsConfig: Invalid custom_id or product_id.'
+            );
+            continue;
+        }
+
         $custom_ids[] = $custom_id;
 
-        $attachment_id = intval($db_data['attachment_id']);
-        $attachment_url = $product['attachment_url'];
+        /*
+         * Prices.
+         */
+        $prices = $db_data['prices'] ?? null;
 
-        if(!empty($attachment_id)) {
-            $attachment_data = move_temp_attachment_to_permanent_folder_or_replace($attachment_id, $tempAttachment);
-      
-            if(!empty($attachment_data) && isset($attachment_data['attachment_id'])) {
-                $attachment_id = $attachment_data['attachment_id'];
-                $attachment_url = $attachment_data['url'];
+        if (!is_string($prices)) {
+            $prices = wp_json_encode($prices);
+
+            if ($prices === false) {
+                error_log(
+                    'addFurnitureToNewSettingsConfig: Failed to JSON encode prices.'
+                );
+
+                return false;
             }
         }
-        $attachment_id = $attachment_id == 0 || !$attachment_id ? null : intval($attachment_id);
 
-        $product_id = $product['product_id'];
+        /*
+         * Attachment.
+         */
+        $attachment_id = isset($db_data['attachment_id'])
+            ? (int) $db_data['attachment_id']
+            : 0;
+
+        $attachment_url = $product['attachment_url'] ?? null;
+
+        if ($attachment_id > 0) {
+            $attachment_data = move_temp_attachment_to_permanent_folder_or_replace(
+                $attachment_id,
+                $tempAttachment
+            );
+
+            if (
+                !empty($attachment_data) &&
+                isset($attachment_data['attachment_id'])
+            ) {
+                $attachment_id = (int) $attachment_data['attachment_id'];
+
+                if (isset($attachment_data['url'])) {
+                    $attachment_url = $attachment_data['url'];
+                }
+            }
+        }
+
+        $attachment_id = $attachment_id > 0
+            ? $attachment_id
+            : null;
+
+        /*
+         * Component data.
+         */
+        $component_type = $product['component_type'] ?? null;
+
+        $component_id = isset($product['component_id'])
+            ? (int) $product['component_id']
+            : null;
+
+        if ($component_id !== null && $component_id <= 0) {
+            $component_id = null;
+        }
+
+        // Collect countertop instances for saving after the main INSERT.
+        if (
+            $component_type === 'countertops' &&
+            !empty($db_data['instances']) &&
+            is_array($db_data['instances'])
+        ) {
+            $countertop_instances[(int) $custom_id] = $db_data['instances'];
+        }
+
+        /*
+         * Product data values.
+         */
+        $product_name = get_the_title($product_id);
+
+        $furniture_type = $product['furniture_type'] ?? null;
+
+        $model_src = $db_data['object_src'] ?? null;
+
+        $attachment_type = $db_data['attachment_type'] ?? null;
+
+        $has_brand_texture = isset($db_data['has_brand_texture'])
+            ? (int) $db_data['has_brand_texture']
+            : 0;
+
+        $width = isset($db_data['width'])
+            ? (int) $db_data['width']
+            : 0;
+
+        $height = isset($db_data['height'])
+            ? (int) $db_data['height']
+            : 0;
+
+        $depth = isset($db_data['depth'])
+            ? (int) $db_data['depth']
+            : 0;
+
+        $space_bottom = isset($db_data['space_bottom'])
+            ? (int) $db_data['space_bottom']
+            : 0;
+
+        $furniture_position_mm = $db_data['furniture_position_mm'] ?? null;
+
+        $rotation = $db_data['rotation'] ?? null;
+
+        $rotation = $rotation !== null
+            ? (float) $rotation
+            : null;
+
+        $is_fitting = isset($db_data['is_fitting'])
+            ? (int) $db_data['is_fitting']
+            : 0;
+
+        /*
+         * Attachment columns.
+         *
+         * When $tempAttachment is true:
+         *   attachment_id      = NULL
+         *   temp_attachment_id = $attachment_id
+         *
+         * Otherwise:
+         *   attachment_id      = $attachment_id
+         *   temp_attachment_id = NULL
+         */
+        if ($tempAttachment) {
+            $permanent_attachment_id = null;
+            $temp_attachment_id = $attachment_id;
+        } else {
+            $permanent_attachment_id = $attachment_id;
+            $temp_attachment_id = null;
+        }
+
+        /*
+         * Build values in EXACTLY the same order as the INSERT columns.
+         *
+         * 1  custom_id
+         * 2  config_id
+         * 3  product_id
+         * 4  component_id
+         * 5  product_name
+         * 6  furniture_type
+         * 7  model_src
+         * 8  attachment_type
+         * 9  attachment_id
+         * 10 temp_attachment_id
+         * 11 has_brand_texture
+         * 12 prices
+         * 13 width
+         * 14 height
+         * 15 depth
+         * 16 space_bottom
+         * 17 furniture_position_mm
+         * 18 rotation
+         * 19 is_fitting
+         * 20 component_type
+         */
         $create_values[] = $custom_id;
         $create_values[] = $config_id;
         $create_values[] = $product_id;
-        $create_values[] = get_the_title($product_id);
-        $create_values[] = $product['furniture_type'];
-        $create_values[] = $db_data['object_src'];
-        $create_values[] = $db_data['attachment_type'];
-        if($tempAttachment) {
-            $create_values[] = null;
-            $create_values[] = $attachment_id;
-        } else {
-            $create_values[] = $attachment_id;
-            $create_values[] = null;
-        }
-        
-        $create_values[] = $db_data['has_brand_texture'];
+        $create_values[] = $component_id;
+        $create_values[] = $product_name;
+        $create_values[] = $furniture_type;
+        $create_values[] = $model_src;
+        $create_values[] = $attachment_type;
+        $create_values[] = $permanent_attachment_id;
+        $create_values[] = $temp_attachment_id;
+        $create_values[] = $has_brand_texture;
         $create_values[] = $prices;
-        $create_values[] = intval($db_data['width']);
-        $create_values[] = intval($db_data['height']);
-        $create_values[] = intval($db_data['depth']);
-        $create_values[] = intval($db_data['space_bottom']);
-        $create_values[] = $db_data['furniture_position_mm'];
-        $create_values[] = $db_data['rotation'] !== null ? floatval($db_data['rotation']) : null;
-        $create_values[] = intval($db_data['is_fitting']);
-        $create_placeholders[] = "(%d,%d,%d,%s,%s,%s,%s,%d,%d,%d,%s,%d,%d,%d,%d,%s,%f,%d)"; 
+        $create_values[] = $width;
+        $create_values[] = $height;
+        $create_values[] = $depth;
+        $create_values[] = $space_bottom;
+        $create_values[] = $furniture_position_mm;
+        $create_values[] = $rotation;
+        $create_values[] = $is_fitting;
+        $create_values[] = $component_type;
 
-        set_db_data_value($product, 'attachment_id', $attachment_id);
-        set_product_value($product, 'attachment_url', $attachment_url);
+        /*
+         * 20 placeholders matching the 20 columns above.
+         */
+        $create_placeholders[] =
+            '(%d,%d,%d,%d,%s,%s,%s,%s,%d,%d,%d,%s,%d,%d,%d,%d,%s,%f,%d,%s)';
 
+        /*
+         * Update the product object with the final attachment information.
+         */
+        set_db_data_value(
+            $product,
+            'attachment_id',
+            $attachment_id
+        );
+
+        set_product_value(
+            $product,
+            'attachment_url',
+            $attachment_url
+        );
 
         $mod_products_list[] = $product;
     }
 
-    $sql_insert = true;
-    if (!empty($create_placeholders)) {
-        $sql_insert = "INSERT INTO {$config_child_table_name} 
-            (custom_id,config_id,product_id,product_name,furniture_type,model_src,attachment_type,attachment_id,temp_attachment_id,has_brand_texture,prices,width,height,depth,space_bottom,furniture_position_mm,rotation,is_fitting) 
-            VALUES " . implode(',', $create_placeholders);
-        $wpdb->query($wpdb->prepare($sql_insert, $create_values));
-        if ($wpdb->last_error) {
-            error_log("Insert error: " . $wpdb->last_error);
-        }
+    /*
+     * Nothing valid to insert.
+     */
+    if (empty($create_placeholders)) {
+        return [
+            'mod_products' => $mod_products_list,
+        ];
     }
 
-    if(!$sql_insert) {
+    /*
+     * Build INSERT query.
+     */
+    $sql_insert = "INSERT INTO {$config_child_table_name}
+        (
+            custom_id,
+            config_id,
+            product_id,
+            component_id,
+            product_name,
+            furniture_type,
+            model_src,
+            attachment_type,
+            attachment_id,
+            temp_attachment_id,
+            has_brand_texture,
+            prices,
+            width,
+            height,
+            depth,
+            space_bottom,
+            furniture_position_mm,
+            rotation,
+            is_fitting,
+            component_type
+        )
+        VALUES " . implode(',', $create_placeholders);
+
+    /*
+     * Prepare query.
+     */
+    $prepared_sql = $wpdb->prepare(
+        $sql_insert,
+        $create_values
+    );
+
+    if ($prepared_sql === false) {
+        error_log(
+            'addFurnitureToNewSettingsConfig: Failed to prepare INSERT query.'
+        );
+
         return false;
+    }
+
+    /*
+     * Execute query.
+     */
+    $result = $wpdb->query($prepared_sql);
+
+    if ($result === false) {
+        error_log(
+            'addFurnitureToNewSettingsConfig INSERT error: ' .
+            $wpdb->last_error
+        );
+
+        return false;
+    }
+
+    // Save countertop instances now that the main rows exist.
+    foreach ($countertop_instances as $countertop_custom_id => $instances) {
+        saveCountertopInstances($config_id, $countertop_custom_id, $instances);
     }
 
     return [
@@ -1218,6 +1562,8 @@ function renderSelectedProducts($products, $defaultTextures, $furnitureDimension
         $FURNITURE_TYPE_TOP;
 
     $myItemsHtml = '';
+    $myCompItemsHtml = '';
+    $myComponentItemsHtml = '';
     $summaryItemsHtml = '';
 
     $furniture_list_objects = [];
@@ -1244,12 +1590,15 @@ function renderSelectedProducts($products, $defaultTextures, $furnitureDimension
 		$hasBrandTexture = get_field('has_brand_texture', $productId);
         $rotation = $productItem->rotation;
 
+        $componentType = $productItem->component_type ?? null;
+        $isComponent = !empty($componentType);
+
         $furnitureType = null;
         $furnitureTypeSlug = '';
-        if(!empty($productFurnitureTypes)) {
+        if (!$isComponent && !empty($productFurnitureTypes)) {
             $furnitureType = $productFurnitureTypes[0];
             $furnitureTypeSlug = $furnitureType->slug;
-        }
+        } 
 
         switch($furnitureTypeSlug) {
             case $furniture_type_bottom_corner_slug: {
@@ -1358,11 +1707,10 @@ function renderSelectedProducts($products, $defaultTextures, $furnitureDimension
         $attachmentType = $thumbnailData['attachmentType'] ?? null;
 
 
-        $furniture_list_objects[] = array(
+        $featuresArr = array(
             'product_id' => $productId,
-            'config_id' => $configId, 
-            'post_id' => $postId, 
-            'furniture_type' => $furnitureTypeSlug,
+            'config_id' => $configId,
+            'post_id' => $postId,
             'min_width' => $itemWidthMin,
             'max_width' => $itemWidthMax,
             'min_height' => $itemHeightMin,
@@ -1389,20 +1737,38 @@ function renderSelectedProducts($products, $defaultTextures, $furnitureDimension
             ],
         );
 
-        ob_start();
-        include $furniture_config_v2_template_parts_url . "/room/steps/play-edit/cabinets/my-cabinet-item.php";
+        if(!$isComponent) {
+            $featuresArr['furniture_type'] = $furnitureTypeSlug;
+        } else {
+            $featuresArr['title'] = get_the_title();
+            $featuresArr['component_type'] = $componentType;
 
-        $myItemsHtml .= ob_get_clean();
+            if ($componentType === 'countertops') {
+                $featuresArr['db_data']['instances'] = $productItem->instances ?? [];
+            }
+        }
+        $furniture_list_objects[] = $featuresArr;
 
+        if (!$isComponent) {
+            ob_start();
+            include $furniture_config_v2_template_parts_url . "/room/steps/play-edit/cabinets/my-cabinet-item.php";
+            $myItemsHtml .= ob_get_clean();
+        } else {
+            ob_start();
+            include $furniture_config_v2_template_parts_url . "/room/steps/play-edit/cabinets/my-cabinet-item.php";
+            $myCompItemsHtml .= ob_get_clean();
+        }
         ob_start();
         include $furniture_config_v2_template_parts_url . "/room/steps/summary/summary-cabinet-item.php";
         $summaryItemsHtml .= ob_get_clean();
+        
     }
 
     $display_items_total = (float) $discountTotals > 0 ? discountTotals : $regularTotals; 
 
     return [
         'my_items_html' => $myItemsHtml,
+        'my_comp_items_html' => $myCompItemsHtml,
         'summary_items_html' => $summaryItemsHtml,
         'furniture_list_objects' => $furniture_list_objects,
         'bottom_corner_item_id' => $bottomCornerItemId,

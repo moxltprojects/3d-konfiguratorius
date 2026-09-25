@@ -1,28 +1,45 @@
 <?php
-global $FURNITURE_TYPE_BASE;
+global $FURNITURE_TYPE_BASE, $FURNITURE_COMPONENT_TYPE_COUNTERTOP;
 ?>
 
 <div class="cabinet-item my-cabinet-item" 
+data-type="<?php echo $componentType; ?>"
     data-custom_id="<?php echo $customId; ?>"
 >
     <div class="my-cabinet-item-inner">
         <div class="main-container">
             <h3><?php echo $productTitle; ?><?php echo getBrantTitleSuffrix($hasBrandTexture);?></h3>
             <div class="dimensions-info">
-                <?php echo sprintf(
-                     __('H: <span class="height-value">%s</span>(mm), D: <span class="depth-value">%s</span>(mm), W: <span class="width-value">%s</span>(mm)', 'furniture-config'), 
-                    $itemHeight, $itemDepth, $itemWidth
-                ); ?>
+                <?php if(
+                    isset($componentType) && 
+                    $componentType === $FURNITURE_COMPONENT_TYPE_COUNTERTOP
+                ) : ?>
+                        <?php echo sprintf(
+                            __('H: <span class="height-value">%s</span>(mm)', 'furniture-config'), 
+                            $itemHeight, $itemDepth, $itemWidth
+                        ); ?>
+                    <?php else: ?>
+                        <?php echo sprintf(
+                            __('H: <span class="height-value">%s</span>(mm), D: <span class="depth-value">%s</span>(mm), W: <span class="width-value">%s</span>(mm)', 'furniture-config'), 
+                            $itemHeight, $itemDepth, $itemWidth
+                        ); ?>
+                <?php endif; ?>
             </div>
         </div>
         <div class="item-actions-container">
-            <button type="button" data-action_type="duplicate">
-                <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z" fill="currentColor"></path></svg>
-            </button>
+            <?php if(
+                isset($furnitureType) && 
+                $furnitureType
+            ) : ?>
+                <button type="button" data-action_type="duplicate">
+                    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.023.043H2.647a.125.125 0 0 0-.125.125v.875c0 .07.057.125.125.125h7.75v10.75c0 .07.057.126.126.126h.875a.125.125 0 0 0 .125-.126V.543a.5.5 0 0 0-.5-.5Zm-2 2h-8a.5.5 0 0 0-.5.5v8.293a.5.5 0 0 0 .146.353l2.708 2.708a.515.515 0 0 0 .116.085v.03h.065c.055.02.113.031.172.031h5.292a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5ZM3.49 12.422l-1.345-1.347H3.49v1.347Zm4.906.496H4.491V10.7a.625.625 0 0 0-.625-.625H1.647V3.168h6.75v9.75Z" fill="currentColor"></path></svg>
+                </button>
+            <?php endif; ?>
             <button type="button" data-action_type="edit">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.049 10.793a.63.63 0 0 0 .094-.007l2.628-.461a.153.153 0 0 0 .083-.044l6.623-6.623a.157.157 0 0 0 .034-.17.156.156 0 0 0-.034-.05L9.88.837a.155.155 0 0 0-.11-.045.155.155 0 0 0-.112.046L3.035 7.462a.159.159 0 0 0-.044.083l-.46 2.628a.523.523 0 0 0 .146.466.53.53 0 0 0 .372.155Zm1.053-2.725L9.77 2.403l1.146 1.145-5.668 5.666-1.389.245.244-1.39Zm8.67 4.038h-11.5a.5.5 0 0 0-.5.5v.563c0 .068.057.124.125.124h12.25a.125.125 0 0 0 .126-.124v-.563a.5.5 0 0 0-.5-.5Z" fill="currentColor"></path></svg>
             </button>
             <?php if(
+                $furnitureTypeSlug &&
                 strpos($furnitureTypeSlug, $FURNITURE_TYPE_BASE) !== false
             ) : ?>
                 <button type="button" data-action_type="rotate">

@@ -28,11 +28,13 @@ import {
     progressInit,
     initCabinetTabs,
     initAddFurnitureMethod,
+    initAddComponentMethod,
     loadMoreProducts,
     changeTotals,
     init3dModel,
     updateRoomSize,
     updateWaterSupplySprite,
+    changeFurnitureProductComponentsPosition,
 } from './new-shared-scripts.js';
 
 let
@@ -48,7 +50,10 @@ window.initRoomConfigComponent =  async function initRoomConfigComponent(userCon
     let {
         content,
         all_products,
+        all_products_components,
+        all_components,
         products_list,
+        products_components_list,
         products_list_per_page,
         room_type,
         room_dimensions,
@@ -63,7 +68,7 @@ window.initRoomConfigComponent =  async function initRoomConfigComponent(userCon
 
     userId = user_id;
 
-    if(!content) return;
+    if(!content || !furniture_dimensions) return;
 
     root.innerHTML = content;
 
@@ -79,13 +84,16 @@ window.initRoomConfigComponent =  async function initRoomConfigComponent(userCon
     roomState.furnitureDimensions = furniture_dimensions;
     roomState.roomDimensions = room_dimensions;
     roomState.cornerFurnitureData = corner_furniture_data;
+    roomState.allComponents = all_components ?? [];
 
     initRoomConfigFunctions(
         container,
         default_textures,
         all_products,
+        all_products_components,
         products_list_per_page,
         products_list,
+        products_components_list,
         total,
         currency_symbol,
         furniture_dimensions.largest_height,
@@ -96,8 +104,10 @@ function initRoomConfigFunctions(
     container,
     textures,
     allProducts,
+    allProductComponents,
     productsListPerPage,
     productList,
+    productComponentsList,
     total,
     currencySymbol,
     largestHeight,
@@ -112,6 +122,7 @@ function initRoomConfigFunctions(
 
     roomState.summaryItemsList = container.querySelector('.summary-cabinets-list-inner');
     roomState.myItemsList = container.querySelector('.my-cabinets-list .my-cabinets-list-inner');
+    roomState.myComponentsList = container.querySelector('.my-components-list-inner');
 
     toggleAccordions();
 
@@ -134,7 +145,9 @@ function initRoomConfigFunctions(
     changeRoomDimensionsValue(container);
     changeWaterSupplyValue();
 
+    initAddElementTabs();
     initAddFurnitureMethod();
+    initAddComponentMethod();
     loadMoreProducts(productsListPerPage, configDataRoom.ajaxurl);
     initAddToCart();
 
@@ -152,6 +165,7 @@ function initRoomConfigFunctions(
             [ROOM_TYPE_SINGLE_WALL]: {
                  ...newObj,
                 allProducts: allProducts,
+                allProductsComponents: allProductComponents,
                 roomType: ROOM_TYPE_SINGLE_WALL,
             },
 
@@ -235,6 +249,7 @@ function initRoomConfigFunctions(
                 roomState.roomDimensions.water_supply_enabled = this.checked ? 1 : 0;
                 distanceBlock.classList.toggle('hidden', !this.checked);
                 updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                changeFurnitureProductComponentsPosition();
             });
 
             wallRadios.forEach(radio => {
@@ -263,6 +278,7 @@ function initRoomConfigFunctions(
                             : 'Distance from right side wall';
                     }
                     updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                    changeFurnitureProductComponentsPosition();
                 });
             });
 
@@ -271,6 +287,7 @@ function initRoomConfigFunctions(
                     distanceNumInput.value = this.value;
                     roomState.roomDimensions.water_supply_distance = parseInt(this.value);
                     updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                    changeFurnitureProductComponentsPosition();
                 });
             }
 
@@ -279,8 +296,42 @@ function initRoomConfigFunctions(
                     distanceSlider.value = this.value;
                     roomState.roomDimensions.water_supply_distance = parseInt(this.value);
                     updateWaterSupplySprite(roomState.modelsList[roomState.roomType]);
+                    changeFurnitureProductComponentsPosition();
                 });
             }
+        });
+    }
+
+    function initAddElementTabs() {
+        const tabs = container.querySelectorAll('.add-element-tabs .add-element-tab');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                const tabsWrapper = this.closest('.add-element-tabs-wrapper');
+
+                tabsWrapper.querySelectorAll('.add-element-tab').forEach(t => t.classList.remove('active'));
+                tabsWrapper.querySelectorAll('.add-element-tab-content').forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                tabsWrapper.querySelector(`.add-element-tab-content[data-tab="${tabName}"]`).classList.add('active');
+            });
+        });
+
+        // Component category expand/collapse (same pattern as furniture types)
+        container.querySelectorAll('.component-type > .furniture-type-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.parentNode;
+                const active = container.querySelector('.component-type.active');
+                if (active && active !== category) active.classList.remove('active');
+                category.classList.add('active');
+            });
+        });
+
+        container.querySelectorAll('.component-type [data-type="go-back"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.component-type').classList.remove('active');
+            });
         });
     }
 
@@ -312,10 +363,52 @@ function initRoomConfigFunctions(
 
         if(!roomType) return;
 
+        const optionEl = currentOption.closest('.option');
+        if (optionEl) {
+            const wsCheckbox   = optionEl.querySelector('.water-supply-checkbox');
+            const wsWallRadio  = optionEl.querySelector('.water-supply-wall-radio:checked');
+            const wsSlider     = optionEl.querySelector('.water-supply-distance .slider-container input[type="range"]');
+
+            if (wsCheckbox) roomState.roomDimensions.water_supply_enabled = wsCheckbox.checked ? 1 : 0;
+            roomState.roomDimensions.water_supply_wall = wsWallRadio?.value ?? 'right';
+            if (wsSlider)   roomState.roomDimensions.water_supply_distance = parseInt(wsSlider.value);
+        }
+
+        if (!onPageLoad) {
+            roomState.roomDimensions.water_supply_enabled  = null;
+            roomState.roomDimensions.water_supply_wall     = null;
+            roomState.roomDimensions.water_supply_distance = null;
+
+            container.querySelectorAll('.room-layout-options .option:not(.current)').forEach(prevOption => {
+                const wsCheckbox  = prevOption.querySelector('.water-supply-checkbox');
+                const wsDistBlock = prevOption.querySelector('.water-supply-distance');
+                const wsWallRadios = prevOption.querySelectorAll('.water-supply-wall-radio');
+
+                if (wsCheckbox)  wsCheckbox.checked = false;
+                if (wsDistBlock) wsDistBlock.classList.add('hidden');
+                wsWallRadios.forEach(r => { r.checked = r.value === 'right'; });
+            });
+
+            const prevScene = roomState.modelsList[roomState.roomType]?.scene;
+            if (prevScene) {
+                const existing = prevScene.getObjectByName('water-supply-plane');
+                if (existing) {
+                    existing.material.map?.dispose();
+                    existing.material.dispose();
+                    existing.geometry.dispose();
+                    prevScene.remove(existing);
+                }
+            }
+        }
+
         roomState.roomType = roomType;
         const currentObj = roomState.modelsList[roomType];
         const roomModelParams = init3dModel(currentObj, state.model3dContainer, roomType, onPageLoad);
-        roomState.modelsList[roomType] = {...roomState.modelsList[roomType], ...roomModelParams}
+        roomState.modelsList[roomType] = {...roomState.modelsList[roomType], ...roomModelParams};
+
+        if (onPageLoad) {
+            updateWaterSupplySprite(roomState.modelsList[roomType]);
+        }
     }
 
     function initAddToCart(){

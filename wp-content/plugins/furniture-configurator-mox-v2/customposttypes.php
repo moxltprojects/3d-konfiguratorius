@@ -6,6 +6,7 @@ function furniture_config_v2_create_all() {
     furniture_config_v2_create_taxonomies();
     furniture_config_v2_create_posttypes();
     furniture_config_v2_insert_default_furniture_types();
+    furniture_config_v2_insert_default_furniture_component_types();
     furniture_config_v2_insert_default_config_attachment_types();
     furniture_config_v2_insert_default_furniture_texture_types();
     furniture_config_v2_insert_default_dynamic_components_categories();
@@ -150,6 +151,26 @@ function furniture_config_v2_create_taxonomies() {
                 'show_admin_column' => true,
                 'show_in_rest'      => true,
                 'rewrite'           => [ 'slug' => 'config-furniture-type' ],
+            ]
+        );
+    }
+
+    if ( ! taxonomy_exists( 'config-furniture-component-type' ) ) {
+        register_taxonomy(
+            'config-furniture-component-type',
+            [
+                'product',
+                'furniture-texture',
+            ],
+            [
+                'label'             => __( 'Furniture Component Types', 'furniture-config' ),
+                'hierarchical'      => true,
+                'public'            => true,
+                'show_ui'           => true,
+                'show_in_menu'      => true,
+                'show_admin_column' => true,
+                'show_in_rest'      => true,
+                'rewrite'           => [ 'slug' => 'config-furniture-component-type' ],
             ]
         );
     }
@@ -317,6 +338,20 @@ function furniture_config_v2_insert_default_furniture_types() {
     foreach ( $terms as $term ) {
         if ( ! term_exists( $term, 'config-furniture-type' ) ) {
             $view = wp_insert_term( $term, 'config-furniture-type' );
+        }
+    }
+}
+
+function furniture_config_v2_insert_default_furniture_component_types() {
+    global $FURNITURE_COMPONENT_TYPE_SINK_NAME, $FURNITURE_COMPONENT_TYPE_SINK;
+
+    $types = [
+        [ 'name' => $FURNITURE_COMPONENT_TYPE_SINK_NAME, 'slug' => $FURNITURE_COMPONENT_TYPE_SINK ],
+    ];
+
+    foreach ( $types as $type ) {
+        if ( ! term_exists( $type['slug'], 'config-furniture-component-type' ) ) {
+            wp_insert_term( $type['name'], 'config-furniture-component-type', [ 'slug' => $type['slug'] ] );
         }
     }
 }

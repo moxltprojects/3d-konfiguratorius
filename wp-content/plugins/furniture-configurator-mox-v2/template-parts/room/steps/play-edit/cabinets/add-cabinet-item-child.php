@@ -1,7 +1,7 @@
 <?php 
 defined( 'ABSPATH' ) || exit;
 
-global $product, $furniture_config_v2_template_parts_url;
+global $product, $furniture_config_v2_template_parts_url, $FURNITURE_COMPONENT_TYPE_COUNTERTOP;
 if ( ! $product ) {
     return;
 }
@@ -10,11 +10,23 @@ $glbSrc = get_field('3d_image', $productId);
 
 if(!$glbSrc) return;
 
-$furnitureTypes = get_the_terms($productId, 'config-furniture-type');
 $furnitureTypeSlug = '';
-if(!empty($furnitureTypes)) {
-    $furnitureTypeSlug = $furnitureTypes[0]->slug;
+$furnitureComponentTypeSlug = '';
+
+if(!isset($isCompComponent)) {
+    $furnitureTypes = get_the_terms($productId, 'config-furniture-type');
+
+    if(!empty($furnitureTypes)) {
+        $furnitureTypeSlug = $furnitureTypes[0]->slug;
+    }
+} else {
+    $furnitureComponentTypes = get_the_terms($productId, 'config-furniture-component-type');
+
+     if(!empty($furnitureComponentTypes)) {
+        $furnitureComponentTypeSlug = $furnitureComponentTypes[0]->slug;
+    }
 }
+
 
 $thumbnailData = getProductThumbnailData($standImageData, $productId);
 $attachmentUrl = $thumbnailData['url'] ?? null;
@@ -93,9 +105,8 @@ $cm3PriceRegular = $cm3Price['regular'];
 $cm3PriceDiscount = $cm3Price['discount'];
 $cm3PriceDisplay = $cm3PriceDiscount && $cm3PriceDiscount > 0 ? $cm3PriceDiscount : $cm3PriceRegular;
 
-$all_furniture_list_objects[] = array(
+$featuresArr = array(
     'product_id' => $productId,
-    'furniture_type' => $furnitureTypeSlug,
     'min_width' => $itemWidthMin,
     'max_width' => $itemWidthMax,
     'min_height' => $itemHeightMin,
@@ -129,6 +140,17 @@ $all_furniture_list_objects[] = array(
     ],
 );
 
+if(!isset($isCompComponent)) {
+    $featuresArr['furniture_type'] = $furnitureTypeSlug;
+    $all_furniture_list_objects[] = $featuresArr;
+} else {
+    $featuresArr['title'] = get_the_title();
+    $featuresArr['component_type'] = $furnitureComponentTypeSlug;
+    $all_furniture_components_list_objects[] = $featuresArr;
+}
+
+
+
 ?>
 
 <div 
@@ -143,18 +165,28 @@ $all_furniture_list_objects[] = array(
         </div>
         <div class="main-container">
             <div class="dimensions-info">
-               <?php echo sprintf(
-                    __('W: <span class="width-value">%s</span>mm', 'furniture-config'), 
-                    $itemWidth
-                ); ?>
+                <?php if(
+                    !isset($compTypeSlug) || 
+                    $compTypeSlug != $FURNITURE_COMPONENT_TYPE_COUNTERTOP
+                ) : ?>
+                <?php echo sprintf(
+                        __('W: <span class="width-value">%s</span>mm', 'furniture-config'), 
+                        $itemWidth
+                    ); ?>
+                <?php endif; ?>
                 <?php echo sprintf(
                     __('H: <span class="height-value">%s</span>mm', 'furniture-config'), 
                     $itemHeight
                 ); ?>
-                 <?php echo sprintf(
-                    __('D: <span class="depth-value">%s</span>mm', 'furniture-config'), 
-                    $itemDepth
-                ); ?>
+                <?php if(
+                    !isset($compTypeSlug) || 
+                    $compTypeSlug != $FURNITURE_COMPONENT_TYPE_COUNTERTOP
+                ) : ?>
+                    <?php echo sprintf(
+                        __('D: <span class="depth-value">%s</span>mm', 'furniture-config'), 
+                        $itemDepth
+                    ); ?>
+                <?php endif; ?>
             </div>
             <h3><?php the_title(); ?><?php echo getBrantTitleSuffrix($hasBrandTexture);?></h3>
         </div>

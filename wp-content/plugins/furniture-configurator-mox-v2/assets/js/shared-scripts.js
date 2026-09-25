@@ -8,7 +8,8 @@ export const TEXTURE_TYPE_FRONT = 'front';
 export const TEXTURE_ALL_SLUG = 'all';
 export const FURNITURE_TYPE_BOTTOM = 'bottom';
 export const FURNITURE_TYPE_BOTTOM_CORNER = 'bottom-corner';
-export const FURNITURE_TYPE_COOKER = 'bottom-cooker';
+export const SINK_COMPONENT_TYPE = 'sinks';
+export const COUNTERTOP_COMPONENT_TYPE = 'countertops';
 export const FURNITURE_TYPE_WALL = 'wall';
 export const FURNITURE_TYPE_TOP = 'top';
 export const FURNITURE_TYPE_FULL = 'full';
@@ -296,9 +297,10 @@ export const roomState = {
     currentTemplatePostId: null,
     roomType: null,
     baseScale: 1,
-    summaryItemsList :null,
+    summaryItemsList: null,
     dynamicLists: null,
     myItemsList: null,
+    myComponentsList: null,
     roomDimensions: {
         width: 0,
         height: 0,
@@ -335,6 +337,7 @@ export const roomState = {
     // modelChildren: [],
     displayModelChildren: [],
     allProducts: [],
+    allProductsComponents: [],
     dbChildren: [],
     bgPlanes: [],
     postId: false,
@@ -342,6 +345,7 @@ export const roomState = {
         [ROOM_TYPE_SINGLE_WALL]: createModelStructure(),
         [ROOM_TYPE_WITH_CORNER]: createModelStructure(),
     },
+    allComponents: [],
     cornerFurnitureData: {
         bottom: {
             id: null, 
@@ -1381,8 +1385,7 @@ export function getItemSpaceBottomPx(spaceBottom, furnitureType) {
 }
 
 export function calculateTopSpaceIn3dModel(furnitureType, spaceBottom, roomModelBox = null) {
-
-    if (!furnitureType.includes(DIMENSION_TYPE_TOP)) {
+    if (!furnitureType || furnitureType && !furnitureType.includes(DIMENSION_TYPE_TOP)) {
         return 0;
     }
 
@@ -1394,6 +1397,53 @@ export function calculateTopSpaceIn3dModel(furnitureType, spaceBottom, roomModel
     const bottomSpacePx = getItemSpaceBottomPx(spaceBottom, furnitureType);
     const bottom = (roomModelBox.min.y) + bottomSpacePx + FLOOR_THICKNESS;
     return bottom;
+}
+
+export function calculateComponentBottomIn3dModel(componentType, scaledSizeY) {
+    if (componentType !== SINK_COMPONENT_TYPE) return 0;
+
+    const roomObj = roomState.modelsList[roomState.roomType]
+    const modelScene = roomObj.scene;
+    const supplyPlane = modelScene.getObjectByName('water-supply-plane');
+
+    if(!supplyPlane) return 0;
+
+    const waterPlace = supplyPlane.position.clone();
+    const waterX = waterPlace.x;
+    const waterZ = waterPlace.z;
+
+    const modelObj = roomState.modelsList[roomState.roomType];
+    if (!modelObj?.scene || !modelObj?.box) return 0;
+
+    const scale = roomState.baseScale;
+    const box   = modelObj.box;
+
+    // Find a bottom (non-corner, non-component) furniture whose footprint covers the sink
+    const bottomFurniture = modelObj.scene.children.find(child => {
+        const { furnitureType, scaledSize, componentType: ct } = child.userData;
+        if (!furnitureType || ct) return false;
+        if (!furnitureType.includes(FURNITURE_TYPE_BOTTOM) || furnitureType.includes('corner')) return false;
+        if (!scaledSize) return false;
+
+        const rotation = child.rotation.y;
+        const rotated  = Math.abs(rotation) > 0.01;
+        const halfX    = (rotated ? scaledSize.z : scaledSize.x) / 2;
+        const halfZ    = (rotated ? scaledSize.x : scaledSize.z) / 2;
+
+        return waterX >= child.position.x - halfX &&
+               waterX <= child.position.x + halfX &&
+               waterZ >= child.position.z - halfZ &&
+               waterZ <= child.position.z + halfZ;
+    });
+
+    if (bottomFurniture) {
+        // sit on top of bottom furniture — same formula as top cabinets
+        const bottomHeight = bottomFurniture?.userData?.heightMm;
+        return (bottomHeight / 10 * scale);
+    }
+
+    // no bottom furniture — sit at floor level over the water supply sprite
+    return waterPlace.y - scaledSizeY / 2;
 }
 
 export function getFreshWrapperBoundingBox(wrapper) {
@@ -1410,6 +1460,12 @@ export function getCurrentModelAllProducts() {
     return roomState.postId ? 
         roomState.modelsList[roomState.roomType].allProducts: 
         roomState.modelsList[ROOM_TYPE_SINGLE_WALL].allProducts;
+}
+
+export function getCurrentModelAllProductsComponents() {
+    return roomState.postId ?
+        roomState.modelsList[roomState.roomType].allProductsComponents :
+        roomState.modelsList[ROOM_TYPE_SINGLE_WALL].allProductsComponents;
 }
 
 export function getFurnitureHeightDepthMm(type, furnitureDimensions) {
