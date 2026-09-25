@@ -196,7 +196,123 @@ input {
 
 // }
 
+/************ add-element inner tabs *************/
+
+.add-element-tab-content {
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+.add-element-tabs {
+    @include displayFlex;
+    margin: 0 0 16px;
+    border-bottom: 2px solid $lightgrey2;
+
+    .add-element-tab {
+        flex: 1;
+        padding: 10px 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        @include fontH3;
+        color: $black2;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        @include transition;
+
+        &.active {
+            border-bottom-color: $black2;
+        }
+    }
+}
+
 /************ room-layout *************/
+
+.water-supply-container {
+    margin-top: 30px;
+
+    .water-supply-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        h3 {
+            @include fontH3;
+            color: $black2 !important;
+            margin: 0;
+        }
+
+        .water-supply-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+
+            input[type="checkbox"] {
+                display: none;
+            }
+
+            .water-supply-circle {
+                position: relative;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 2px solid $blue;
+                display: block;
+                transition: background-color 0.2s ease;
+
+                &::before {
+                    content: "✓";
+                    @include displayFlex;
+                    @include justifyContent(center);
+                    @include alignItems(center);
+                    display: block;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    color: $white;
+                    opacity: 0;
+                    font-size: 12px;
+                    @include transition;
+                }
+            }
+
+            input:checked + .water-supply-circle {
+                background-color: $blue;
+                &::before {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    .water-supply-distance {
+        margin-top: 20px;
+
+        &.hidden {
+            display: none;
+        }
+
+        .water-supply-wall-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+
+            .water-supply-wall-label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+                @include fontH3;
+                color: $black2;
+            }
+        }
+    }
+}
 
 .dimension-container {
     h3 {

@@ -20,6 +20,8 @@ import {
     DIMENSION_TYPE_BOTTOM,
     DIMENSION_TYPE_TOP,
     FURNITURE_TYPE_TOP,
+    SINK_COMPONENT_TYPE,
+    COUNTERTOP_COMPONENT_TYPE,
     DIMENSION_TYPE_TOP_CORNER,
     DIMENSION_TYPE_FULL,
     DIMENSION_TYPE_FULL_CORNER,
@@ -46,10 +48,12 @@ import {
     getRotatedSize,
     getFurnitureDimensionsFromMmtoPx,
     getCurrentModelAllProducts,
+    getCurrentModelAllProductsComponents,
     calculateRotationInDegrees,
     getRoomDimensions,
     getContainerBaseScale,
     calculateTopSpaceIn3dModel,
+    calculateComponentBottomIn3dModel,
     getTopFurnitureYPositionMm,
     getFreshWrapperBoundingBox,
 } from "./shared-scripts.js";
@@ -509,7 +513,7 @@ export function initCabinetTypes() {
 }
 
 export function initAddFurnitureMethod() {
-    const addFurnitureButtons = container.querySelectorAll('.add-cabinet-item .item-actions-container button[data-action_type="add"]');
+    const addFurnitureButtons = container.querySelectorAll('.add-element-tab-content[data-tab="furniture"] .add-cabinet-item .item-actions-container button[data-action_type="add"]');
     addFurnitureButtons.forEach(furnitureButton => {
         const parent = furnitureButton.closest('.add-cabinet-item');
 
@@ -519,6 +523,211 @@ export function initAddFurnitureMethod() {
             furnitureButton, 
             productId, 
         );
+    });
+}
+
+export function initAddComponentMethod() {
+    const addComponentButtons = container.querySelectorAll('.add-element-tab-content[data-tab="components"] .add-cabinet-item .item-actions-container button[data-action_type="add"]');
+    addComponentButtons.forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const parent = btn.closest('.cabinet-item');
+  
+            if (!parent) return;
+
+            const componentId = parent.getAttribute('data-product_id');
+            const categoryEl = parent.closest('.component-type');
+            const componentType = categoryEl?.getAttribute('data-slug') ?? '';
+
+            if (!componentId || !componentType) return;
+
+            const allComponentsData = roomState.modelsList[ROOM_TYPE_SINGLE_WALL].allProductsComponents ?? [];
+            const componentData = allComponentsData.find(c => c.product_id == componentId);
+
+            if (!componentData) return;
+
+            if (componentData.component_type === SINK_COMPONENT_TYPE) {
+                const { water_supply_enabled } = roomState.roomDimensions;
+
+                if (!water_supply_enabled) return;
+
+                const roomObj = roomState.modelsList[roomState.roomType];
+                const hasSink = roomObj.dbChildren.some(
+                    child => child.component_type && child.component_type.includes(SINK_COMPONENT_TYPE)
+                );
+
+                if (hasSink) return;
+            } else if(componentData.component_type === COUNTERTOP_COMPONENT_TYPE) {
+                const roomObj = roomState.modelsList[roomState.roomType];
+
+                const hasCountertop = roomObj.dbChildren.some(
+                    child => child.component_type && child.component_type.includes(COUNTERTOP_COMPONENT_TYPE)
+                );
+
+                if (hasCountertop) return;
+
+                const bottomFurnitureItems = roomObj.scene.children.filter(child => {
+                    const ft = child.userData?.furnitureType;
+                    return ft && (ft === FURNITURE_TYPE_BOTTOM || ft === FURNITURE_TYPE_BOTTOM_CORNER);
+                });
+
+                if (bottomFurnitureItems.length === 0) return;
+            }
+
+            if (stepsContainer) stepsContainer.classList.add('loading');
+
+            try {
+                const {
+                    min_width, min_height, min_depth,
+                    db_data: { object_src, width, height, depth, prices, has_brand_texture }
+                } = componentData;
+
+                const isCountertop = componentData.component_type === COUNTERTOP_COMPONENT_TYPE;
+
+                if (isCountertop) {
+                    const roomObj = roomState.modelsList[roomState.roomType];
+                    const bottomFurnitureItems = roomObj.scene.children.filter(child => {
+                        const ft = child.userData?.furnitureType;
+                        return ft && (ft === FURNITURE_TYPE_BOTTOM || ft === FURNITURE_TYPE_BOTTOM_CORNER);
+                    });
+
+                    const primaryCustomId = uniqLong();
+                    const allCountertopCustomIds = [primaryCustomId];
+
+                    await addGLBComponent(
+                        componentData, object_src, componentId, primaryCustomId,
+                        componentType, width, height, depth,
+                        null, bottomFurnitureItems[0]?.userData.customId
+                    );
+
+                    for (let i = 1; i < bottomFurnitureItems.length; i++) {
+                        const ctCustomId = uniqLong();
+                        allCountertopCustomIds.push(ctCustomId);
+                        await addGLBComponent(
+                            componentData, object_src, componentId, ctCustomId,
+                            componentType, width, height, depth,
+                            null, bottomFurnitureItems[i].userData.customId
+                        );
+                    }
+
+                    const itemTotal = changeSingleProductPrice(
+                        FURNITURE_TYPE_BOTTOM,
+                        width, min_width,
+                        height, min_height,
+                        depth, min_depth,
+                        prices,
+                        state.defaultTextures,
+                        has_brand_texture,
+                        state.defaultComponents
+                    );
+                    changeTotalPrice(itemTotal);
+
+                    const countIndex = roomState.modelsList[roomState.roomType].dbChildren.length;
+                    const { my_item_html, summary_item_html } = await addFurnitureItem(primaryCustomId, componentData, state.defaultTextures, countIndex) || {};
+
+                    const myComponentsList = container.querySelector('.my-components-list-inner');
+                    if (my_item_html && myComponentsList) {
+                        myComponentsList.insertAdjacentHTML('beforeend', my_item_html);
+                    }
+                    const myItem = myComponentsList?.querySelector(`.cabinet-item[data-custom_id="${primaryCustomId}"]`);
+
+                    if (myItem) {
+                        myItem.classList.add('my-component-item');
+                        myItem.querySelector('[data-action_type="duplicate"]')?.remove();
+                    }
+
+                    if (summary_item_html && roomState.summaryItemsList) {
+                        roomState.summaryItemsList.insertAdjacentHTML('beforeend', summary_item_html);
+                    }
+
+                    const doRemove = () => {
+                        const liveRoomObj = roomState.modelsList[roomState.roomType];
+                        [...liveRoomObj.scene.children]
+                            .filter(c => c.userData?.componentType === COUNTERTOP_COMPONENT_TYPE)
+                            .forEach(ct => removeGLBModel(ct));
+                        liveRoomObj.dbChildren = liveRoomObj.dbChildren.filter(
+                            c => !c.component_type?.includes(COUNTERTOP_COMPONENT_TYPE)
+                        );
+                        liveRoomObj.scene.children.forEach(child => {
+                            delete child.userData.countertopCustomId;
+                        });
+                        myItem?.remove();
+                        roomState.summaryItemsList?.querySelector(`.cabinet-item[data-custom_id="${primaryCustomId}"]`)?.remove();
+                    };
+
+                    myItem?.querySelector('[data-action_type="remove"]')?.addEventListener('click', doRemove);
+
+                    const newObj = roomState.modelsList[roomState.roomType].dbChildren.find(c => c.db_data.custom_id == primaryCustomId);
+                    if (newObj) editItemButtonTrigger(newObj, primaryCustomId);
+                } else {
+                    const customId = uniqLong();
+
+                    await addGLBComponent(
+                        componentData,
+                        object_src,
+                        componentId,
+                        customId,
+                        componentType,
+                        width,
+                        height,
+                        depth
+                    );
+
+                    const itemTotal = changeSingleProductPrice(
+                        FURNITURE_TYPE_BOTTOM,
+                        width, min_width,
+                        height, min_height,
+                        depth, min_depth,
+                        prices,
+                        state.defaultTextures,
+                        has_brand_texture,
+                        state.defaultComponents
+                    );
+                    changeTotalPrice(itemTotal);
+
+                    const countIndex = roomState.modelsList[roomState.roomType].dbChildren.length;
+                    const { my_item_html, summary_item_html } = await addFurnitureItem(customId, componentData, state.defaultTextures, countIndex) || {};
+
+                    const myComponentsList = container.querySelector('.my-components-list-inner');
+                    if (my_item_html && myComponentsList) {
+                        myComponentsList.insertAdjacentHTML('beforeend', my_item_html);
+                    }
+                    const myItem = myComponentsList?.querySelector(`.cabinet-item[data-custom_id="${customId}"]`);
+
+                    if (myItem) {
+                        myItem.classList.add('my-component-item');
+                        myItem.querySelector('[data-action_type="duplicate"]')?.remove();
+                    }
+
+                    if (summary_item_html && roomState.summaryItemsList) {
+                        roomState.summaryItemsList.insertAdjacentHTML('beforeend', summary_item_html);
+                    }
+
+                    const roomObj = roomState.modelsList[roomState.roomType];
+                    const newObj = roomObj.dbChildren.find(c => c.db_data.custom_id == customId);
+
+                    const doRemove = () => {
+                        const liveRoomObj = roomState.modelsList[roomState.roomType];
+                        const childObj = liveRoomObj.scene.children.find(c => c.userData.customId == customId);
+                        if (childObj) removeGLBModel(childObj);
+                        liveRoomObj.dbChildren = liveRoomObj.dbChildren.filter(c => c.db_data.custom_id != customId);
+                        myItem?.remove();
+                        roomState.summaryItemsList?.querySelector(`.cabinet-item[data-custom_id="${customId}"]`)?.remove();
+                    };
+
+                    myItem?.querySelector('[data-action_type="remove"]')?.addEventListener('click', doRemove);
+
+                    if (newObj) editItemButtonTrigger(newObj, customId);
+                }
+
+                // Switch to "My elements" tab, then activate "Components" sub-tab
+                changeCabinetsTab(myCabinetTab, myCabinetContents);
+                container.querySelector('.my-cabinets-inner .add-element-tab[data-tab="components"]')?.click();
+            } catch (e) {
+                console.error('Error adding component:', e);
+            } finally {
+                if (stepsContainer) stepsContainer.classList.remove('loading');
+            }
+        });
     });
 }
 
@@ -1000,14 +1209,18 @@ function createFurnitureItemControls(childMeshGroup, customId) {
         return sprite;
     }
 
-    // Two buttons with small horizontal offset
-    const btn1 = makeButton("duplicate.svg", -scaledSize.x*0.15, 'duplicate');
-    const btn2 = makeButton("delete.svg", scaledSize.x*0.15, 'delete');
+    const isComponent = !!childMeshGroup.userData.componentType;
+    const buttons = [];
 
-    childMeshGroup.userData.uiButtons = [btn1, btn2];
-    // allUIButtons.push(btn1, btn2);
+    if (!isComponent) {
+        buttons.push(makeButton("duplicate.svg", -scaledSize.x * 0.15, 'duplicate'));
+    }
 
-    return childMeshGroup.userData.uiButtons;
+    buttons.push(makeButton("delete.svg", isComponent ? 0 : scaledSize.x * 0.15, 'delete'));
+
+    childMeshGroup.userData.uiButtons = buttons;
+
+    return buttons;
 }
 
 function renderPriceBlock(regular, discount, currencySymbol) {
@@ -1442,6 +1655,9 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     const modelRoomHeight = heightPx;
     const modelRoomDepth = depthPx;
 
+    modelObj.modelRoomWidth = modelRoomWidth;
+    modelObj.modelRoomDepth = modelRoomDepth;
+
     roomState.modelRoomDimensions = {
         width: widthPx,
         height: heightPx,
@@ -1746,12 +1962,13 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
     roomState.modelsList[roomType].dbChildren.forEach((child) => {
         const dbData = child.db_data;
         const childId = child.id;
-        const childProductId = child.product_id;
+        const childProductId = child.component_id ?? child.product_id;
         const childCustomId = dbData.custom_id;
         const childSrc = dbData.object_src;
         const childThumbType = dbData.attachment_type;
         const childAttachmentUrl = child.attachment_url;
         const childType = child.furniture_type;
+        const childComponentType = child.component_type ?? null;
         const hasBrandTexture = dbData.has_brand_texture;
         const childWidth = dbData.width;
         const childHeight = dbData.height;
@@ -1764,7 +1981,77 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         const childRotation = dbData.rotation;
         const childIsFitting = Boolean(parseInt(dbData.is_fitting));
         const childPrices = dbData.prices;
-    
+
+        if (childComponentType) {
+
+            if(childComponentType === COUNTERTOP_COMPONENT_TYPE) {
+                const instances = dbData.instances;
+
+                if (Array.isArray(instances) && instances.length > 0) {
+                    instances.forEach(instance => {
+                        const instancePositionMm = instance.furniture_position_mm
+                            ? (typeof instance.furniture_position_mm === 'string'
+                                ? JSON.parse(instance.furniture_position_mm)
+                                : instance.furniture_position_mm)
+                            : null;
+
+                        addGLBComponent(
+                            child,
+                            childSrc,
+                            childProductId,
+                            childCustomId,
+                            childComponentType,
+                            instance.width,
+                            childHeight,
+                            instance.depth,
+                            instancePositionMm,
+                            instance.bottom_custom_id ?? null
+                        );
+                    });
+                } else {
+                    // No saved instances yet — create one per bottom furniture.
+                    // changeFurnitureProductComponentsPosition will resize/reposition them
+                    // once all furniture has loaded.
+                    const bottomItems = modelScene.children.filter(c => {
+                        const ft = c.userData?.furnitureType;
+                        return ft && (ft === FURNITURE_TYPE_BOTTOM || ft === FURNITURE_TYPE_BOTTOM_CORNER);
+                    });
+
+                    const targets = bottomItems.length > 0 ? bottomItems : [null];
+                    targets.forEach(target => {
+                        addGLBComponent(
+                            child,
+                            childSrc,
+                            childProductId,
+                            childCustomId,
+                            childComponentType,
+                            childWidth,
+                            childHeight,
+                            childDepth,
+                            null,
+                            target?.userData.customId ?? null
+                        );
+                    });
+                }
+
+            } else {
+                addGLBComponent(
+                    child,
+                    childSrc,
+                    childProductId,
+                    childCustomId,
+                    childComponentType,
+                    childWidth,
+                    childHeight,
+                    childDepth,
+                    childPositionMm,
+                );
+            }
+
+            componentActionsInit(childCustomId, childComponentType);
+            return;
+        }
+
         addExistingGLBModel(
             modelScene, 
             box,
@@ -1887,6 +2174,9 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         onClickModel(e, renderer, camera);
     });
 
+    modelObj.scene = modelScene;
+    changeFurnitureProductComponentsPosition();
+
     animate();
 
     return {
@@ -1899,6 +2189,76 @@ export function init3dModel(modelObj, model3dContainer, roomType, onPageLoad) {
         dragControls,
         room3DGroup
     };
+}
+
+export function updateWaterSupplySprite(modelObj) {
+    const scene = modelObj?.scene;
+
+    if (!scene) return;
+
+    const existing = scene.getObjectByName('water-supply-plane');
+    if (existing) {
+        existing.material.map?.dispose();
+        existing.material.dispose();
+        existing.geometry.dispose();
+        scene.remove(existing);
+    }
+
+    const { water_supply_enabled, water_supply_distance } = roomState.roomDimensions;
+    if (!water_supply_enabled) return;
+
+    const scale = roomState.baseScale;
+    const modelRoomWidth = modelObj.modelRoomWidth || roomState.modelRoomDimensions.width;
+    const modelRoomDepth = modelObj.modelRoomDepth || roomState.modelRoomDimensions.depth;
+
+    const distanceUnits = (water_supply_distance || 0) * scale;
+
+    const isLeftWall = roomState.roomDimensions.water_supply_wall === 'left';
+    const halfW = modelRoomWidth / 2;
+    const halfD = modelRoomDepth / 2;
+    const planeSize = scale * 25;
+    const halfPlane = planeSize / 2;
+    const y = scale * 30;
+
+    let posX, posZ, rotY;
+
+    if (!isLeftWall) {
+        // Back wall — vary x
+        posX = Math.max(-halfW + halfPlane, Math.min(halfW - halfPlane, -halfW + distanceUnits));
+        posZ = -halfD + 0.5;
+        rotY = 0;
+    } else {
+        // Left side wall — vary z, rotate plane to face into room (+x)
+        posX = -halfW + 0.5;
+        posZ = Math.max(-halfD + halfPlane, Math.min(halfD - halfPlane, -halfD + distanceUnits));
+        rotY = Math.PI / 2;
+    }
+
+    const loader = new THREE.TextureLoader();
+    loader.load(assetsUrl + '/images/room/tap-water.png', (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthTest: true,
+            depthWrite: false,
+        });
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(1, 1),
+            material
+        );
+
+        plane.name = 'water-supply-plane';
+        plane.userData.isRoomElement = true;
+        plane.renderOrder = 1;
+        plane.rotation.y = rotY;
+        plane.scale.set(planeSize, planeSize, 1);
+        plane.position.set(posX, y, posZ);
+
+        scene.add(plane);
+    });
 }
 
 function handle3dResize() {
@@ -1950,7 +2310,9 @@ export function updateRoomSize(modelObj) {
         depth: depthPx,
     };
 
-    
+    modelObj.modelRoomWidth = widthPx;
+    modelObj.modelRoomDepth = depthPx;
+
     if(modelSettings.lightsOn) {
         renderLighting(scene, renderer, dirLight, modelObj.dirLight, widthPx, heightPx, depthPx);
     }
@@ -2337,14 +2699,14 @@ function addExistingGLBModel(
 }
 
 function addGLBModel(
-    urlSrc, 
+    urlSrc,
     thumbType,
     attachmentUrl,
-    furnitureType, 
-    productId, 
-    customId, 
-    itemHeight, 
-    itemDepth, 
+    furnitureType,
+    productId,
+    customId,
+    itemHeight,
+    itemDepth,
     itemWidth,
     itemSpaceBottom,
     hasBrandTexture,
@@ -2354,6 +2716,7 @@ function addGLBModel(
 
     return new Promise((resolve, reject) => {
         const { modelWidth, modelHeight, modelDepth } = getFurnitureDimensionsFromMmtoPx(itemWidth, itemHeight, itemDepth);
+
         const itemModelSpaceBottom = calculateTopSpaceIn3dModel(furnitureType, itemSpaceBottom);
         
         const loader = new GLTFLoader();
@@ -2468,7 +2831,15 @@ function addGLBModel(
 
                 /******* enable dragging *********/
 
-                const isFittingItem = initModelDragging(wrapper, furnitureType);
+                let isFittingItem = initModelDragging(wrapper, furnitureType);
+
+                if(isFittingItem) {
+                    isFittingItem = checkIsSinkPlaceAllowed(wrapper);
+                }
+
+                if(!isFittingItem) {
+                    colorToRed(wrapper);
+                }
                     
                 const itemPositionMm = dupItemPosition ?? getItemPosition(
                     furnitureType, 
@@ -2495,6 +2866,10 @@ function addGLBModel(
                     createFurnitureDimensionArrows(wrapper, modelScene, roomObj.box);
                 }
 
+                if(furnitureType.includes(DIMENSION_TYPE_BOTTOM)) {
+                    changeFurnitureProductComponentsPosition();
+                }
+
                 /***** end push item ****/
                 
                 resolve({
@@ -2510,7 +2885,195 @@ function addGLBModel(
     });
 }
 
- function removeGLBModel(childObj) {
+function initComponentDragging(wrapper) {
+    if (wrapper.userData.componentType !== SINK_COMPONENT_TYPE) return;
+    const obj = roomState.modelsList[roomState.roomType];
+    obj.draggableObjects.push(wrapper);
+}
+
+export function addGLBComponent(
+    componentObj,
+    urlSrc,
+    componentId,
+    customId,
+    componentType,
+    itemWidth,
+    itemHeight,
+    itemDepth,
+    dupItemPosition = null,
+    linkedFurnitureCustomId = null
+) {
+    const furnitureType = FURNITURE_TYPE_BOTTOM;
+    // const { height: itemHeight, depth: itemDepth, space_bottom: itemSpaceBottom = 0 } =
+    //     roomState.furnitureDimensions.bottom;
+    // const itemWidth = productWidth || itemHeight; // fallback to height if no product width
+    return new Promise((resolve, reject) => {
+        const { modelWidth, modelHeight, modelDepth } = getFurnitureDimensionsFromMmtoPx(itemWidth, itemHeight, itemDepth);
+        // const itemSpaceBottom = calculateComponentBottomIn3dModel(componentType);
+
+        const loader = new GLTFLoader();
+
+        loader.load(
+            urlSrc,
+            async function (childGltf) {
+                const childMeshGroup = childGltf.scene || childGltf.scenes[0];
+                const childMeshList = await renderMeshList(childMeshGroup, furnitureType, null, false);
+
+                const wrapper = new THREE.Group();
+
+                childMeshList.forEach(mesh => {
+                    mesh.updateWorldMatrix(true, false);
+                    wrapper.attach(mesh);
+                    mesh.matrixAutoUpdate = true;
+                });
+
+                wrapper.position.set(0, 0, 0);
+                wrapper.rotation.set(0, 0, 0);
+                wrapper.scale.set(1, 1, 1);
+                wrapper.updateMatrixWorld(true, true);
+
+                const normalizeBox = new THREE.Box3().setFromObject(wrapper);
+                const center = normalizeBox.getCenter(new THREE.Vector3());
+                const size = normalizeBox.getSize(new THREE.Vector3());
+
+                wrapper.children.forEach(child => {
+                    child.position.sub(center);
+                    child.position.y += size.y / 2;
+                });
+
+                wrapper.updateMatrixWorld(true);
+                wrapper.userData.pivotNormalized = true;
+
+                const originalBox = new THREE.Box3().setFromObject(wrapper);
+                const originalSize = new THREE.Vector3();
+                originalBox.getSize(originalSize);
+
+                const safeOriginalSize = new THREE.Vector3(
+                    originalSize.x || 1,
+                    originalSize.y || 1,
+                    originalSize.z || 1
+                );
+
+                wrapper.userData.originalSize = safeOriginalSize.clone();
+                wrapper.userData.originalBox = originalBox.clone();
+                wrapper.userData.componentId = componentId;
+                wrapper.userData.customId = customId;
+                wrapper.userData.componentType = componentType;
+                wrapper.userData.widthMm = itemWidth;
+                wrapper.userData.heightMm = itemHeight;
+                wrapper.userData.depthMm = itemDepth;
+                wrapper.userData.widthPx = modelWidth;
+                wrapper.userData.heightPx = modelHeight;
+                wrapper.userData.depthPx = modelDepth;
+                wrapper.userData.positionMm = dupItemPosition;
+                wrapper.userData.rotation = null;
+                wrapper.userData.linkedFurnitureCustomId = linkedFurnitureCustomId;
+
+                const roomObj = roomState.modelsList[roomState.roomType];
+                const modelScene = roomObj.scene;
+                modelScene.add(wrapper);
+
+                const {placedWorldPos, scaledChildSize, yRotation, itemSpaceBottom} = getProductComponentPlaceInRoom(wrapper, componentType);
+
+                wrapper.userData.spaceMm = itemSpaceBottom;
+                // wrapper.position.y = itemSpaceBottom;
+                wrapper.userData.scaledSize = scaledChildSize;
+                wrapper.receiveShadow = true;
+
+                const itemPositionMm = dupItemPosition ?? getItemPosition(
+                    componentType,
+                    placedWorldPos,
+                    scaledChildSize,
+                    yRotation,
+                    wrapper.userData.savedPosition.y
+                );
+
+                wrapper.userData.positionMm = itemPositionMm;
+
+                /***** push item ****/
+                if(componentType === SINK_COMPONENT_TYPE) {
+                    roomObj.dbChildren.push({
+                        ...componentObj,
+                        component_id: componentId,
+                        db_data: {
+                            ...componentObj.db_data,
+                            custom_id: customId,
+                            space_bottom: itemSpaceBottom,
+                            furniture_position_mm: JSON.stringify(itemPositionMm),
+                            rotation: yRotation,
+                            linked_furniture_custom_id: linkedFurnitureCustomId,
+                        },
+                    });
+                } else {
+                    const oldIndex = roomObj.dbChildren.findIndex(item =>
+                        item.component_type === COUNTERTOP_COMPONENT_TYPE
+                    );
+
+                    if (oldIndex < 0) {
+                        roomObj.dbChildren.push({
+                            ...componentObj,
+                            component_id: componentId,
+                            db_data: {
+                                ...componentObj.db_data,
+                                custom_id: customId,
+                                rotation: yRotation,
+                                instances: [{
+                                    bottom_custom_id: linkedFurnitureCustomId,
+                                    width: Math.round(wrapper.userData.scaledSize?.x * 10 / roomState.baseScale) || 0,
+                                    depth: Math.round(wrapper.userData.scaledSize?.z * 10 / roomState.baseScale) || 0,
+                                    furniture_position_mm: JSON.stringify(itemPositionMm),
+                                }],
+                            },
+                        });
+                    } else {
+                        const existing = roomObj.dbChildren[oldIndex];
+                        const existingInstances = Array.isArray(existing.db_data?.instances)
+                            ? existing.db_data.instances
+                            : [];
+
+                        // If this bottom_custom_id is already tracked (e.g. loaded from DB),
+                        // don't duplicate it — just update its position/size in place.
+                        const existingInstIdx = existingInstances.findIndex(
+                            i => i.bottom_custom_id == linkedFurnitureCustomId
+                        );
+
+                        const newInstance = {
+                            bottom_custom_id: linkedFurnitureCustomId,
+                            width: Math.round(wrapper.userData.scaledSize?.x * 10 / roomState.baseScale) || 0,
+                            depth: Math.round(wrapper.userData.scaledSize?.z * 10 / roomState.baseScale) || 0,
+                            furniture_position_mm: JSON.stringify(itemPositionMm),
+                        };
+
+                        const updatedInstances = existingInstIdx >= 0
+                            ? existingInstances.map((inst, idx) =>
+                                idx === existingInstIdx ? newInstance : inst
+                              )
+                            : [...existingInstances, newInstance];
+
+                        roomObj.dbChildren[oldIndex] = {
+                            ...existing,
+                            db_data: {
+                                ...existing.db_data,
+                                instances: updatedInstances,
+                            },
+                        };
+                    }
+                }
+
+
+
+                resolve({ itemPositionMm, wrapper });
+            },
+            undefined,
+            (error) => {
+                console.error('❌ Error loading component GLB:', error);
+                reject(error);
+            }
+        );
+    });
+}
+
+function removeGLBModel(childObj) {
     if(!childObj) return;
     const modelRoomType = roomState.roomType;
     const modelObj = roomState.modelsList[modelRoomType];
@@ -2665,8 +3228,6 @@ function placeFurnitureInRoom(
     scaledSize = null,
     initRotation = null
 ) {
-    const modelObj = roomState.modelsList[roomState.roomType];
-
     // ------------------ NORMALIZE MODEL PIVOT (RUN ONCE) ------------------
     if (!wrapper.userData.pivotNormalized) {
 
@@ -2726,7 +3287,7 @@ function placeFurnitureInRoom(
 
         const rotatedSize = getRotatedSize(scaledSize, rotation);
 
-        const { x: roomScaleX, z: roomScaleZ, y: roomScaleY } = roomState.modelRoomScale;
+        const { x: roomScaleX, z: roomScaleZ, y: roomScaleY } = roomState.modelRoomScale;        
         // x = -roomHalfWidth + pos.left * roomScaleX + rotatedSize.x / 2;
         // z = -roomHalfDepth + pos.back * roomScaleZ + rotatedSize.z / 2;         
         const isLeftWall = Math.abs(rotation) > 0.01;
@@ -2793,6 +3354,7 @@ function placeFurnitureInRoom(
 function resaveObjPosition(position, rotation, customId, itemPositionMm, isFitting) {
     const roomModels = roomState.modelsList;
     const roomType = roomState.roomType;
+    const rotationInDegrees = calculateRotationInDegrees(rotation);
     const dbChildIndex = roomModels[roomType].dbChildren.findIndex(item => item.db_data.custom_id == customId);
 
     if (dbChildIndex !== -1) {
@@ -2809,6 +3371,7 @@ function resaveObjPosition(position, rotation, customId, itemPositionMm, isFitti
                         furniture_position_mm: JSON.stringify(itemPositionMm),
                         is_fitting: isFitting,
                         rotation,
+                        rotationInDegrees,
                     }
                 }
                 : child
@@ -2820,8 +3383,9 @@ function resaveObjPosition(position, rotation, customId, itemPositionMm, isFitti
                     userData: {
                         ...child.userData,
                         savedPosition: position.clone(),
-                        isFitting: isFitting,
+                        is_fitting: isFitting,
                         rotation,
+                        rotationInDegrees,
                     }
                 }
                 : child
@@ -3023,6 +3587,7 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
         attachment_url,
         db_data,
     } = itemObj;
+
     const { height, depth, width, space_bottom, rotation, prices, object_src, furniture_position_mm, attachment_type, hasBrandTexture } = db_data;
 
     const {my_item_html, summary_item_html, new_object} = await addFurnitureItem(
@@ -3034,20 +3599,20 @@ async function duplicateFurniture(currentCustomId, triggerDupItem = false) {
 
     roomState.modelsList[roomState.roomType].dbChildren.push(new_object);
         await addGLBModel(
-        object_src, 
-        attachment_type,
-        attachment_url,
-        furniture_type, 
-        product_id, 
-        customId, 
-        height, 
-        depth, 
-        width, 
-        space_bottom,
-        hasBrandTexture,
-        rotation,
-        furniture_position_mm
-    );
+            object_src, 
+            attachment_type,
+            attachment_url,
+            furniture_type, 
+            product_id, 
+            customId, 
+            height, 
+            depth, 
+            width, 
+            space_bottom,
+            hasBrandTexture,
+            rotation,
+            furniture_position_mm
+        );
 
     if(my_item_html) {
         let { myItemsList, summaryItemsList } = roomState;
@@ -3244,22 +3809,35 @@ function createFurnitureDimensionArrows(childMeshGroup, modelScene, roomModelBox
 
 function typesEditInit() {
     const allProducts = getCurrentModelAllProducts();
+    const allProductsComponents = getCurrentModelAllProductsComponents();
+
     allProducts.forEach(furnitureItem => {
         const productId = furnitureItem.product_id;
         const htmlItem = container.querySelector(`.cabinet-settings .furniture-type-list .add-cabinet-item[data-product_id="${productId}"]`);
+        if (!htmlItem) return;
         const editBtn = htmlItem.querySelector('.item-actions-container button[data-action_type="edit"]');
-        const { furniture_type, min_width } = furnitureItem;
+        if (!editBtn) return;
+        const { furniture_type } = furnitureItem;
 
         editBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const itemObj = allProducts.find(dbChild => dbChild.product_id == productId);
+            createEditModal(htmlItem, itemObj, productId, furniture_type);
+        });
+    });
 
-            createEditModal(
-                htmlItem, 
-                itemObj, 
-                productId, 
-                furniture_type, 
-            );
+    allProductsComponents?.forEach(compItem => {
+        const productId = compItem.product_id;
+        const htmlItem = container.querySelector(`.add-element-tab-content[data-tab="components"] .add-cabinet-item[data-product_id="${productId}"]`);
+        if (!htmlItem) return;
+        const editBtn = htmlItem.querySelector('.item-actions-container button[data-action_type="edit"]');
+        if (!editBtn) return;
+        const { component_type } = compItem;
+
+        editBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const itemObj = allProductsComponents.find(c => c.product_id == productId);
+            createEditModal(htmlItem, itemObj, productId, component_type);
         });
     });
 }
@@ -3355,6 +3933,7 @@ export function appendCornerPseudoModelObjects(modelScene, roomModelBox) {
         pseudoTopCornerFurniture.userData.parentBox = roomModelBox;
 
         const xPosition = roomModelBox.min.x + objSize.x / 2 + WALL_THICKNESS;
+
         const yPosition = calculateTopSpaceIn3dModel(FURNITURE_TYPE_FULL, 0, roomModelBox) + cornerTopHeight3d / 2;
         const zPosition = roomModelBox.min.z + (objSize.z / 2) + WALL_THICKNESS;
         pseudoTopCornerFurniture.position.set(xPosition, yPosition, zPosition);
@@ -3433,6 +4012,143 @@ async function initFurnitureDuplicateData(currentCustomId, width, height, depth,
 
     updateBgPlane(currentObj);
 }
+
+export async function changeFurnitureProductComponentsPosition() {
+    const roomObj = roomState.modelsList[roomState.roomType];
+     const modelScene = roomObj.scene;
+
+    const sinkObj = modelScene.children.find(item => item?.userData?.componentType === SINK_COMPONENT_TYPE)
+
+    if(sinkObj) {
+        changeObjPos(sinkObj, SINK_COMPONENT_TYPE, sinkObj.userData.scaledSize)
+    }
+
+    const countertopObjs = modelScene.children.filter(item => item?.userData?.componentType === COUNTERTOP_COMPONENT_TYPE);
+
+    for (const countertopObj of countertopObjs) {
+        changeObjPos(countertopObj, COUNTERTOP_COMPONENT_TYPE, null);
+    }
+
+    if (countertopObjs.length > 0) {
+        const countertopTemplate = roomObj.dbChildren.find(c => c.component_type?.includes(COUNTERTOP_COMPONENT_TYPE));
+
+        if (countertopTemplate) {
+            const unlinkedBottomItems = modelScene.children.filter(child => {
+                const ft = child.userData?.furnitureType;
+                return ft && (ft === FURNITURE_TYPE_BOTTOM || ft === FURNITURE_TYPE_BOTTOM_CORNER)
+                    && !child.userData.countertopCustomId;
+            });
+
+            for (const furniture of unlinkedBottomItems) {
+                await addGLBComponent(
+                    countertopTemplate,
+                    countertopTemplate.db_data.object_src,
+                    countertopTemplate.component_id,
+                    uniqLong(),
+                    COUNTERTOP_COMPONENT_TYPE,
+                    countertopTemplate.db_data.width,
+                    countertopTemplate.db_data.height,
+                    countertopTemplate.db_data.depth,
+                    null,
+                    furniture.userData.customId
+                );
+            }
+        }
+
+        changeTotals();
+    }
+
+    function changeObjPos(obj, componentType, scaledSize) {
+        const roomModels = roomState.modelsList;
+        const roomType = roomState.roomType;
+        const customId = obj.userData.customId;
+        const {placedWorldPos, itemSpaceBottom} = getProductComponentPlaceInRoom(obj, componentType, scaledSize);
+        const yRotation = obj?.userData?.rotation ?? 0;
+        const rotationInDegrees = calculateRotationInDegrees(yRotation);
+
+        const itemPositionMm = getItemPosition(
+            componentType,
+            placedWorldPos,
+            obj.userData.scaledSize,
+            yRotation,
+            obj.userData.savedPosition.y
+        );
+        obj.userData.positionMm = itemPositionMm;
+
+        const isCountertop = componentType === COUNTERTOP_COMPONENT_TYPE;
+        const scale = roomState.baseScale;
+
+        /***** replace item ****/
+        let dbChildIndex = roomModels[roomType].dbChildren.findIndex(item => item.db_data.custom_id == customId);
+
+        // Secondary countertop wrappers share a customId with the primary dbChildren entry —
+        // fall back to finding by component_type so all instances stay in sync.
+        if (dbChildIndex === -1 && isCountertop) {
+            dbChildIndex = roomModels[roomType].dbChildren.findIndex(item =>
+                item.component_type === COUNTERTOP_COMPONENT_TYPE
+            );
+        }
+
+        if (dbChildIndex !== -1) {
+            const existingDbData = roomModels[roomType].dbChildren[dbChildIndex].db_data;
+
+            let newDbData;
+            if (isCountertop) {
+                const linkedId = obj.userData.linkedFurnitureCustomId;
+                const instances = Array.isArray(existingDbData?.instances)
+                    ? [...existingDbData.instances]
+                    : [];
+                const instIdx = instances.findIndex(i => i.bottom_custom_id == linkedId);
+                const newInstance = {
+                    bottom_custom_id: linkedId,
+                    width: Math.round(obj.userData.scaledSize.x * 10 / scale),
+                    depth: Math.round(obj.userData.scaledSize.z * 10 / scale),
+                    furniture_position_mm: JSON.stringify(itemPositionMm),
+                };
+                if (instIdx >= 0) {
+                    instances[instIdx] = newInstance;
+                } else {
+                    instances.push(newInstance);
+                }
+                newDbData = { ...existingDbData, instances };
+            } else {
+                newDbData = {
+                    ...existingDbData,
+                    furniture_position_mm: JSON.stringify(itemPositionMm),
+                    yRotation,
+                    rotationInDegrees,
+                };
+            }
+
+            roomState.modelsList = {
+                ...roomModels,
+                [roomType]: {
+                    ...roomModels[roomType],
+                    dbChildren: roomModels[roomType].dbChildren.map((child, index) =>
+                        index === dbChildIndex ? { ...child, db_data: newDbData } : child
+                    ),
+                    modelChildren: roomModels[roomType].scene.children.map((child, index) =>
+                        index === dbChildIndex
+                        ? {
+                            ...child,
+                            userData: {
+                                ...child.userData,
+                                savedPosition: placedWorldPos.clone(),
+                                yRotation,
+                                rotationInDegrees,
+                            }
+                        }
+                        : child
+                    ),
+                }
+            }
+        }
+    }
+
+
+}
+
+
 
 function initFurnitureRemoveData(customId) {
     const furnitureItem = container.querySelector(`.my-cabinets-list .cabinet-item[data-custom_id="${customId}"]`);
@@ -3770,6 +4486,7 @@ export function clearModelScene2(modelObj, onPageLoad) {
 }
 
 export function clearModelScene(modelObj, onPageLoad) {
+
     if (!modelObj) return;
 
     editContainerRemove();
@@ -3835,21 +4552,21 @@ export function clearModelScene(modelObj, onPageLoad) {
     }
 
     // =========================================================
-    // 🔥 5. DISPOSE CONTROLS
+    // 🔥 6. DISPOSE CONTROLS
     // =========================================================
     if (controls) {
         controls.dispose();
     }
 
     // =========================================================
-    // 🔥 6. DISPOSE DRAG CONTROLS
+    // 🔥 7. DISPOSE DRAG CONTROLS
     // =========================================================
     if (dragControls) {
         dragControls.dispose();
     }
 
     // =========================================================
-    // 🔥 7. DISPOSE RENDERER + REMOVE CANVAS
+    // 🔥 8. DISPOSE RENDERER + REMOVE CANVAS
     // =========================================================
     if (renderer) {
         renderer.dispose();
@@ -3862,7 +4579,7 @@ export function clearModelScene(modelObj, onPageLoad) {
     }
 
     // =========================================================
-    // 🔥 8. CLEAR REFERENCES
+    // 🔥 9. CLEAR REFERENCES
     // =========================================================
     modelObj.scene = null;
     modelObj.box = null;
@@ -3873,7 +4590,7 @@ export function clearModelScene(modelObj, onPageLoad) {
     modelObj.dragControls = null;
 
     // =========================================================
-    // 🔥 9. RESET STATE (ONLY WHEN NOT PAGE LOAD)
+    // 🔥 10. RESET STATE (ONLY WHEN NOT PAGE LOAD)
     // =========================================================
     if (onPageLoad) {
         modelObj._destroyed = false;
@@ -3889,7 +4606,7 @@ export function clearModelScene(modelObj, onPageLoad) {
     modelObj.total.display = 0;
 
     // =========================================================
-    // 🔥 10. CLEAN DOM
+    // 🔥 11. CLEAN DOM
     // =========================================================
     if (modelObj.htmlContainer) {
         modelObj.htmlContainer.innerHTML = '';
@@ -3903,8 +4620,12 @@ export function clearModelScene(modelObj, onPageLoad) {
         roomState.myItemsList.innerHTML = '';
     }
 
+    if (roomState.myComponentsList) {
+        roomState.myComponentsList.innerHTML = '';
+    }
+
     // =========================================================
-    // 🔥 11. FINAL RESET (ALLOW REINIT CLEANLY)
+    // 🔥 12. FINAL RESET (ALLOW REINIT CLEANLY)
     // =========================================================
     modelObj._destroyed = false;
 }
@@ -3920,6 +4641,11 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         threeJSControls.enabled = false;
 
         setBgPlanesVisibleForWrapper(obj, false);
+
+        if (obj.userData.furnitureType?.includes(DIMENSION_TYPE_BOTTOM) && obj.userData.countertopCustomId) {
+            const countertopObj = modelScene.children.find(c => c.userData?.customId === obj.userData.countertopCustomId);
+            if (countertopObj) countertopObj.visible = false;
+        }
     });
 
     dragControls.addEventListener('drag', event => {
@@ -3949,7 +4675,7 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         }
 				
 		if(obj.userData.thumbType === THUMB_TYPE_SLOGAN) {
-				updateBgPlane(obj);
+			updateBgPlane(obj);
 		}
 
     });
@@ -3960,9 +4686,17 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
         threeJSControls.enabled = true;
 
         if (modelSettings.visibleDimensionsArrows) return;
-
+        
         updateBgPlane(obj);
         setBgPlanesVisibleForWrapper(obj, true);
+
+        // // recalculate Y for sink based on bottom furniture at new position
+        // if (obj.userData.componentType === SINK_COMPONENT_TYPE) {
+        //     obj.position.y = calculateComponentBottomIn3dModel(
+        //         obj.userData.componentType, obj.position.x, obj.position.z
+        //     );
+        //     obj.updateMatrixWorld(true);
+        // }
 
         const childWorldPos = new THREE.Vector3();
         obj.getWorldPosition(childWorldPos);
@@ -3982,7 +4716,12 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 
         obj.userData.positionMm = itemPositionMm;
 
-        const isFitting = checkIfAbleToDragChildToPosition(obj);
+        let isFitting = checkIsSinkPlaceAllowed(obj);
+
+        if(isFitting) {
+            isFitting = checkIfAbleToDragChildToPosition(obj);
+        }
+        
         obj.userData.isFitting = isFitting;
 
         if (isFitting) {
@@ -3993,6 +4732,15 @@ export function dragControlsMethod(dragControls, modelScene, roomModelBox, three
 
         const rotation = obj.userData.rotatedManually || obj.rotation.y != 0 ? obj.rotation.y : null;
         resaveObjPosition(childWorldPos.clone(), rotation, obj.userData.customId, itemPositionMm, isFitting);
+        
+        if(obj.userData.furnitureType.includes(DIMENSION_TYPE_BOTTOM)) {
+            changeFurnitureProductComponentsPosition();
+
+            if (obj.userData.countertopCustomId) {
+                const countertopObj = modelScene.children.find(c => c.userData?.customId === obj.userData.countertopCustomId);
+                if (countertopObj) countertopObj.visible = true;
+            }
+        }
     });
 }
 
@@ -4034,6 +4782,42 @@ function updateProductPricesHtml(customId, prices) {
         
     });
 
+}
+
+function componentActionsInit(customId, componentType) {
+    const itemHtml = container.querySelector(`.my-cabinets-list .cabinet-item[data-custom_id="${customId}"]`);
+    if (!itemHtml) return;
+
+    const removeBtn = itemHtml.querySelector(`.item-actions-container button[data-action_type="remove"]`);
+    if (!removeBtn) return;
+
+    removeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const liveRoomObj = roomState.modelsList[roomState.roomType];
+
+        if (componentType === COUNTERTOP_COMPONENT_TYPE) {
+            [...liveRoomObj.scene.children]
+                .filter(c => c.userData?.componentType === COUNTERTOP_COMPONENT_TYPE)
+                .forEach(ct => removeGLBModel(ct));
+            liveRoomObj.dbChildren = liveRoomObj.dbChildren.filter(
+                c => !c.component_type?.includes(COUNTERTOP_COMPONENT_TYPE)
+            );
+            liveRoomObj.scene.children.forEach(child => {
+                delete child.userData.countertopCustomId;
+            });
+        } else {
+            const childObj = liveRoomObj.scene.children.find(c => c.userData?.customId == customId);
+            if (childObj) removeGLBModel(childObj);
+            liveRoomObj.dbChildren = liveRoomObj.dbChildren.filter(
+                c => c.db_data?.custom_id != customId
+            );
+        }
+
+        changeTotals();
+        itemHtml.remove();
+        roomState.summaryItemsList?.querySelector(`.cabinet-item[data-custom_id="${customId}"]`)?.remove();
+    });
 }
 
 export function productActionsInit(customId, productId, furnitureType, price) {
@@ -4142,16 +4926,17 @@ export function removeCornerPseudoModelObjects(furnitureType) {
 }
     
 function removeItemButtonTriggerAction(furnitureItem, summaryItem, furnitureType, customId) {
-    const roomObj = roomState.modelsList[roomState.roomType]; 
+    const roomObj = roomState.modelsList[roomState.roomType];
     let dbChildren = roomObj.dbChildren;
     const children = roomObj.scene.children;
     const childObj = children.find(child => child.userData.customId == customId);
+    const linkedCountertopId = childObj?.userData?.countertopCustomId ?? null;
     removeGLBModel(childObj);
 
     furnitureItem.remove();
     if(summaryItem) summaryItem.remove();
-    
-    if(furnitureType.includes('corner')) {
+
+    if(furnitureType?.includes('corner')) {
         const { 
             bottom: bottomCornerData, 
             top: topCornerData, 
@@ -4188,7 +4973,19 @@ function removeItemButtonTriggerAction(furnitureItem, summaryItem, furnitureType
     }
 
     roomState.modelsList[roomState.roomType].dbChildren = dbChildren.filter(item => item.db_data.custom_id != customId);
+
+    if (linkedCountertopId) {
+        const liveRoomObj = roomState.modelsList[roomState.roomType];
+        const countertopObj = liveRoomObj.scene.children.find(c => c.userData?.customId === linkedCountertopId);
+        if (countertopObj) removeGLBModel(countertopObj);
+        liveRoomObj.dbChildren = liveRoomObj.dbChildren.filter(c => c.db_data?.custom_id !== linkedCountertopId);
+    }
+
     changeTotals();
+
+    if (furnitureType && furnitureType.includes(FURNITURE_TYPE_BOTTOM)) {
+        changeFurnitureProductComponentsPosition();
+    }
 }
 
 function removeItemButtonTrigger(furnitureItem, customId, furnitureType) {
@@ -4263,7 +5060,7 @@ function createEditModal(
     furnitureType, 
     actionTypeAdd = true
 ) {
-    const { min_width, max_width, min_height, max_height, min_depth, max_depth, min_space_bottom, max_space_bottom, db_data } = itemObj;
+    const { component_type, min_width, max_width, min_height, max_height, min_depth, max_depth, min_space_bottom, max_space_bottom, db_data } = itemObj;
     const { width, height, depth, space_bottom, custom_id } = db_data;
 
     highlightCurrentItem(custom_id);
@@ -4280,9 +5077,17 @@ function createEditModal(
     let html = `<div class="edit-container-inner"> <button type="button" data-action_type="go-back">Go Back</button>       
             <div class="list-container dimension-container" data-dimension_type="width" data-type="width" data-constant_name="itemWidth">
                 <div class="dimension-container-inner">
-                    ${renderInput('Width', width, minWidth, maxWidth)}
+                    ${component_type !== undefined && component_type === COUNTERTOP_COMPONENT_TYPE ? 
+                        '' :
+                        renderInput('Width', width, minWidth, maxWidth)
+                    }
+
                     ${renderInput('Height', height, minHeight, maxHeight)}
-                    ${renderInput('Depth', depth, minDepth, maxDepth)}
+
+                    ${component_type !== undefined && component_type === COUNTERTOP_COMPONENT_TYPE ?  
+                        '' :
+                        renderInput('Depth', depth, minDepth, maxDepth)
+                    }
                     ${furnitureType !== DIMENSION_TYPE_TOP && furnitureType !== FURNITURE_TYPE_WALL_TOP ?
                         '' :
                         renderInput('Space Bottom', space_bottom, minSpaceBottom, maxSpaceBottom)}
@@ -4532,7 +5337,12 @@ function editGLBModelDimensions(customId, itemWidth, itemHeight, itemDepth, item
     userData.savedPosition = localPos.clone();
 
     // ---------- COLLISION CHECK ----------
-    const isFitting = checkIfAbleToDragChildToPosition(childObj);
+
+    let isFitting = checkIsSinkPlaceAllowed(childObj);
+
+    if(isFitting) {
+        isFitting = checkIfAbleToDragChildToPosition(childObj);
+    }
 
     // ---------- CALCULATE MM POSITION ----------
     const itemPositionMm = getItemPosition(
@@ -4706,6 +5516,33 @@ function checkIfAbleToDragChildToPosition(currentObj, excludeObjId = null) {
     return true;
 }
 
+function checkIsSinkPlaceAllowed(obj) {
+    const isSink = obj?.userData?.componentType === SINK_COMPONENT_TYPE;
+
+    if (!isSink) return true;
+
+    const { water_supply_enabled, water_supply_distance, water_supply_wall } = roomState.roomDimensions;
+
+    if (!water_supply_enabled) return true;
+
+    const objPos = obj?.userData?.savedPosition;
+    if (!objPos) return true;
+
+    const scale = roomState.baseScale;
+    const { width: modelRoomWidth, depth: modelRoomDepth } = roomState.modelRoomDimensions;
+    const halfW = modelRoomWidth / 2;
+    const halfD = modelRoomDepth / 2;
+    const distanceUnits = (water_supply_distance || 0) * scale;
+
+    const wsX = water_supply_wall === 'left' ? -halfW : -halfW + distanceUnits;
+    const wsZ = water_supply_wall === 'left' ? -halfD + distanceUnits : -halfD;
+
+    const threshold = scale * 60;
+    const dist = Math.sqrt(Math.pow(objPos.x - wsX, 2) + Math.pow(objPos.z - wsZ, 2));
+
+    return dist < threshold;
+}
+
 function getItemPosition(furnitureType, currentPosition, currentSize, rotation, spaceBottomPx, id = null) {
     const { width, depth, height } = roomState.modelRoomDimensions;
     const { width: mmWidth, height: mmHeight, depth: mmDepth } = roomState.roomDimensions;
@@ -4768,6 +5605,145 @@ function getItemPosition(furnitureType, currentPosition, currentSize, rotation, 
         bottom: clamp(bottomPx * pxToMmY, mmHeight),
         top: clamp(topPx * pxToMmY, mmHeight),
     };
+}
+
+function getProductComponentPlaceInRoom(wrapper, componentType, scaledSize = null) {
+    // snap to water supply position and calculate Y
+    let yRotation = 0;
+    let scaledSizeY = 0;
+    if (!scaledSize) {
+        const userData = wrapper.userData;
+        const originalSize = userData.originalSize;
+        const widthPx = userData.widthPx;
+        const heightPx = userData.heightPx;
+        const depthPx = userData.depthPx;
+
+        // ------------------ SCALE ------------------
+        const scaleX = widthPx / originalSize.x;
+        const scaleY = heightPx / originalSize.y;
+        const scaleZ = depthPx / originalSize.z;
+
+        wrapper.scale.set(scaleX, scaleY, scaleZ);
+        wrapper.updateMatrixWorld(true);
+
+        scaledSizeY =  originalSize.y * scaleY;
+        // scaled size
+        scaledSize = new THREE.Vector3(
+            originalSize.x * scaleX,
+            scaledSizeY,
+            originalSize.z * scaleZ
+        );
+
+        wrapper.userData.scaledSize = scaledSize.clone();
+    } else {
+        scaledSizeY = scaledSize.y;
+    }
+
+    const itemSpaceBottom = calculateComponentBottomIn3dModel(componentType, scaledSizeY);
+
+    const { width, depth } = roomState.modelRoomDimensions;
+    const { x: roomScaleX, z: roomScaleZ } = roomState.modelRoomScale;
+    const roomHalfWidth = width / 2;
+    const roomHalfDepth = depth / 2;
+
+    if (componentType === SINK_COMPONENT_TYPE) {
+        const { water_supply_wall, water_supply_distance } = roomState.roomDimensions;
+        const planeSize = roomState.baseScale * 25;
+        const halfPlane = planeSize / 2;
+        const { width: mrW, depth: mrD } = roomState.modelRoomDimensions;
+        const halfW = mrD / 2;
+
+        const wsDistBase = (water_supply_distance || 0) * roomState.baseScale;
+
+        const roomObj = roomState.modelsList[roomState.roomType];
+        const bottomFurnitureAtSupply = roomObj.scene.children.find(child => {
+            if (child.userData?.furnitureType !== FURNITURE_TYPE_BOTTOM) return false;
+            const childSize = child.userData?.scaledSize;
+            if (!childSize) return false;
+            return water_supply_wall === 'left'
+                ? Math.abs(child.position.z - (-mrD / 2 + wsDistBase)) <= childSize.z / 2
+                : Math.abs(child.position.x - (-mrW / 2 + wsDistBase)) <= childSize.x / 2;
+        });
+
+        const wsDistUnits = bottomFurnitureAtSupply
+            ? (water_supply_wall === 'left'
+                ? bottomFurnitureAtSupply.position.z + mrD / 2
+                : bottomFurnitureAtSupply.position.x + mrW / 2)
+            : wsDistBase;
+        if (water_supply_wall === 'left') {
+            yRotation = wrapper.userData.rotatedManually && !wrapper.userData.rotatedManuallyOld
+                ? wrapper.userData.rotation
+                : Math.PI / 2;
+
+            const rotatedSize = getRotatedSize(scaledSize.clone(), yRotation);
+            wrapper.userData.rotation = yRotation;
+            wrapper.rotation.y = yRotation;
+
+            wrapper.position.x = -roomHalfWidth + rotatedSize.x / 2;
+            wrapper.position.z = Math.max(-mrD / 2 + rotatedSize.z / 2, Math.min(mrD / 2 - rotatedSize.z / 2, -mrD / 2 + wsDistUnits));
+        } else {
+            yRotation = wrapper.userData.rotatedManually && !wrapper.userData.rotatedManuallyOld
+                ? wrapper.userData.rotation
+                : 0;
+
+            const rotatedSize = getRotatedSize(scaledSize.clone(), yRotation);
+            wrapper.userData.rotation = yRotation;
+            wrapper.rotation.y = yRotation;
+
+            wrapper.position.z = -roomHalfDepth + rotatedSize.z / 2;
+            wrapper.position.x = Math.max(-mrW / 2 + rotatedSize.x / 2, Math.min(mrW / 2 - rotatedSize.x / 2, -mrW / 2 + wsDistUnits));
+        }
+        wrapper.position.y = itemSpaceBottom || wrapper.position.y;
+        wrapper.updateMatrixWorld(true);
+    }
+
+    if (componentType === COUNTERTOP_COMPONENT_TYPE) {
+        const roomObj = roomState.modelsList[roomState.roomType];
+        const modelScene = roomObj.scene;
+        const linkedId = wrapper.userData.linkedFurnitureCustomId;
+
+        const targetFurniture = modelScene.children.find(child => {
+            if (child === wrapper) return false;
+            if (linkedId) return child.userData?.customId === linkedId;
+            const ft = child.userData?.furnitureType;
+            return ft && (ft === FURNITURE_TYPE_BOTTOM || ft === FURNITURE_TYPE_BOTTOM_CORNER);
+        });
+
+        if (targetFurniture) {
+            targetFurniture.updateMatrixWorld(true);
+            const furnitureBox = new THREE.Box3().setFromObject(targetFurniture);
+            const furnitureSize = furnitureBox.getSize(new THREE.Vector3());
+            const furnitureCenter = furnitureBox.getCenter(new THREE.Vector3());
+
+            const originalSize = wrapper.userData.originalSize;
+            const scaleX = furnitureSize.x / originalSize.x;
+            const scaleZ = furnitureSize.z / originalSize.z;
+
+            wrapper.scale.set(scaleX, wrapper.scale.y, scaleZ);
+            wrapper.updateMatrixWorld(true);
+
+            scaledSize = new THREE.Vector3(furnitureSize.x, scaledSizeY, furnitureSize.z);
+            wrapper.userData.scaledSize = scaledSize.clone();
+
+            wrapper.position.x = furnitureCenter.x;
+            wrapper.position.y = furnitureBox.max.y;
+            wrapper.position.z = furnitureCenter.z;
+            wrapper.updateMatrixWorld(true);
+
+            targetFurniture.userData.countertopCustomId = wrapper.userData.customId;
+        }
+    }
+
+    const placedWorldPos = new THREE.Vector3();
+    wrapper.getWorldPosition(placedWorldPos);
+    wrapper.userData.savedPosition = placedWorldPos.clone();
+
+    return {
+        placedWorldPos: placedWorldPos.clone(),
+        scaledChildSize: scaledSize.clone(),
+        yRotation,
+        itemSpaceBottom,
+    }
 }
 export function renderLighting(scene, renderer, dirLight, width, height, depth) {
     removeLighting(scene, renderer, dirLight);

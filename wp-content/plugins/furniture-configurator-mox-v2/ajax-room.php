@@ -21,10 +21,12 @@ function render_config_room()
     $currentTemplatePostId = $currentTemplateData ? $currentTemplateData->post_id : null;
     // $currentTemplateRoomType = $currentTemplateData ? $currentTemplateData->room_type : null;
     $all_furniture_list_objects = [];
+    $all_component_objects = [];
 
     $currency_symbol = get_woocommerce_currency_symbol();
     $textureTypes = get_furniture_texture_types();
 	$furnitureTypes = get_furniture_types();
+    $furnitureComponentTypes = get_furniture_component_types();
 
     $defaultFurnitureTypes = get_default_furniture_types_array($furnitureTypes);
     $defaultTexturesCategories = get_default_config_settings_textures($textureTypes, $furnitureTypes);
@@ -52,9 +54,11 @@ function render_config_room()
     $productsList = [];
     $minRoomWidth = null;
     if(!$aiFurnitureData) {
-        $productsList = $currentTemplatePostId ? 
+        $productsList = $currentTemplatePostId ?
             getTemplateProductsByPostId($currentTemplatePostId, $currentRoomType) :
             getSettingsProductsByConfigId($currentConfigId);
+
+        attachCountertopInstancesToProductsList($productsList, $currentConfigId);
     } else {
         $productsListData = getAiSettingsProducts($aiFurnitureData, $furnitureDimensions);
         $productsList = $productsListData['new_list'];
@@ -72,6 +76,8 @@ function render_config_room()
     $wallDepthMin = $roomData['wall_depth_min'];
     $wallDepthMax = $roomData['wall_depth_max'];
     $wallDepthStandard = $roomData['wall_depth_standard'];
+    $waterSupplyEnabled = $roomData['water_supply_enabled'];
+    $waterSupplyDistance = $roomData['water_supply_distance'];
 
     list(
         $bottomCornerItem, 
@@ -92,6 +98,7 @@ function render_config_room()
         $total = $productsListData['regular_total'] ?? 0;
         $prices = $productsListData['all_totals'] ?? 0;
         $furniture_list_objects = $productsListData['furniture_list_objects'] ?? [];
+        $furniture_comp_list_objects = $productsListData['furniture_comp_list_objects'] ?? [];
         $productsListPerPage = 24;
 
         $regular = $prices['regular'] ?? 0.00;
@@ -129,6 +136,8 @@ function render_config_room()
         'content' => $content,
         'components' => $selected_components,
         'all_products' => $all_furniture_list_objects,
+        'all_products_components' => $all_furniture_components_list_objects,
+        'all_components' => $all_component_objects,
         'products_list' => $furniture_list_objects,
         'products_list_per_page' => $productsListPerPage,
         'room_type' => $defaultRoomLayout,
@@ -139,6 +148,8 @@ function render_config_room()
             'width_max' => $wallWidthMax,
             'height_max' => $wallHeightMax,
             'depth_max' => $wallDepthMax,
+            'water_supply_enabled' => $waterSupplyEnabled,
+            'water_supply_distance' => $waterSupplyDistance,
         ],
         'furniture_dimensions' => $furnitureDimensionsSortedByType,
         'default_textures' => $defaultTextures,
@@ -263,6 +274,10 @@ function add_furniture_item_to_config_v2_settings()
     $configId = intval($_POST['config_id']);
     $customId = intval($_POST['custom_id']);
     
+    $furnitureType = $productObj->furniture_type ?? null;
+    $furnitureTypeSlug = $furnitureType;
+    $componentType = $productObj->component_type ?? null;
+    
     $productObjDbData = $productObj->db_data;
 
     $itemWidth = $productObjDbData->width;
@@ -291,11 +306,12 @@ function add_furniture_item_to_config_v2_settings()
     $discount_total = $priceData->discount_total;
     $currency_symbol = get_woocommerce_currency_symbol();
 
-    $furnitureTypes = get_the_terms($productId, 'config-furniture-type');
-    $furnitureTypeSlug = '';
-    if(!empty($furnitureTypes)) {
-        $furnitureTypeSlug = $furnitureTypes[0]->slug;
-    }
+    // $furnitureTypes = get_the_terms($productId, 'config-furniture-type');
+    // $furnitureTypeSlug = '';
+    // if(!empty($furnitureTypes)) {
+    //     $furnitureTypeSlug = $furnitureTypes[0]->slug;
+    //     $furnitureType = $furnitureTypeSlug;
+    // }
 
     $width_obj = get_field('width', $productId);
     $itemWidthMin = $width_obj['min'];
@@ -730,6 +746,22 @@ function ajax_save_config_settings()
             $successfully_added_products = addFurnitureToSettingsConfig($config_id, $furniture_list);
         }
 
+        // Save countertop instances — runs regardless of main save result
+        // so instance data is never lost if furniture save has a partial failure.
+        foreach ($furniture_list as $product) {
+            $product   = (array) $product;
+            $db_data   = isset($product['db_data']) ? (array) $product['db_data'] : [];
+            $comp_type = $product['component_type'] ?? null;
+
+            if ($comp_type !== 'countertops') continue;
+            if (empty($db_data['instances']) || !is_array($db_data['instances'])) continue;
+
+            $countertop_custom_id = isset($db_data['custom_id']) ? intval($db_data['custom_id']) : 0;
+            if (!$countertop_custom_id) continue;
+
+            saveCountertopInstances($config_id, $countertop_custom_id, $db_data['instances']);
+        }
+
         if(!$successfully_added_products) {
             wp_send_json_error(['message' => 'Failed saving furniture items.']);
         }
@@ -828,6 +860,7 @@ function render_config_room_preview()
     $defaultTextures = json_decode(stripslashes($savedSettings->textures));
     $components = json_decode(stripslashes($savedSettings->components));
     $productsList = getSettingsProductsByConfigId($currentConfigId);
+    attachCountertopInstancesToProductsList($productsList, $currentConfigId);
     $furnitureDimensions = getDefaultFurnitureDimensions($savedSettings);
 
     $roomData = getDefaultRoomSettings($savedSettings);
@@ -835,6 +868,8 @@ function render_config_room_preview()
     $wallHeightStandard = $roomData['wall_height_standard'];
     $wallWidthStandard = $roomData['wall_width_standard'];
     $wallDepthStandard = $roomData['wall_depth_standard'];
+    $waterSupplyEnabled = $roomData['water_supply_enabled'];
+    $waterSupplyDistance = $roomData['water_supply_distance'];
     ?>
     
     <?php
@@ -859,8 +894,11 @@ function render_config_room_preview()
             'width_max' => $roomData['wall_width_max'],
             'height_max' => $roomData['wall_height_max'],
             'depth_max' => $roomData['wall_depth_max'],
+            'water_supply_enabled' => $waterSupplyEnabled,
+            'water_supply_distance' => $waterSupplyDistance,
         ],
         'default_textures' => $defaultTextures,
         'furniture_dimensions' => $furnitureDimensions,
     ]);
 }
+

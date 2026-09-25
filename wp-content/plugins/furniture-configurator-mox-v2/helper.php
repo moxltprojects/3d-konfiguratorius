@@ -443,7 +443,6 @@ function get_furniture_types($parentId = null) {
 	return $types;
 }
 
-
 function get_furniture_type_by_slug($typeSlug) {
     $term = get_term_by('slug', $typeSlug, 'furniture-texture-type');
 
@@ -575,7 +574,7 @@ function get_furniture_texture_posts_by_furniture_type_slug($textureType, $furni
 function get_furniture_component_types()
 {
     $components_types = get_terms([
-        'taxonomy'   => 'config-furniture-type',
+        'taxonomy'   => 'config-furniture-component-type',
         'parent' => 0,
         'hide_empty' => true,
     ]);
@@ -751,7 +750,7 @@ function create_texture_slug($catSlug, $subcatSlug, $allTerms) {
 }
 
 
-function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12, $productId = false) {
+function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12, $productId = false, $furnitureCompTypes = null) {
     $taxonomies = [];  
 
     $args = array(  
@@ -770,6 +769,15 @@ function get_products_query($furnitureTypes = null, $page = 1, $postPerPage = 12
             'include_children' => false
         );
     }
+
+        if($furnitureCompTypes) {
+            $taxonomies[] = array(
+                'taxonomy' => 'config-furniture-component-type',
+                'field' => 'slug', 
+                'terms' => $furnitureCompTypes,
+                'include_children' => false
+            );
+        }
 
     if ($productId) {
         $args['p'] = $productId;
